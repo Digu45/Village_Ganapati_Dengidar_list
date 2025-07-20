@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ganesh Chaturthi Dengidar Records</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #ff6f61, #6a82fb, #00c9a7, #ff9a9e);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .container {
+      min-height: 100vh;
+      padding: 30px 15px;
+    }
+
+    .main-title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #1a237e;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      background-color: #ffe082;
+      border: 2px solid #ff6f00;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+
+    .scroll-section {
+      flex: 1;
+      overflow-y: auto;
+      width: 100%;
+      max-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dengidar {
+      background: #ffffff;
+      border-left: 5px solid #4caf50;
+      border-radius: 6px;
+      padding: 12px 20px;
+      margin: 10px auto;
+      width: 100%;
+      max-width: 320px;
+      font-size: 16px;
+      color: #2e7d32;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .dengidar:hover {
+      transform: scale(1.02);
+    }
+
+    .current {
+      background-color: #a5d6a7;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1b5e20;
+      border-left-color: #2e7d32;
+    }
+
+    .upcoming {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+      border-left-color: #64b5f6;
+    }
+
+    @media (max-width: 767px) {
+      .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .col-sm-12 {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .scroll-section {
+        max-height: 40vh;
+      }
+
+      .dengidar {
+        font-size: 14px;
+        max-width: 100%;
+      }
+
+      .current {
+        font-size: 18px;
+      }
+    }
+
+    .previous {
+  font-size: 14px;
+  color: #757575;
+  background-color: #f0f0f0;
+  border-left-color: #bbb;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <center><div class="main-title">🕉️ छत्रपती शिवाजी महाराज तरुण मंडळ शेनवडे - गणेश उत्सव</div></center>
+  
+    <div class="row">
+      <!-- मूर्ती देणगीदार -->
+      <div class="col-md-6 col-sm-12">
+        <div class="section-title" style="color:#1b5e20; border: 1px solid black;">🕉️ मूर्ती देणगीदार</div>
+        <div class="timeline-container">
+          <!-- मागील वर्षे -->
+          <div class="dengidar previous">२०२४ - छत्रपती शिवाजी महाराज तरुण मंडळ</div>
+  
+          <!-- चालू वर्ष -->
+          <div class="dengidar current">२०२५ - बाजीराव कृष्णा वापिलकर</div>
+  
+          <!-- आगामी वर्षे -->
+          <div class="scroll-section">
+            <div class="dengidar upcoming">२०२६ - आनंद ईश्वर वापिलकर</div>
+            <div class="dengidar upcoming">२०२७ - संदीप मारुती गुरव</div>
+            <div class="dengidar upcoming">२०२८ - अशोक बाळकू वापिलकर</div>
+            <div class="dengidar upcoming">२०२९ - </div>
+            <div class="dengidar upcoming">२०३० - </div>
+            <div class="dengidar upcoming">२०३१ - </div>
+            <div class="dengidar upcoming">२०३२ - </div>
+            <div class="dengidar upcoming">२०३३ - </div>
+            <div class="dengidar upcoming">२०३४ - </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- महाप्रसाद देणगीदार -->
+      <div class="col-md-6 col-sm-12">
+        <div class="section-title" style="color:#880e4f; margin-top: 5px; border: 1px solid black;">🍛 महाप्रसाद देणगीदार</div>
+        <div class="timeline-container">
+          <!-- मागील वर्षे -->
+          <div class="dengidar previous">२०२४ - प्रकाश धोंडीराम पाटील</div>
+  
+          <!-- चालू वर्ष -->
+          <div class="dengidar current">२०२५ - संभाजी बाजीराव सुतार</div>
+  
+          <!-- आगामी वर्षे -->
+          <div class="scroll-section">
+            <div class="dengidar upcoming">२०२६ - </div>
+            <div class="dengidar upcoming">२०२७ - </div>
+            <div class="dengidar upcoming">२०२८ - </div>
+            <div class="dengidar upcoming">२०२९ - </div>
+            <div class="dengidar upcoming">२०३० - </div>
+            <div class="dengidar upcoming">२०३१ - </div>
+            <div class="dengidar upcoming">२०३२ - </div>
+            <div class="dengidar upcoming">२०३३ - </div>
+            <div class="dengidar upcoming">२०३४ - </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
