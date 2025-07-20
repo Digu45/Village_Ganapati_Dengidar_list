@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 <head>
   <meta charset="UTF-8">
-  <title>Ganesh Chaturthi Dengidar Records</title>
+  <title>गणेश उत्सव देणगीदार</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
   <style>
     html, body {
       height: 100%;
@@ -14,7 +15,6 @@
       background: linear-gradient(-45deg, #ff6f61, #6a82fb, #00c9a7, #ff9a9e);
       background-size: 400% 400%;
       animation: gradientBG 12s ease infinite;
-      
     }
 
     @keyframes gradientBG {
@@ -24,7 +24,6 @@
     }
 
     .container {
-      min-height: 100vh;
       padding: 30px 15px;
     }
 
@@ -48,23 +47,19 @@
       margin-bottom: 25px;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
       text-align: center;
+      border: 1px solid black;
     }
 
     .timeline-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      height: 100%;
     }
 
     .scroll-section {
-      flex: 1;
       overflow-y: auto;
+      max-height: 50vh;
       width: 100%;
-      max-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     .dengidar {
@@ -99,6 +94,24 @@
       border-left-color: #64b5f6;
     }
 
+    .previous {
+      font-size: 14px;
+      color: #757575;
+      background-color: #f0f0f0;
+      border-left-color: #bbb;
+    }
+
+    .highlight {
+      background-color: #ffffcc;
+      font-weight: bold;
+      border: 2px solid #ffa000;
+      color: #d84315;
+    }
+
+    label {
+      font-size: 16px;
+    }
+
     @media (max-width: 767px) {
       .row {
         display: flex;
@@ -111,10 +124,6 @@
         max-width: 400px;
       }
 
-      .scroll-section {
-        max-height: 40vh;
-      }
-
       .dengidar {
         font-size: 14px;
         max-width: 100%;
@@ -123,34 +132,29 @@
       .current {
         font-size: 18px;
       }
+
+      label {
+        font-size: 14px;
+      }
+
+      .main-title {
+        font-size: 24px;
+      }
     }
-
-    .previous {
-  font-size: 14px;
-  color: #757575;
-  background-color: #f0f0f0;
-  border-left-color: #bbb;
-}
-
   </style>
 </head>
 <body>
 
   <div class="container">
     <center><div class="main-title">🕉️ छत्रपती शिवाजी महाराज तरुण मंडळ शेनवडे - गणेश उत्सव</div></center>
-  
+
+    <!-- Timeline View -->
     <div class="row">
-      <!-- मूर्ती देणगीदार -->
       <div class="col-md-6 col-sm-12">
-        <div class="section-title" style="color:#1b5e20; border: 1px solid black;">🕉️ मूर्ती देणगीदार</div>
+        <div class="section-title" style="color:#1b5e20;">🕉️ मूर्ती देणगीदार</div>
         <div class="timeline-container">
-          <!-- मागील वर्षे -->
           <div class="dengidar previous">२०२४ - छत्रपती शिवाजी महाराज तरुण मंडळ</div>
-  
-          <!-- चालू वर्ष -->
           <div class="dengidar current">२०२५ - बाजीराव कृष्णा वापिलकर</div>
-  
-          <!-- आगामी वर्षे -->
           <div class="scroll-section">
             <div class="dengidar upcoming">२०२६ - आनंद ईश्वर वापिलकर</div>
             <div class="dengidar upcoming">२०२७ - संदीप मारुती गुरव</div>
@@ -164,18 +168,12 @@
           </div>
         </div>
       </div>
-  
-      <!-- महाप्रसाद देणगीदार -->
+
       <div class="col-md-6 col-sm-12">
-        <div class="section-title" style="color:#880e4f; margin-top: 5px; border: 1px solid black;">🍛 महाप्रसाद देणगीदार</div>
+        <div class="section-title" style="color:#880e4f;">🍛 महाप्रसाद देणगीदार</div>
         <div class="timeline-container">
-          <!-- मागील वर्षे -->
           <div class="dengidar previous">२०२४ - प्रकाश धोंडीराम पाटील</div>
-  
-          <!-- चालू वर्ष -->
           <div class="dengidar current">२०२५ - संभाजी बाजीराव सुतार</div>
-  
-          <!-- आगामी वर्षे -->
           <div class="scroll-section">
             <div class="dengidar upcoming">२०२६ - </div>
             <div class="dengidar upcoming">२०२७ - </div>
@@ -190,7 +188,95 @@
         </div>
       </div>
     </div>
+
+    <center><h3 style="border: 2px solid black; background-color: #ffa000; margin-top:40px;">किंवा हे खाली ड्रॉपडाउन मध्ये बघू शकता</h3></center>
+
+    <!-- Dropdown View -->
+    <div class="row">
+      <div class="col-md-6 col-sm-12 section">
+        <label for="murtiYear">वर्ष निवडा (🕉️ मूर्ती देणगीदार):</label>
+        <select id="murtiYear" class="form-control"></select>
+        <div id="murtiOutput" class="dengidar"></div>
+      </div>
+
+      <div class="col-md-6 col-sm-12 section">
+        <label for="prasadYear">वर्ष निवडा (🍛 महाप्रसाद देणगीदार):</label>
+        <select id="prasadYear" class="form-control"></select>
+        <div id="prasadOutput" class="dengidar"></div>
+      </div>
+    </div>
   </div>
-  
+
+  <script>
+    const murtiDonors = {
+      2024: "छत्रपती शिवाजी महाराज तरुण मंडळ",
+      2025: "बाजीराव कृष्णा वापिलकर",
+      2026: "आनंद ईश्वर वापिलकर",
+      2027: "संदीप मारुती गुरव",
+      2028: "अशोक बाळकू वापिलकर",
+      2029: "",
+      2030: "",
+      2031: "",
+      2032: "",
+      2033: "",
+      2034: ""
+    };
+
+    const prasadDonors = {
+      2024: "प्रकाश धोंडीराम पाटील",
+      2025: "संभाजी बाजीराव सुतार",
+      2026: "",
+      2027: "",
+      2028: "",
+      2029: "",
+      2030: "",
+      2031: "",
+      2032: "",
+      2033: "",
+      2034: ""
+    };
+
+    const currentYear = new Date().getFullYear();
+
+    function populateDropdowns() {
+      const startYear = 2024;
+      const endYear = 2034;
+
+      const murtiSelect = document.getElementById("murtiYear");
+      const prasadSelect = document.getElementById("prasadYear");
+
+      for (let y = startYear; y <= endYear; y++) {
+        let option1 = new Option(y, y);
+        let option2 = new Option(y, y);
+        if (y === currentYear) {
+          option1.selected = true;
+          option2.selected = true;
+        }
+        murtiSelect.appendChild(option1);
+        prasadSelect.appendChild(option2);
+      }
+    }
+
+    function updateDisplay(year, data, outputId) {
+      const outputDiv = document.getElementById(outputId);
+      const name = data[year] || "माहिती उपलब्ध नाही";
+      const label = (outputId === "murtiOutput") ? "🕉️" : "🍛";
+      outputDiv.innerText = `${label} ${year} - ${name}`;
+      outputDiv.classList.toggle("highlight", parseInt(year) === currentYear);
+    }
+
+    populateDropdowns();
+    updateDisplay(currentYear, murtiDonors, "murtiOutput");
+    updateDisplay(currentYear, prasadDonors, "prasadOutput");
+
+    document.getElementById("murtiYear").addEventListener("change", function () {
+      updateDisplay(this.value, murtiDonors, "murtiOutput");
+    });
+
+    document.getElementById("prasadYear").addEventListener("change", function () {
+      updateDisplay(this.value, prasadDonors, "prasadOutput");
+    });
+  </script>
+
 </body>
 </html>
