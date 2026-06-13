@@ -1,408 +1,570 @@
 <!DOCTYPE html>
 <html lang="mr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>गणेश उत्सव देणगीदार</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-    />
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ganapati Utsav — Shenawade</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1A;min-height:100vh;font-size:15px}
 
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(-45deg, #ff6f61, #6a82fb, #00c9a7, #ff9a9e);
-        background-size: 400% 400%;
-        animation: gradientBG 12s ease infinite;
-      }
+.hdr{background:linear-gradient(135deg,#B71C1C,#C8390A,#E65100);padding:24px 20px 22px;text-align:center}
+.hdr-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px}
+.hdr-title{font-size:19px;font-weight:800;color:#fff;line-height:1.35;margin-bottom:2px}
+.hdr-mr{font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:14px}
+.hdr-pill{display:inline-block;background:#fff;color:#C8390A;font-size:14px;font-weight:700;padding:5px 20px;border-radius:20px}
 
-      @keyframes gradientBG {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
+.nav{display:flex;background:#fff;border-bottom:1px solid #E5E5E5;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.nav-btn{flex:1;padding:12px 2px;font-size:11px;font-weight:700;color:#999;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;line-height:1.3}
+.nav-btn.on{color:#C8390A;border-bottom-color:#C8390A}
 
-      .container {
-        padding: 30px 15px;
-      }
+.main{padding:14px}
+.pg{display:none}.pg.on{display:block}
 
-      .main-title {
-        text-align: center;
-        font-size: 30px;
-        font-weight: bold;
-        margin-bottom: 40px;
-        color: #1a237e;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        background-color: #ffe082;
-        border: 2px solid #ff6f00;
-        padding: 10px 20px;
-        border-radius: 8px;
-        display: inline-block;
-      }
+/* HERO */
+.hero{border-radius:12px;padding:18px 20px;margin-bottom:12px;color:#fff}
+.hero.red{background:linear-gradient(135deg,#C8390A,#E65100)}
+.hero.blue{background:linear-gradient(135deg,#1565C0,#1976D2)}
+.hero-lbl-en{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1px}
+.hero-lbl-mr{font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);margin-bottom:10px}
+.hero-yr{font-size:36px;font-weight:800;color:#fff;line-height:1}
+.hero-nm{font-size:17px;font-weight:600;color:#fff;margin-top:5px;line-height:1.3}
+.hero-tag{display:inline-block;margin-top:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:.5px}
 
-      .section-title {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 25px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        border: 1px solid black;
-      }
+/* STATS */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{background:#fff;border-radius:10px;border:1px solid #E8E8E8;padding:13px 14px}
+.stat-n{font-size:30px;font-weight:800;color:#C8390A;line-height:1}
+.stat-en{font-size:10px;color:#bbb;margin-top:1px}
+.stat-mr{font-size:12px;color:#888;font-weight:600}
 
-      .timeline-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+/* CARDS */
+.card{background:#fff;border-radius:12px;border:1px solid #E8E8E8;overflow:hidden;margin-bottom:12px}
+.card-hd{padding:13px 16px 0}
+.card-hd-en{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#bbb}
+.card-hd-mr{font-size:14px;font-weight:700;color:#1A1A1A;margin-top:1px;margin-bottom:10px}
+.card-body{padding:0 16px 16px}
 
-      .scroll-section {
-        overflow-y: auto;
-        max-height: 50vh;
-        width: 100%;
-      }
+/* CHIPS */
+.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #DDD;background:#fff;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.chip.on{background:#C8390A;color:#fff;border-color:#C8390A}
+.chip.past{opacity:.5}
 
-      .dengidar {
-        background: #ffffff;
-        border-left: 5px solid #4caf50;
-        border-radius: 6px;
-        padding: 12px 20px;
-        margin: 10px auto;
-        width: 100%;
-        max-width: 320px;
-        font-size: 16px;
-        color: #2e7d32;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
-      }
+/* LOOKUP */
+.lookup{background:#FEF7F5;border-radius:10px;border:1.5px solid #C8390A;padding:16px;display:none}
+.lk-yr{font-size:38px;font-weight:800;color:#C8390A;line-height:1;margin-bottom:12px}
+.lk-row{margin-bottom:10px}
+.lk-en{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#bbb}
+.lk-mr{font-size:12px;font-weight:700;color:#888;margin-bottom:2px}
+.lk-val{font-size:15px;font-weight:600;color:#1A1A1A}
 
-      .dengidar:hover {
-        transform: scale(1.02);
-      }
+/* DONOR LIST */
+.dl{display:flex;flex-direction:column;gap:8px}
 
-      .current {
-        background-color: #a5d6a7;
-        font-size: 20px;
-        font-weight: bold;
-        color: #1b5e20;
-        border-left-color: #2e7d32;
-      }
+/* CURRENT YEAR — big & glowing */
+.di{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;border:1px solid #E8E8E8;padding:12px 14px;transition:all .2s}
 
-      .upcoming {
-        background-color: #e3f2fd;
-        color: #0d47a1;
-        border-left-color: #64b5f6;
-      }
+.di.curr{
+  background:linear-gradient(135deg,#C8390A 0%,#E65100 60%,#FF8F00 100%);
+  border:none;
+  border-radius:14px;
+  padding:18px 18px;
+  box-shadow:0 6px 24px rgba(200,57,10,0.45), 0 2px 8px rgba(200,57,10,0.2);
+  position:relative;
+  overflow:hidden;
+}
+.di.curr::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;
+  background:rgba(255,255,255,0.08);border-radius:50%;
+}
+.di.curr::after{
+  content:'✨';position:absolute;bottom:10px;right:14px;
+  font-size:20px;opacity:0.35;
+}
 
-      .previous {
-        font-size: 14px;
-        color: #757575;
-        background-color: #f0f0f0;
-        border-left-color: #bbb;
-      }
+/* past — blurred slightly */
+.di.past{
+  filter:blur(0.6px);
+  opacity:.5;
+  transform:scale(0.97);
+}
 
-      .highlight {
-        background-color: #ffffcc;
-        font-weight: bold;
-        border: 2px solid #ffa000;
-        color: #d84315;
-      }
+/* upcoming — slight blur */
+.di.upcoming{
+  filter:blur(0.5px);
+  opacity:.65;
+  transform:scale(0.98);
+}
 
-      label {
-        font-size: 16px;
-      }
+.di.empty{border-style:dashed}
 
-      @media (max-width: 767px) {
-        .row {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
+.di-yr{font-size:13px;font-weight:800;min-width:38px;color:#bbb}
+.di.curr .di-yr{
+  font-size:22px;font-weight:800;color:rgba(255,255,255,0.75);min-width:48px;
+}
+.di-info{flex:1}
+.di-nm{font-size:14px;font-weight:700;color:#1A1A1A;line-height:1.3}
+.di.curr .di-nm{
+  font-size:19px;font-weight:800;color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,0.25);
+  line-height:1.25;
+}
+.di.past .di-nm{color:#aaa;font-weight:500}
+.di.empty .di-nm{color:#CCC;font-style:italic;font-weight:400}
+.di-tag{font-size:9px;font-weight:800;letter-spacing:.8px;background:#C8390A;color:#fff;padding:3px 9px;border-radius:10px;white-space:nowrap}
+.di.curr .di-tag{
+  background:rgba(255,255,255,0.25);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.4);
+  font-size:10px;
+  padding:4px 11px;
+  border-radius:12px;
+}
 
-        .col-sm-12 {
-          width: 100%;
-          max-width: 400px;
-        }
+/* SEARCH */
+.srch{position:relative;margin-bottom:12px}
+.srch input{width:100%;padding:11px 14px 11px 38px;border:1px solid #DDD;border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff}
+.srch input:focus{border-color:#C8390A}
+.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#bbb;font-size:15px}
 
-        .dengidar {
-          font-size: 14px;
-          max-width: 100%;
-        }
+/* ADMIN */
+.lock-wrap{text-align:center;padding:44px 20px}
+.lock-ico{font-size:48px;margin-bottom:14px}
+.lock-en{font-size:18px;font-weight:700;margin-bottom:2px}
+.lock-mr{font-size:14px;color:#888;margin-bottom:6px}
+.lock-hint{font-size:12px;color:#bbb;margin-bottom:20px}
+.pw-row{display:flex;gap:8px;max-width:300px;margin:0 auto 10px}
+.pw-row input{flex:1;padding:11px 14px;border:1px solid #DDD;border-radius:9px;font-size:14px;font-family:inherit;outline:none}
+.pw-row input:focus{border-color:#C8390A}
+.err{color:#C62828;font-size:13px;font-weight:600;display:none;margin-top:6px}
 
-        .current {
-          font-size: 18px;
-        }
+.btn{display:inline-block;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-red{background:#C8390A;color:#fff}
+.btn-blue{background:#1565C0;color:#fff}
+.btn-out{background:#fff;border:1px solid #DDD;color:#444}
+.btn-del{background:#FDEDEC;color:#C62828;border:1px solid #FADBD8}
+.btn-sm{padding:6px 11px;font-size:11px;border-radius:7px}
+.btn-full{width:100%;text-align:center;display:block}
 
-        label {
-          font-size: 14px;
-        }
+.adm-panel{display:none}
+.adm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.adm-top strong{font-size:14px}
 
-        .main-title {
-          font-size: 24px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <center>
-        <div class="main-title">
-          🕉️ छत्रपती शिवाजी महाराज तरुण मंडळ शेनवडे - गणेश उत्सव
-        </div>
-      </center>
+.adm-sec{background:#fff;border-radius:12px;border:1px solid #E8E8E8;margin-bottom:12px;overflow:hidden}
+.adm-hd{padding:12px 16px;border-bottom:1px solid #EEE;display:flex;flex-direction:column;gap:1px}
+.adm-hd-en{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.adm-hd-mr{font-size:13px;font-weight:700}
+.adm-hd.red .adm-hd-en{color:#C8390A}.adm-hd.red{background:#FEF7F5}
+.adm-hd.blue .adm-hd-en{color:#1565C0}.adm-hd.blue{background:#EBF5FB}
+.adm-hd.gray .adm-hd-en{color:#666}.adm-hd.gray{background:#F8F8F8}
 
-      <!-- Timeline View -->
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <div class="section-title" style="color: #1b5e20">
-            🕉️ मूर्ती देणगीदार
-          </div>
-          <div class="timeline-container">
-            <div class="dengidar previous">
-              २०२४ - छत्रपती शिवाजी महाराज तरुण मंडळ
-            </div>
-            <div class="dengidar current">२०२५ - बाजीराव कृष्णा वापिलकर</div>
-            <div class="scroll-section">
-              <div class="dengidar upcoming">२०२६ - डॉ.आनंदा ईश्वरा वापिलकर</div>
-              <div class="dengidar upcoming">२०२७ - संदीप मारुती गुरव</div>
-              <div class="dengidar upcoming">२०२८ - अशोक बाळकू वापिलकर</div>
-              <div class="dengidar upcoming">२०२९ - प्रकाश धोंडीराम पाटील</div>
-              <div class="dengidar upcoming">२०३० -</div>
-              <div class="dengidar upcoming">२०३१ -</div>
-              <div class="dengidar upcoming">२०३२ -</div>
-              <div class="dengidar upcoming">२०३३ -</div>
-              <div class="dengidar upcoming">२०३४ -</div>
-            </div>
-          </div>
-        </div>
+.adm-form{padding:14px 16px;display:flex;flex-direction:column;gap:11px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg .lben{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#bbb;font-weight:700}
+.fg .lbmr{font-size:12px;font-weight:700;color:#888}
+.fg input,.fg select{padding:10px 13px;border:1px solid #DDD;border-radius:8px;font-size:14px;font-family:inherit;outline:none;width:100%;margin-top:2px}
+.fg input:focus,.fg select:focus{border-color:#C8390A}
+.frow{display:flex;gap:10px}
+.frow .fg{flex:1}
 
-        <div class="col-md-6 col-sm-12">
-          <div class="section-title" style="color: #880e4f">
-            🍛 महाप्रसाद देणगीदार
-          </div>
-          <div class="timeline-container">
-            <div class="dengidar previous">२०२४ - प्रकाश धोंडीराम पाटील</div>
-            <div class="dengidar current">२०२५ - संभाजी बाजीराव सुतार</div>
-            <div class="scroll-section">
-              <div class="dengidar upcoming">२०२६ -</div>
-              <div class="dengidar upcoming">२०२७ -</div>
-              <div class="dengidar upcoming">२०२८ -</div>
-              <div class="dengidar upcoming">२०२९ -</div>
-              <div class="dengidar upcoming">२०३० -</div>
-              <div class="dengidar upcoming">२०३१ -</div>
-              <div class="dengidar upcoming">२०३२ -</div>
-              <div class="dengidar upcoming">२०३३ -</div>
-              <div class="dengidar upcoming">२०३४ -</div>
-            </div>
-          </div>
-        </div>
-      </div>
+.atabs{display:flex;gap:7px;margin-bottom:12px}
+.atab{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid #DDD;background:#fff;color:#888;cursor:pointer}
+.atab.on{background:#C8390A;color:#fff;border-color:#C8390A}
 
-      <center>
-        <h3
-          style="
-            border: 2px solid black;
-            background-color: #ffa000;
-            margin-top: 40px;
-          "
-        >
-          किंवा हे खाली ड्रॉपडाउन मध्ये बघू शकता
-        </h3>
-      </center>
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:9px 12px;text-align:left;background:#F8F8F8;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#aaa;border-bottom:1px solid #EEE}
+.tbl td{padding:10px 12px;border-bottom:1px solid #F5F5F5;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.curr td{background:#FEF7F5}
+.tbl-wrap{padding:0 16px 14px;overflow-x:auto}
 
-      <!-- Dropdown View -->
-      <div class="row">
-        <div class="col-md-6 col-sm-12 section">
-          <label for="murtiYear">वर्ष निवडा (🕉️ मूर्ती देणगीदार):</label>
-          <select id="murtiYear" class="form-control"></select>
-          <div id="murtiOutput" class="dengidar"></div>
-        </div>
+.alert{padding:11px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:12px;display:none}
+.alert.ok{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF}
+.alert.err{background:#FDEDEC;color:#C62828;border:1px solid #F5B7B1}
 
-        <div class="col-md-6 col-sm-12 section">
-          <label for="prasadYear">वर्ष निवडा (🍛 महाप्रसाद देणगीदार):</label>
-          <select id="prasadYear" class="form-control"></select>
-          <div id="prasadOutput" class="dengidar"></div>
-        </div>
-      </div>
+.footer{text-align:center;padding:20px 16px;color:#ccc;font-size:11px;border-top:1px solid #EEE;background:#fff;margin-top:8px;line-height:1.7}
+
+@media(max-width:360px){
+  .hdr-title{font-size:17px}
+  .hero-yr{font-size:30px}
+  .frow{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-sub">Ganapati Utsav · गणेश उत्सव</div>
+  <div class="hdr-title">Chhatrapati Shivaji Maharaj Tarun Mandal</div>
+  <div class="hdr-mr">छत्रपती शिवाजी महाराज तरुण मंडळ, शेनवडे</div>
+  <div class="hdr-pill">📅 Year / वर्ष : <span id="hdrY"></span></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn on" onclick="gotoTab('home')">🏠<br>Home</button>
+  <button class="nav-btn" onclick="gotoTab('murti')">🕉️<br>Idol / मूर्ती</button>
+  <button class="nav-btn" onclick="gotoTab('prasad')">🍛<br>Prasad / प्रसाद</button>
+  <button class="nav-btn" onclick="gotoTab('admin')">🔒<br>Admin</button>
+</div>
+
+<div class="main">
+
+<!-- ── HOME ── -->
+<div class="pg on" id="pg-home">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-n" id="smb">0</div>
+      <div class="stat-mr">मूर्ती नोंदणी</div>
+      <div class="stat-en">Idol slots booked</div>
     </div>
-
-    <script>
-      const murtiDonors = {
-        2024: "छत्रपती शिवाजी महाराज तरुण मंडळ",
-        2025: "बाजीराव कृष्णा वापिलकर",
-        2026: "डॉ.आनंदा ईश्वरा वापिलकर",
-        2027: "संदीप मारुती गुरव",
-        2028: "अशोक बाळकू वापिलकर",
-        2029: "प्रकाश धोंडीराम पाटील",
-        2030: "",
-        2031: "",
-        2032: "",
-        2033: "",
-        2034: "",
-      };
-
-      const prasadDonors = {
-        2024: "प्रकाश धोंडीराम पाटील",
-        2025: "संभाजी बाजीराव सुतार",
-        2026: "",
-        2027: "",
-        2028: "",
-        2029: "",
-        2030: "",
-        2031: "",
-        2032: "",
-        2033: "",
-        2034: "",
-      };
-
-      const currentYear = new Date().getFullYear();
-
-      function populateDropdowns() {
-        const startYear = 2024;
-        const endYear = 2034;
-
-        const murtiSelect = document.getElementById("murtiYear");
-        const prasadSelect = document.getElementById("prasadYear");
-
-        for (let y = startYear; y <= endYear; y++) {
-          let option1 = new Option(y, y);
-          let option2 = new Option(y, y);
-          if (y === currentYear) {
-            option1.selected = true;
-            option2.selected = true;
-          }
-          murtiSelect.appendChild(option1);
-          prasadSelect.appendChild(option2);
-        }
-      }
-
-      function updateDisplay(year, data, outputId) {
-        const outputDiv = document.getElementById(outputId);
-        const name = data[year] || "माहिती उपलब्ध नाही";
-        const label = outputId === "murtiOutput" ? "🕉️" : "🍛";
-        outputDiv.innerText = `${label} ${year} - ${name}`;
-        outputDiv.classList.toggle("highlight", parseInt(year) === currentYear);
-      }
-
-      populateDropdowns();
-      updateDisplay(currentYear, murtiDonors, "murtiOutput");
-      updateDisplay(currentYear, prasadDonors, "prasadOutput");
-
-      document
-        .getElementById("murtiYear")
-        .addEventListener("change", function () {
-          updateDisplay(this.value, murtiDonors, "murtiOutput");
-        });
-
-      document
-        .getElementById("prasadYear")
-        .addEventListener("change", function () {
-          updateDisplay(this.value, prasadDonors, "prasadOutput");
-        });
-    </script>
-
-    <!-- Admin Button -->
-    <div style="text-align: center; margin-top: 5px; padding:  40px;">
-      <button onclick="openAdmin()" class="btn btn-warning">🔒 नवीन बुकिंग करा</button>
+    <div class="stat">
+      <div class="stat-n" id="spb">0</div>
+      <div class="stat-mr">प्रसाद नोंदणी</div>
+      <div class="stat-en">Prasad slots booked</div>
     </div>
+    <div class="stat">
+      <div class="stat-n" id="smo">0</div>
+      <div class="stat-mr">मूर्ती उपलब्ध</div>
+      <div class="stat-en">Idol slots open</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="spo">0</div>
+      <div class="stat-mr">प्रसाद उपलब्ध</div>
+      <div class="stat-en">Prasad slots open</div>
+    </div>
+  </div>
 
-    <!-- Admin Modal -->
-    <div id="adminModal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">प्रवेश संकेतशब्द</h4>
-            <button type="button" class="close" data-dismiss="modal">
-              &times;
-            </button>
-          </div>
-          <div class="modal-body" id="adminBody">
-            <input
-              type="password"
-              id="adminPassword"
-              placeholder="Enter Admin Password"
-              class="form-control"
-            />
-            <br />
-            <button onclick="verifyPassword()" class="btn btn-primary">
-              Verify
-            </button>
-          </div>
+  <div class="hero red">
+    <div class="hero-lbl-en">This year's idol donor</div>
+    <div class="hero-lbl-mr">या वर्षीचे मूर्ती देणगीदार</div>
+    <div class="hero-yr" id="hmy"></div>
+    <div class="hero-nm" id="hmn"></div>
+    <div class="hero-tag">🕉️ Current Year / चालू वर्ष</div>
+  </div>
+
+  <div class="hero blue">
+    <div class="hero-lbl-en">This year's prasad donor</div>
+    <div class="hero-lbl-mr">या वर्षीचे महाप्रसाद देणगीदार</div>
+    <div class="hero-yr" id="hpy"></div>
+    <div class="hero-nm" id="hpn"></div>
+    <div class="hero-tag">🍛 Current Year / चालू वर्ष</div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-hd-en">Look up by year</div>
+      <div class="card-hd-mr">वर्षानुसार शोधा</div>
+    </div>
+    <div class="card-body">
+      <div class="chips" id="chips"></div>
+      <div class="lookup" id="lookup">
+        <div class="lk-yr" id="lkyr"></div>
+        <div class="lk-row">
+          <div class="lk-en">Idol Donor</div>
+          <div class="lk-mr">मूर्ती देणगीदार</div>
+          <div class="lk-val" id="lkm"></div>
+        </div>
+        <div class="lk-row">
+          <div class="lk-en">Prasad Donor</div>
+          <div class="lk-mr">महाप्रसाद देणगीदार</div>
+          <div class="lk-val" id="lkp"></div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- Admin Form Section -->
-    <div
-      id="adminFormSection"
-      style="display: none; text-align: center; margin-top: 30px"
-    >
-      <h4>📝 नवीन देणगीदार जोडा</h4>
-      <form
-        onsubmit="submitAdminForm(event)"
-        style="max-width: 400px; margin: auto"
-      >
-        <input
-          type="text"
-          id="newName"
-          class="form-control"
-          placeholder="Enter Name"
-          required
-        /><br />
-        <input
-          type="number"
-          id="newYear"
-          class="form-control"
-          placeholder="Enter Year"
-          required
-        /><br />
-        <button type="submit" class="btn btn-success">Submit</button>
-      </form>
+<!-- ── IDOL LIST ── -->
+<div class="pg" id="pg-murti">
+  <div class="srch">
+    <span class="srch-ico">🔍</span>
+    <input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('murti',this.value)"/>
+  </div>
+  <div class="dl" id="murtiList"></div>
+</div>
+
+<!-- ── PRASAD LIST ── -->
+<div class="pg" id="pg-prasad">
+  <div class="srch">
+    <span class="srch-ico">🔍</span>
+    <input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('prasad',this.value)"/>
+  </div>
+  <div class="dl" id="prasadList"></div>
+</div>
+
+<!-- ── ADMIN ── -->
+<div class="pg" id="pg-admin">
+
+  <div class="lock-wrap" id="lockWrap">
+    <div class="lock-ico">🔐</div>
+    <div class="lock-en">Admin Area</div>
+    <div class="lock-mr">अॅडमिन क्षेत्र</div>
+    <div class="lock-hint">Enter password to add or edit records<br>नोंद जोडण्यासाठी संकेतशब्द द्या</div>
+    <div class="pw-row">
+      <input type="password" id="pwInput" placeholder="Password / संकेतशब्द" onkeydown="if(event.key==='Enter')checkPw()"/>
+      <button class="btn btn-red" onclick="checkPw()">Enter</button>
+    </div>
+    <div class="err" id="pwErr">❌ Wrong password! / चुकीचा संकेतशब्द!</div>
+  </div>
+
+  <div class="adm-panel" id="admPanel">
+
+    <div class="adm-top">
+      <strong>⚙️ Admin Panel / अॅडमिन</strong>
+      <button class="btn btn-out btn-sm" onclick="lockAdmin()">🔒 Exit / बाहेर पडा</button>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <div id="alertBox" class="alert"></div>
 
-    <script>
-      const correctPassword = "piyu45"; // Change this to your desired admin password
+    <div class="adm-sec">
+      <div class="adm-hd red">
+        <div class="adm-hd-en">Add / update idol donor</div>
+        <div class="adm-hd-mr">🕉️ मूर्ती देणगीदार जोडा / बदला</div>
+      </div>
+      <div class="adm-form">
+        <div class="frow">
+          <div class="fg" style="max-width:100px">
+            <div class="lben">Year / वर्ष</div>
+            <select id="mYr"></select>
+          </div>
+          <div class="fg">
+            <div class="lben">Donor name / देणगीदाराचे नाव</div>
+            <input type="text" id="mNm" placeholder="Full name / पूर्ण नाव"/>
+          </div>
+        </div>
+        <button class="btn btn-red btn-full" onclick="save('murti')">✅ Save Idol Donor / जतन करा</button>
+      </div>
+    </div>
 
-      function openAdmin() {
-        $("#adminModal").modal("show");
-      }
+    <div class="adm-sec">
+      <div class="adm-hd blue">
+        <div class="adm-hd-en">Add / update prasad donor</div>
+        <div class="adm-hd-mr">🍛 महाप्रसाद देणगीदार जोडा / बदला</div>
+      </div>
+      <div class="adm-form">
+        <div class="frow">
+          <div class="fg" style="max-width:100px">
+            <div class="lben">Year / वर्ष</div>
+            <select id="pYr"></select>
+          </div>
+          <div class="fg">
+            <div class="lben">Donor name / देणगीदाराचे नाव</div>
+            <input type="text" id="pNm" placeholder="Full name / पूर्ण नाव"/>
+          </div>
+        </div>
+        <button class="btn btn-blue btn-full" onclick="save('prasad')">✅ Save Prasad Donor / जतन करा</button>
+      </div>
+    </div>
 
-      function verifyPassword() {
-        const entered = document.getElementById("adminPassword").value;
-        if (entered === correctPassword) {
-          $("#adminModal").modal("hide");
-          document.getElementById("adminFormSection").style.display = "block";
-        } else {
-          alert("चुकीचा संकेतशब्द!");
-        }
-      }
+    <div class="adm-sec">
+      <div class="adm-hd gray">
+        <div class="adm-hd-en">All records / सर्व नोंदी</div>
+        <div class="adm-hd-mr">पहा व संपादित करा</div>
+      </div>
+      <div style="padding:12px 16px 0">
+        <div class="atabs">
+          <button class="atab on" id="at-m" onclick="switchAdmTab('murti')">🕉️ Idol / मूर्ती</button>
+          <button class="atab" id="at-p" onclick="switchAdmTab('prasad')">🍛 Prasad / प्रसाद</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Year / वर्ष</th><th>Donor / देणगीदार</th><th></th></tr></thead>
+          <tbody id="admTbody"></tbody>
+        </table>
+      </div>
+    </div>
 
-      function submitAdminForm(event) {
-        event.preventDefault();
-        const name = document.getElementById("newName").value.trim();
-        const year = document.getElementById("newYear").value.trim();
+    <div class="adm-sec">
+      <div class="adm-hd gray">
+        <div class="adm-hd-en">Change password</div>
+        <div class="adm-hd-mr">संकेतशब्द बदला</div>
+      </div>
+      <div class="adm-form">
+        <div class="frow">
+          <div class="fg">
+            <div class="lben">New password</div>
+            <input type="password" id="np1" placeholder="New / नवीन"/>
+          </div>
+          <div class="fg">
+            <div class="lben">Confirm</div>
+            <input type="password" id="np2" placeholder="Confirm / पुन्हा"/>
+          </div>
+        </div>
+        <button class="btn btn-out" onclick="changePw()">🔑 Update Password / बदला</button>
+      </div>
+    </div>
 
-        if (!name || !year) {
-          alert("कृपया नाव व वर्ष दोन्ही भरा.");
-          return;
-        }
+  </div>
+</div>
+</div>
 
-        alert(`🎉 नवीन नोंद जतन झाली:\n\nवर्ष: ${year}\nनाव: ${name}`);
-        window.location.href = "index.html"; // Redirect to home
-      }
-    </script>
-  </body>
+<div class="footer">
+  🕉️ Chhatrapati Shivaji Maharaj Tarun Mandal · छत्रपती शिवाजी महाराज तरुण मंडळ<br>
+  Shenawade · शेनवडे · Ganapati Utsav Donor Management
+</div>
+
+<script>
+const CY=new Date().getFullYear(), SY=2024, EY=2034;
+let admTab='murti';
+
+function loadData(){
+  const def={
+    pw:'piyu45',
+    murti:{2024:'Chhatrapati Shivaji Maharaj Tarun Mandal',2025:'Bajirao Krishna Vapilkar',2026:'Dr. Ananda Ishwara Vapilkar',2027:'Sandeep Maruti Gurav',2028:'Ashok Balku Vapilkar',2029:'Prakash Dhondiram Patil',2030:'',2031:'',2032:'',2033:'',2034:''},
+    prasad:{2024:'Prakash Dhondiram Patil',2025:'Sambhaji Bajirao Sutar',2026:'',2027:'',2028:'',2029:'',2030:'',2031:'',2032:'',2033:'',2034:''}
+  };
+  try{const s=localStorage.getItem('gup3');if(s){const p=JSON.parse(s);return p;}}catch(e){}
+  return def;
+}
+function persist(){try{localStorage.setItem('gup3',JSON.stringify(D));}catch(e){}}
+let D=loadData();
+
+// ── BOOT ──
+document.getElementById('hdrY').textContent=CY;
+buildSelects(); buildChips(); renderHome(); renderList('murti'); renderList('prasad'); switchAdmTab('murti');
+
+function buildSelects(){
+  ['mYr','pYr'].forEach(id=>{
+    const s=document.getElementById(id); s.innerHTML='';
+    for(let y=SY;y<=EY;y++){const o=new Option(y,y);if(y===CY)o.selected=true;s.add(o);}
+  });
+}
+
+function buildChips(){
+  const c=document.getElementById('chips'); c.innerHTML='';
+  for(let y=SY;y<=EY;y++){
+    const b=document.createElement('button');
+    b.className='chip'+(y<CY?' past':'')+(y===CY?' on':'');
+    b.textContent=y; b.onclick=()=>lookup(y); c.appendChild(b);
+  }
+  lookup(CY);
+}
+
+function lookup(y){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',+c.textContent===y));
+  document.getElementById('lkyr').textContent=y;
+  document.getElementById('lkm').textContent=D.murti[y]||'Not assigned / नोंद नाही';
+  document.getElementById('lkp').textContent=D.prasad[y]||'Not assigned / नोंद नाही';
+  document.getElementById('lookup').style.display='block';
+}
+
+function renderHome(){
+  document.getElementById('hmy').textContent=CY;
+  document.getElementById('hmn').textContent=D.murti[CY]||'Not assigned';
+  document.getElementById('hpy').textContent=CY;
+  document.getElementById('hpn').textContent=D.prasad[CY]||'Not assigned';
+  let mb=0,pb=0,mo=0,po=0;
+  for(let y=SY;y<=EY;y++){D.murti[y]?mb++:mo++;D.prasad[y]?pb++:po++;}
+  document.getElementById('smb').textContent=mb;
+  document.getElementById('spb').textContent=pb;
+  document.getElementById('smo').textContent=mo;
+  document.getElementById('spo').textContent=po;
+}
+
+function renderList(type,q){
+  const el=document.getElementById(type+'List'); el.innerHTML='';
+  for(let y=SY;y<=EY;y++){
+    const nm=D[type][y]||'';
+    if(q&&nm&&!nm.toLowerCase().includes(q.toLowerCase()))continue;
+    if(q&&!nm)continue;
+    const isEmpty=!nm,isCurr=y===CY,isPast=y<CY,isUpcoming=y>CY;
+    let cls='di'+(isCurr?' curr':isPast?' past':isUpcoming?' upcoming':'')+(isEmpty?' empty':'');
+    el.innerHTML+=`<div class="${cls}">
+      <div class="di-yr">${y}</div>
+      <div class="di-info">
+        <div class="di-nm">${nm||(isCurr?'Not assigned yet':'Available / उपलब्ध')}</div>
+      </div>
+      ${isCurr?'<div class="di-tag">🎉 This Year</div>':''}
+    </div>`;
+  }
+}
+
+function filterList(t,v){renderList(t,v.trim()||undefined);}
+
+function gotoTab(name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+name).classList.add('on');
+  ['home','murti','prasad','admin'].forEach((t,i)=>{
+    if(t===name) document.querySelectorAll('.nav-btn')[i].classList.add('on');
+  });
+}
+
+// ── ADMIN ──
+function checkPw(){
+  const entered=document.getElementById('pwInput').value;
+  document.getElementById('pwErr').style.display='none';
+  if(entered===D.pw){
+    document.getElementById('lockWrap').style.display='none';
+    document.getElementById('admPanel').style.display='block';
+    renderAdmTable();
+  } else {
+    document.getElementById('pwErr').style.display='block';
+  }
+}
+
+function lockAdmin(){
+  document.getElementById('lockWrap').style.display='block';
+  document.getElementById('admPanel').style.display='none';
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwErr').style.display='none';
+}
+
+function toast(msg,type){
+  const a=document.getElementById('alertBox');
+  a.className='alert '+(type||'ok'); a.textContent=msg; a.style.display='block';
+  setTimeout(()=>{a.style.display='none';},3500);
+}
+
+function save(type){
+  const yr=+document.getElementById(type==='murti'?'mYr':'pYr').value;
+  const nm=document.getElementById(type==='murti'?'mNm':'pNm').value.trim();
+  if(!nm){toast('Please enter a name / कृपया नाव भरा','err');return;}
+  D[type][yr]=nm; persist();
+  renderList(type); renderHome(); renderAdmTable();
+  document.getElementById(type==='murti'?'mNm':'pNm').value='';
+  toast('✅ Saved! / जतन झाले — '+yr+' : '+nm,'ok');
+}
+
+function del(type,y){
+  if(!confirm('Delete this record?\nहे रेकॉर्ड काढायचे का?'))return;
+  D[type][y]=''; persist();
+  renderAdmTable(); renderList(type); renderHome();
+  toast('🗑️ Record deleted / रेकॉर्ड काढला','ok');
+}
+
+function switchAdmTab(type){
+  admTab=type;
+  document.getElementById('at-m').classList.toggle('on',type==='murti');
+  document.getElementById('at-p').classList.toggle('on',type==='prasad');
+  renderAdmTable();
+}
+
+function renderAdmTable(){
+  const tb=document.getElementById('admTbody'); tb.innerHTML='';
+  for(let y=SY;y<=EY;y++){
+    const nm=D[admTab][y]||'';
+    tb.innerHTML+=`<tr class="${y===CY?'curr':''}">
+      <td><strong>${y}</strong>${y===CY?' <span style="font-size:9px;background:#C8390A;color:#fff;padding:2px 7px;border-radius:8px">NOW</span>':''}</td>
+      <td style="color:${nm?'#1A1A1A':'#CCC'}">${nm||'—'}</td>
+      <td><button class="btn btn-del btn-sm" onclick="del('${admTab}',${y})">Delete</button></td>
+    </tr>`;
+  }
+}
+
+function changePw(){
+  const a=document.getElementById('np1').value, b=document.getElementById('np2').value;
+  if(!a){toast('Enter a new password / नवीन संकेतशब्द भरा','err');return;}
+  if(a!==b){toast('Passwords do not match / संकेतशब्द जुळत नाहीत','err');return;}
+  D.pw=a; persist();
+  document.getElementById('np1').value=''; document.getElementById('np2').value='';
+  toast('🔑 Password updated / संकेतशब्द बदलला','ok');
+}
+</script>
+</body>
 </html>
