@@ -433,17 +433,20 @@ let D=loadData();
 
 // ── BOOT ──
 document.getElementById('hdrY').textContent=CY;
-buildSelects(); buildChips(); renderHome(); renderList('murti'); renderList('prasad'); switchAdmTab('murti');
+buildSelects(CY,CY); buildChips(); renderHome(); renderList('murti'); renderList('prasad'); switchAdmTab('murti');
 
-function buildSelects(){
+function buildSelects(keepMurti, keepPrasad){
   ['mYr','pYr'].forEach((id,i)=>{
     const type=i===0?'murti':'prasad';
-    const s=document.getElementById(id); s.innerHTML='';
+    const s=document.getElementById(id);
+    // preserve whatever year is currently selected, fallback to CY on first load
+    const keep=i===0?(keepMurti!=null?keepMurti:(+s.value||CY)):(keepPrasad!=null?keepPrasad:(+s.value||CY));
+    s.innerHTML='';
     for(let y=SY;y<=EY;y++){
       const rec=D[type][y];
       const label=y+(rec&&rec.name?' ✓':'');
       const o=new Option(label,y);
-      if(y===CY)o.selected=true;
+      if(y===keep)o.selected=true;
       s.add(o);
     }
   });
@@ -562,7 +565,7 @@ function checkPw(){
   if(entered===D.pw){
     document.getElementById('lockWrap').style.display='none';
     document.getElementById('admPanel').style.display='block';
-    buildSelects();
+    buildSelects(CY, CY);
     autoFill('murti');
     autoFill('prasad');
     renderAdmTable();
@@ -585,20 +588,23 @@ function toast(msg,type){
 }
 
 function save(type){
-  const yr=+document.getElementById(type==='murti'?'mYr':'pYr').value;
+  // Read year FIRST before anything else touches the dropdowns
+  const yrEl=document.getElementById(type==='murti'?'mYr':'pYr');
+  const yr=+yrEl.value;
   const nm=document.getElementById(type==='murti'?'mNm':'pNm').value.trim();
   const ph=document.getElementById(type==='murti'?'mPh':'pPh').value.trim();
   if(!nm){toast('Please enter a name / कृपया नाव भरा','err');return;}
-  // keep existing photo if no new one selected
+  // keep existing photo if no new one uploaded
   const existingPhoto=(D[type][yr]&&D[type][yr].photo)||'';
   D[type][yr]={name:nm,phone:ph,photo:pendingPhotos[type]||existingPhoto};
   persist();
   pendingPhotos[type]=null;
-  buildSelects();
+  // rebuild selects but KEEP the same year selected
+  const mKeep=type==='murti'?yr:+document.getElementById('mYr').value;
+  const pKeep=type==='prasad'?yr:+document.getElementById('pYr').value;
+  buildSelects(mKeep, pKeep);
   renderList(type); renderHome(); renderAdmTable();
   toast('✅ Saved! / जतन झाले — '+yr+' : '+nm,'ok');
-  // re-autofill to show saved state
-  autoFill(type);
 }
 
 function editRecord(type,y){
@@ -615,7 +621,9 @@ function del(type,y){
   if(!confirm('Delete this record?\nहे रेकॉर्ड काढायचे का?'))return;
   D[type][y]={name:'',phone:'',photo:''};
   persist();
-  buildSelects();
+  const mKeep=+document.getElementById('mYr').value||CY;
+  const pKeep=+document.getElementById('pYr').value||CY;
+  buildSelects(mKeep,pKeep);
   renderAdmTable(); renderList(type); renderHome();
   autoFill(type);
   toast('🗑️ Record deleted / रेकॉर्ड काढला','ok');
