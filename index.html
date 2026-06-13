@@ -189,6 +189,57 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .alert{padding:11px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:12px;display:none}
 .alert.ok{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF}
 .alert.err{background:#FDEDEC;color:#C62828;border:1px solid #F5B7B1}
+/* FINANCE */
+.fin-year-sel{display:flex;align-items:center;gap:10px;margin-bottom:14px;background:#fff;border-radius:12px;border:1px solid #E8E8E8;padding:12px 14px}
+.fin-year-sel label{font-size:12px;font-weight:700;color:#888;white-space:nowrap}
+.fin-year-sel select{flex:1;padding:8px 12px;border:1px solid #DDD;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
+.fin-year-sel select:focus{border-color:#2E7D32}
+
+.fin-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fin-stat{border-radius:12px;padding:14px;text-align:center}
+.fin-stat.green{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff}
+.fin-stat.red{background:linear-gradient(135deg,#B71C1C,#C62828);color:#fff}
+.fin-stat.blue{background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff}
+.fin-stat.orange{background:linear-gradient(135deg,#E65100,#F57C00);color:#fff}
+.fin-stat-n{font-size:22px;font-weight:800;line-height:1}
+.fin-stat-l{font-size:10px;opacity:.8;margin-top:3px;letter-spacing:.5px}
+.fin-stat-mr{font-size:11px;opacity:.7;margin-top:1px}
+
+.fin-progress-wrap{background:#fff;border-radius:12px;border:1px solid #E8E8E8;padding:14px;margin-bottom:14px}
+.fin-progress-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:8px}
+.fin-bar-bg{background:#F0F0F0;border-radius:20px;height:12px;overflow:hidden}
+.fin-bar{height:100%;border-radius:20px;transition:width .5s;background:linear-gradient(90deg,#2E7D32,#66BB6A)}
+.fin-bar.over{background:linear-gradient(90deg,#C62828,#EF5350)}
+
+.fin-section{background:#fff;border-radius:12px;border:1px solid #E8E8E8;margin-bottom:12px;overflow:hidden}
+.fin-sec-hd{padding:11px 14px;border-bottom:1px solid #EEE;display:flex;justify-content:space-between;align-items:center}
+.fin-sec-hd-left{display:flex;flex-direction:column;gap:1px}
+.fin-sec-hd-en{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.fin-sec-hd-mr{font-size:13px;font-weight:700}
+.fin-sec-hd.green .fin-sec-hd-en{color:#2E7D32}.fin-sec-hd.green{background:#F1F8E9}
+.fin-sec-hd.red .fin-sec-hd-en{color:#C62828}.fin-sec-hd.red{background:#FFEBEE}
+.fin-total-badge{font-size:14px;font-weight:800;padding:4px 12px;border-radius:20px}
+.fin-total-badge.green{background:#2E7D32;color:#fff}
+.fin-total-badge.red{background:#C62828;color:#fff}
+
+.fin-entry{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #F5F5F5}
+.fin-entry:last-child{border-bottom:none}
+.fin-entry-name{flex:1;font-size:14px;font-weight:600;color:#1A1A1A}
+.fin-entry-sub{font-size:11px;color:#aaa;margin-top:1px}
+.fin-entry-amt{font-size:16px;font-weight:800;color:#2E7D32;white-space:nowrap}
+.fin-entry-amt.exp{color:#C62828}
+.fin-entry-del{background:none;border:none;color:#ddd;font-size:16px;cursor:pointer;padding:2px 6px}
+.fin-entry-del:hover{color:#C62828}
+.fin-empty{padding:20px;text-align:center;color:#bbb;font-size:13px}
+
+.fin-add-form{padding:12px 14px;background:#FAFAFA;border-top:1px solid #EEE;display:flex;flex-direction:column;gap:8px}
+.fin-add-row{display:flex;gap:8px}
+.fin-add-row input{flex:1;padding:9px 12px;border:1px solid #DDD;border-radius:8px;font-size:13px;font-family:inherit;outline:none;min-width:0}
+.fin-add-row input:focus{border-color:#2E7D32}
+.fin-add-row .amt-input{max-width:110px}
+.btn-green{background:#2E7D32;color:#fff;border:none}
+.btn-green:hover{background:#1B5E20}
+
 .footer{text-align:center;padding:20px 16px;color:#ccc;font-size:11px;border-top:1px solid #EEE;background:#fff;margin-top:8px;line-height:1.7}
 @media(max-width:360px){.hdr-title{font-size:17px}.hero-yr{font-size:26px}.frow{flex-direction:column}.cal-date{font-size:18px}.cd-num{font-size:24px}}
 </style>
@@ -214,7 +265,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <div class="cd-num" id="cdNum">—</div>
       <div class="cd-unit">days remaining / दिवस बाकी</div>
       <div class="cd-mr" id="cdMr"></div>
-      <div class="cd-date-note">17 Aug 2026 · सोमवार</div>
+      <div class="cd-date-note">14 Sep 2026 · सोमवार</div>
     </div>
   </div>
 
@@ -231,8 +282,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 <!-- NAV -->
 <div class="nav">
   <button class="nav-btn on" onclick="gotoTab('home')">🏠<br>Home</button>
-  <button class="nav-btn" onclick="gotoTab('murti')">🕉️<br>Idol / मूर्ती</button>
+  <button class="nav-btn" onclick="gotoTab('murti')">🕉️<br>Idol</button>
   <button class="nav-btn" onclick="gotoTab('prasad')">🍛<br>Prasad</button>
+  <button class="nav-btn" onclick="gotoTab('finance')">💰<br>Finance</button>
   <button class="nav-btn" onclick="gotoTab('admin')">🔒<br>Admin</button>
 </div>
 
@@ -315,6 +367,95 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
   <div class="dl" id="prasadList"></div>
 </div>
 
+<!-- FINANCE -->
+<div class="pg" id="pg-finance">
+
+  <div class="fin-year-sel">
+    <label>Year / वर्ष :</label>
+    <select id="finYear" onchange="renderFinance()"></select>
+  </div>
+
+  <div class="fin-summary">
+    <div class="fin-stat green">
+      <div class="fin-stat-n" id="fin-total-col">₹0</div>
+      <div class="fin-stat-l">Total Collected</div>
+      <div class="fin-stat-mr">एकूण जमा</div>
+    </div>
+    <div class="fin-stat red">
+      <div class="fin-stat-n" id="fin-total-exp">₹0</div>
+      <div class="fin-stat-l">Total Spent</div>
+      <div class="fin-stat-mr">एकूण खर्च</div>
+    </div>
+    <div class="fin-stat blue" style="grid-column:span 2">
+      <div class="fin-stat-n" id="fin-balance">₹0</div>
+      <div class="fin-stat-l">Balance Remaining / शिल्लक</div>
+      <div class="fin-stat-mr" id="fin-balance-mr"></div>
+    </div>
+  </div>
+
+  <div class="fin-progress-wrap">
+    <div class="fin-progress-label">
+      <span>Spent / खर्च</span>
+      <span id="fin-pct">0%</span>
+    </div>
+    <div class="fin-bar-bg"><div class="fin-bar" id="fin-bar" style="width:0%"></div></div>
+    <div style="font-size:11px;color:#aaa;margin-top:6px;text-align:center" id="fin-bar-note">of total collected spent</div>
+  </div>
+
+  <!-- COLLECTIONS -->
+  <div class="fin-section">
+    <div class="fin-sec-hd green">
+      <div class="fin-sec-hd-left">
+        <div class="fin-sec-hd-en">Collections / देणग्या</div>
+        <div class="fin-sec-hd-mr">जमा झालेले पैसे</div>
+      </div>
+      <div class="fin-total-badge green" id="fin-col-badge">₹0</div>
+    </div>
+    <div id="fin-col-list"></div>
+    <div class="fin-add-form" id="fin-col-form" style="display:none">
+      <div class="fin-add-row">
+        <input type="text" id="colName" placeholder="Name / नाव (e.g. Ramesh Patil)"/>
+        <input type="number" id="colAmt" class="amt-input" placeholder="₹ Amount" min="1"/>
+      </div>
+      <input type="text" id="colNote" placeholder="Note / टीप (optional)" style="padding:9px 12px;border:1px solid #DDD;border-radius:8px;font-size:13px;font-family:inherit;outline:none"/>
+      <div class="fin-add-row">
+        <button class="btn btn-green btn-sm btn-full" onclick="addEntry('col')">✅ Add Collection / जोडा</button>
+        <button class="btn btn-out btn-sm" onclick="toggleForm('col')">Cancel</button>
+      </div>
+    </div>
+    <div style="padding:10px 14px;border-top:1px solid #EEE">
+      <button class="btn btn-green btn-sm btn-full" onclick="toggleForm('col')" id="fin-col-toggle-btn" style="display:none">＋ Add Collection / देणगी जोडा</button>
+    </div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div class="fin-section">
+    <div class="fin-sec-hd red">
+      <div class="fin-sec-hd-left">
+        <div class="fin-sec-hd-en">Expenses / खर्च</div>
+        <div class="fin-sec-hd-mr">झालेले खर्च</div>
+      </div>
+      <div class="fin-total-badge red" id="fin-exp-badge">₹0</div>
+    </div>
+    <div id="fin-exp-list"></div>
+    <div class="fin-add-form" id="fin-exp-form" style="display:none">
+      <div class="fin-add-row">
+        <input type="text" id="expName" placeholder="Item / वस्तू (e.g. Decoration)"/>
+        <input type="number" id="expAmt" class="amt-input" placeholder="₹ Amount" min="1"/>
+      </div>
+      <input type="text" id="expNote" placeholder="Note / टीप (optional)" style="padding:9px 12px;border:1px solid #DDD;border-radius:8px;font-size:13px;font-family:inherit;outline:none"/>
+      <div class="fin-add-row">
+        <button class="btn btn-danger btn-sm btn-full" onclick="addEntry('exp')" style="background:#C62828;color:#fff;border:none">✅ Add Expense / खर्च जोडा</button>
+        <button class="btn btn-out btn-sm" onclick="toggleForm('exp')">Cancel</button>
+      </div>
+    </div>
+    <div style="padding:10px 14px;border-top:1px solid #EEE">
+      <button class="btn btn-sm btn-full" onclick="toggleForm('exp')" id="fin-exp-toggle-btn" style="display:none;background:#FFEBEE;color:#C62828;border:1px solid #FFCDD2;font-weight:700;border-radius:8px;cursor:pointer">＋ Add Expense / खर्च जोडा</button>
+    </div>
+  </div>
+
+</div>
+
 <!-- ADMIN -->
 <div class="pg" id="pg-admin">
   <div class="lock-wrap" id="lockWrap">
@@ -350,7 +491,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
             <div style="font-size:11px;color:#bbb;margin-top:4px;text-align:center">Round profile photo</div>
           </div>
         </div>
-        <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="mNm" placeholder="e.g. Bajirao Krishna Vapilkar"/></div>
+        <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="mNm" placeholder="e.g. Bajirao Krishna Vapilkar" oninput="onNameInput('murti')"/></div>
         <div class="fg"><div class="lben">Mobile Number / मोबाइल नंबर</div><input type="tel" id="mPh" placeholder="e.g. 9876543210" maxlength="10"/></div>
         <button class="btn btn-red btn-full" onclick="save('murti')">✅ Save Idol Donor / जतन करा</button>
       </div>
@@ -370,7 +511,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
             <div style="font-size:11px;color:#bbb;margin-top:4px;text-align:center">Round profile photo</div>
           </div>
         </div>
-        <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="pNm" placeholder="e.g. Sambhaji Bajirao Sutar"/></div>
+        <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="pNm" placeholder="e.g. Sambhaji Bajirao Sutar" oninput="onNameInput('prasad')"/></div>
         <div class="fg"><div class="lben">Mobile Number / मोबाइल नंबर</div><input type="tel" id="pPh" placeholder="e.g. 9876543210" maxlength="10"/></div>
         <button class="btn btn-blue btn-full" onclick="save('prasad')">✅ Save Prasad Donor / जतन करा</button>
       </div>
@@ -418,13 +559,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 // ── CONSTANTS ──
 const CY=new Date().getFullYear(), SY=2024, EY=2034;
 const STORAGE_KEY='ganapati_shenawade_v1'; // shared cloud key
-const GANESH_DATE_2026=new Date('2026-08-17T00:00:00'); // Ganesh Chaturthi 2026
+const GANESH_DATE_2026=new Date('2026-09-14T00:00:00'); // Ganesh Chaturthi 2026
 let admTab='murti';
 let pendingPhotos={murti:null,prasad:null};
+let isAdminLoggedIn=false; // tracks if admin is currently logged in
 
 // ── DEFAULT DATA ──
 function defaultData(){
-  const d={pw:'piyu45',murti:{},prasad:{}};
+  const d={pw:'piyu45',murti:{},prasad:{},finance:{}};
   const md={
     2024:{name:'Chhatrapati Shivaji Maharaj Tarun Mandal',phone:'',photo:''},
     2025:{name:'Bajirao Krishna Vapilkar',phone:'',photo:''},
@@ -474,6 +616,7 @@ async function cloudLoad(){
         if(parsed.pw) D.pw=parsed.pw;
         D.murti=parsed.murti;
         D.prasad=parsed.prasad;
+        if(parsed.finance) D.finance=parsed.finance;
       }
     }
     setSyncStatus('ok','✅ Data synced — same on all devices / सर्व डिव्हाइसवर डेटा सिंक झाला');
@@ -487,7 +630,7 @@ async function cloudSave(){
   setSyncStatus('loading','Saving to cloud... / क्लाउडवर सेव होत आहे...');
   try{
     // strip large photos from cloud (store text data only in cloud, photos stay local)
-    const slim={pw:D.pw,murti:{},prasad:{}};
+    const slim={pw:D.pw,murti:{},prasad:{},finance:D.finance||{}};
     for(let y=SY;y<=EY;y++){
       slim.murti[y]={name:D.murti[y].name||'',phone:D.murti[y].phone||'',photo:''};
       slim.prasad[y]={name:D.prasad[y].name||'',phone:D.prasad[y].phone||'',photo:''};
@@ -508,7 +651,7 @@ function localSave(){
 function localLoad(){
   try{
     const s=localStorage.getItem('gup5');
-    if(s){const p=JSON.parse(s);if(p&&p.murti&&p.prasad){D.murti=p.murti;D.prasad=p.prasad;if(p.pw)D.pw=p.pw;}}
+    if(s){const p=JSON.parse(s);if(p&&p.murti&&p.prasad){D.murti=p.murti;D.prasad=p.prasad;if(p.pw)D.pw=p.pw;if(p.finance)D.finance=p.finance;}}
   }catch(e){}
 }
 
@@ -701,30 +844,35 @@ function gotoTab(name){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('pg-'+name).classList.add('on');
-  ['home','murti','prasad','admin'].forEach((t,i)=>{
+  ['home','murti','prasad','finance','admin'].forEach((t,i)=>{
     if(t===name)document.querySelectorAll('.nav-btn')[i].classList.add('on');
   });
+  if(name==='finance'){buildFinYearSelect();renderFinance();}
 }
 
 function checkPw(){
   const entered=document.getElementById('pwInput').value;
   document.getElementById('pwErr').style.display='none';
   if(entered===D.pw){
+    isAdminLoggedIn=true;
     document.getElementById('lockWrap').style.display='none';
     document.getElementById('admPanel').style.display='block';
     buildSelects(CY,CY);
     autoFill('murti');autoFill('prasad');
     renderAdmTable();
+    renderFinance(); // refresh finance to show edit buttons
   }else{
     document.getElementById('pwErr').style.display='block';
   }
 }
 
 function lockAdmin(){
+  isAdminLoggedIn=false;
   document.getElementById('lockWrap').style.display='block';
   document.getElementById('admPanel').style.display='none';
   document.getElementById('pwInput').value='';
   document.getElementById('pwErr').style.display='none';
+  renderFinance(); // refresh finance to hide edit buttons
 }
 
 function toast(msg,type){
@@ -803,6 +951,201 @@ function changePw(){
   cloudSave();
   document.getElementById('np1').value='';document.getElementById('np2').value='';
   toast('🔑 Password updated / संकेतशब्द बदलला','ok');
+}
+
+// ── FINANCE ──────────────────────────────────────────────────────────────────
+// D.finance = { 2025: { collections:[{name,amt,note,date}], expenses:[{name,amt,note,date}] }, ... }
+function ensureFinYear(y){
+  if(!D.finance)D.finance={};
+  if(!D.finance[y])D.finance[y]={collections:[],expenses:[]};
+}
+
+function buildFinYearSelect(){
+  const s=document.getElementById('finYear');
+  if(!s)return;
+  const cur=s.value||CY;
+  s.innerHTML='';
+  for(let y=SY;y<=EY;y++){
+    const o=new Option(y,y);
+    if(+y===+cur)o.selected=true;
+    s.add(o);
+  }
+}
+
+function finYear(){return +document.getElementById('finYear').value||CY;}
+
+function fmt(n){return'₹'+Number(n).toLocaleString('en-IN');}
+
+function renderFinance(){
+  buildFinYearSelect();
+  const y=finYear();
+  ensureFinYear(y);
+  const fin=D.finance[y];
+  const totalCol=fin.collections.reduce((s,e)=>s+(+e.amt||0),0);
+  const totalExp=fin.expenses.reduce((s,e)=>s+(+e.amt||0),0);
+  const bal=totalCol-totalExp;
+
+  document.getElementById('fin-total-col').textContent=fmt(totalCol);
+  document.getElementById('fin-total-exp').textContent=fmt(totalExp);
+  document.getElementById('fin-balance').textContent=fmt(Math.abs(bal));
+  document.getElementById('fin-balance-mr').textContent=bal>=0?'शिल्लक आहे ✅':'तूट आहे ⚠️';
+  document.getElementById('fin-col-badge').textContent=fmt(totalCol);
+  document.getElementById('fin-exp-badge').textContent=fmt(totalExp);
+
+  // progress bar
+  const pct=totalCol>0?Math.min(Math.round(totalExp/totalCol*100),100):0;
+  const bar=document.getElementById('fin-bar');
+  bar.style.width=pct+'%';
+  bar.className='fin-bar'+(pct>=100?' over':'');
+  document.getElementById('fin-pct').textContent=pct+'%';
+  document.getElementById('fin-bar-note').textContent=pct+'% of collected amount spent';
+
+  // balance card color
+  const bc=document.getElementById('fin-balance').closest('.fin-stat');
+  bc.className='fin-stat '+(bal>=0?'blue':'red');
+
+  // show/hide add buttons — ADMIN ONLY
+  ['fin-col-toggle-btn','fin-exp-toggle-btn'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display=isAdminLoggedIn?'block':'none';
+  });
+  // also hide open forms if admin logged out mid-session
+  if(!isAdminLoggedIn){
+    const cf=document.getElementById('fin-col-form');
+    const ef=document.getElementById('fin-exp-form');
+    if(cf) cf.style.display='none';
+    if(ef) ef.style.display='none';
+  }
+
+  // admin badge on finance page
+  let badge=document.getElementById('fin-admin-badge');
+  if(!badge){
+    badge=document.createElement('div');
+    badge.id='fin-admin-badge';
+    badge.style.cssText='text-align:center;padding:8px;font-size:12px;margin-bottom:10px;border-radius:8px;font-weight:600';
+    document.getElementById('pg-finance').insertBefore(badge,document.getElementById('pg-finance').firstChild);
+  }
+  if(isAdminLoggedIn){
+    badge.style.background='#E8F5E9';badge.style.color='#2E7D32';badge.style.border='1px solid #A5D6A7';
+    badge.textContent='🔓 Admin mode — you can add & edit finance entries';
+  } else {
+    badge.style.background='#FFF8E1';badge.style.color='#795548';badge.style.border='1px solid #FFE082';
+    badge.textContent='👁️ View only — login as Admin to add or edit entries';
+  }
+
+  // collections list
+  const cl=document.getElementById('fin-col-list');
+  if(fin.collections.length===0){
+    cl.innerHTML='<div class="fin-empty">No collections yet / अद्याप कोणतीही देणगी नाही</div>';
+  } else {
+    cl.innerHTML=fin.collections.map((e,i)=>`
+      <div class="fin-entry">
+        <div style="width:34px;height:34px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">💰</div>
+        <div class="fin-entry-name" style="flex:1">
+          ${e.name}
+          ${e.note?`<div class="fin-entry-sub">${e.note}</div>`:''}
+          <div class="fin-entry-sub">${e.date||''}</div>
+        </div>
+        <div class="fin-entry-amt">${fmt(e.amt)}</div>
+        ${isAdminLoggedIn?`<button class="fin-entry-del" onclick="delEntry('col',${i})" title="Delete">✕</button>`:''}
+      </div>`).join('');
+  }
+
+  // expenses list
+  const el=document.getElementById('fin-exp-list');
+  if(fin.expenses.length===0){
+    el.innerHTML='<div class="fin-empty">No expenses yet / अद्याप कोणताही खर्च नाही</div>';
+  } else {
+    el.innerHTML=fin.expenses.map((e,i)=>`
+      <div class="fin-entry">
+        <div style="width:34px;height:34px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🧾</div>
+        <div class="fin-entry-name" style="flex:1">
+          ${e.name}
+          ${e.note?`<div class="fin-entry-sub">${e.note}</div>`:''}
+          <div class="fin-entry-sub">${e.date||''}</div>
+        </div>
+        <div class="fin-entry-amt exp">${fmt(e.amt)}</div>
+        ${isAdminLoggedIn?`<button class="fin-entry-del" onclick="delEntry('exp',${i})" title="Delete">✕</button>`:''}
+      </div>`).join('');
+  }
+}
+
+// ── AUTO PHOTO BY NAME ─────────────────────────────────────────────────────
+// Search all years in both murti and prasad for a matching name → return their photo
+function findPhotoByName(name){
+  if(!name||name.length<3) return null;
+  const key=name.trim().toLowerCase();
+  for(let y=SY;y<=EY;y++){
+    for(const type of['murti','prasad']){
+      const rec=D[type][y];
+      if(rec&&rec.name&&rec.name.trim().toLowerCase()===key&&rec.photo){
+        return rec.photo;
+      }
+    }
+  }
+  return null;
+}
+
+function onNameInput(type){
+  // only auto-fill photo if no photo already pending/loaded for this slot
+  const yr=+document.getElementById(type==='murti'?'mYr':'pYr').value;
+  const existingPhoto=(D[type][yr]&&D[type][yr].photo)||'';
+  if(pendingPhotos[type]||existingPhoto) return; // don't overwrite manually set photo
+  const nm=document.getElementById(type==='murti'?'mNm':'pNm').value.trim();
+  const found=findPhotoByName(nm);
+  const prev=document.getElementById(type==='murti'?'mPhotoPreview':'pPhotoPreview');
+  if(found){
+    prev.innerHTML=`<img src="${found}"/>`;
+    prev.title='Auto-filled from previous record';
+    pendingPhotos[type]=found; // set as pending so it gets saved
+  } else {
+    prev.innerHTML='📷';
+    prev.title='';
+  }
+}
+  const form=document.getElementById('fin-'+type+'-form');
+  const btn=document.getElementById('fin-'+type+'-toggle-btn');
+  const showing=form.style.display==='block';
+  form.style.display=showing?'none':'block';
+  if(showing){
+    btn.style.display='block';
+  } else {
+    btn.style.display='none';
+    // focus first input
+    form.querySelector('input').focus();
+  }
+
+
+function addEntry(type){
+  const y=finYear();
+  ensureFinYear(y);
+  const nameEl=document.getElementById(type==='col'?'colName':'expName');
+  const amtEl=document.getElementById(type==='col'?'colAmt':'expAmt');
+  const noteEl=document.getElementById(type==='col'?'colNote':'expNote');
+  const name=nameEl.value.trim();
+  const amt=+amtEl.value;
+  const note=noteEl.value.trim();
+  if(!name){nameEl.focus();return;}
+  if(!amt||amt<=0){amtEl.focus();return;}
+  const today=new Date();
+  const dateStr=today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+  const entry={name,amt,note,date:dateStr};
+  if(type==='col') D.finance[y].collections.push(entry);
+  else D.finance[y].expenses.push(entry);
+  nameEl.value='';amtEl.value='';noteEl.value='';
+  toggleForm(type);
+  cloudSave();
+  renderFinance();
+}
+
+function delEntry(type,idx){
+  if(!confirm('Delete this entry?'))return;
+  const y=finYear();
+  ensureFinYear(y);
+  if(type==='col') D.finance[y].collections.splice(idx,1);
+  else D.finance[y].expenses.splice(idx,1);
+  cloudSave();
+  renderFinance();
 }
 </script>
 </body>
