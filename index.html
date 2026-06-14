@@ -353,6 +353,31 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       </div>
     </div>
   </div>
+
+  <div class="card" style="margin-top:0">
+    <div class="card-hd">
+      <div class="card-hd-en">This year's finance / या वर्षाचे आर्थिक</div>
+      <div class="card-hd-mr" id="home-fin-yr" style="margin-bottom:8px"></div>
+    </div>
+    <div class="card-body" style="padding-top:8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+        <div style="background:#F1F8E9;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px;font-weight:800;color:#2E7D32" id="home-fin-col">₹0</div>
+          <div style="font-size:10px;color:#888;margin-top:2px">Collected<br>जमा</div>
+        </div>
+        <div style="background:#FFEBEE;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px;font-weight:800;color:#C62828" id="home-fin-exp">₹0</div>
+          <div style="font-size:10px;color:#888;margin-top:2px">Spent<br>खर्च</div>
+        </div>
+        <div style="background:#E3F2FD;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px;font-weight:800;color:#1565C0" id="home-fin-bal">₹0</div>
+          <div style="font-size:10px;color:#888;margin-top:2px">Balance<br>शिल्लक</div>
+        </div>
+      </div>
+      <button onclick="gotoTab('finance')" style="display:block;width:100%;margin-top:10px;padding:9px;background:#F5F5F5;border:1px solid #E0E0E0;border-radius:8px;font-size:12px;font-weight:700;color:#555;cursor:pointer">💰 View full finance details →</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- IDOL LIST -->
@@ -814,6 +839,18 @@ function renderHome(){
   document.getElementById('spb').textContent=pb;
   document.getElementById('smo').textContent=mo;
   document.getElementById('spo').textContent=po;
+  // finance mini card
+  ensureFinYear(CY);
+  const fin=D.finance[CY]||{collections:[],expenses:[]};
+  const hfc=fin.collections.reduce((s,e)=>s+(+e.amt||0),0);
+  const hfe=fin.expenses.reduce((s,e)=>s+(+e.amt||0),0);
+  const hfb=hfc-hfe;
+  document.getElementById('home-fin-yr').textContent=CY+' वर्ष';
+  document.getElementById('home-fin-col').textContent=fmt(hfc);
+  document.getElementById('home-fin-exp').textContent=fmt(hfe);
+  document.getElementById('home-fin-bal').textContent=fmt(Math.abs(hfb));
+  const balEl=document.getElementById('home-fin-bal');
+  balEl.style.color=hfb>=0?'#1565C0':'#C62828';
 }
 
 function renderList(type,q){
@@ -1051,22 +1088,36 @@ function renderFinance(){
       </div>`).join('');
   }
 
-  // expenses list
+  // expenses list with running balance
   const el=document.getElementById('fin-exp-list');
   if(fin.expenses.length===0){
     el.innerHTML='<div class="fin-empty">No expenses yet / अद्याप कोणताही खर्च नाही</div>';
   } else {
-    el.innerHTML=fin.expenses.map((e,i)=>`
-      <div class="fin-entry">
-        <div style="width:34px;height:34px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🧾</div>
-        <div class="fin-entry-name" style="flex:1">
-          ${e.name}
-          ${e.note?`<div class="fin-entry-sub">${e.note}</div>`:''}
-          <div class="fin-entry-sub">${e.date||''}</div>
+    let running=totalCol;
+    let rows='';
+    fin.expenses.forEach((e,i)=>{
+      running-=(+e.amt||0);
+      const balColor=running>=0?'#2E7D32':'#C62828';
+      const balLabel=running>=0?'शिल्लक / Balance':'तूट / Deficit';
+      rows+=`
+      <div class="fin-entry" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px">
+          <div style="width:34px;height:34px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🧾</div>
+          <div class="fin-entry-name" style="flex:1">
+            ${e.name}
+            ${e.note?`<div class="fin-entry-sub">${e.note}</div>`:''}
+            <div class="fin-entry-sub">${e.date||''}</div>
+          </div>
+          <div class="fin-entry-amt exp">−${fmt(e.amt)}</div>
+          ${isAdminLoggedIn?`<button class="fin-entry-del" onclick="delEntry('exp',${i})" title="Delete">✕</button>`:''}
         </div>
-        <div class="fin-entry-amt exp">${fmt(e.amt)}</div>
-        ${isAdminLoggedIn?`<button class="fin-entry-del" onclick="delEntry('exp',${i})" title="Delete">✕</button>`:''}
-      </div>`).join('');
+        <div style="margin:0 14px 11px;background:${running>=0?'#F1F8E9':'#FFEBEE'};border-radius:8px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid ${balColor}">
+          <span style="font-size:11px;color:#888">${balLabel}</span>
+          <span style="font-size:14px;font-weight:800;color:${balColor}">${fmt(Math.abs(running))}</span>
+        </div>
+      </div>`;
+    });
+    el.innerHTML=rows;
   }
 }
 
@@ -1103,6 +1154,7 @@ function onNameInput(type){
     prev.title='';
   }
 }
+function toggleForm(type){
   const form=document.getElementById('fin-'+type+'-form');
   const btn=document.getElementById('fin-'+type+'-toggle-btn');
   const showing=form.style.display==='block';
@@ -1114,7 +1166,7 @@ function onNameInput(type){
     // focus first input
     form.querySelector('input').focus();
   }
-
+}
 
 function addEntry(type){
   const y=finYear();
