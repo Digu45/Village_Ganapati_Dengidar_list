@@ -1387,13 +1387,9 @@
         <div class="card" style="margin-top: 0">
           <div class="card-hd">
             <div class="card-hd-en">
-              This year's finance / या वर्षाचे आर्थिक
+              Finance for <span id="home-fin-year-label">2026</span>
             </div>
-            <div
-              class="card-hd-mr"
-              id="home-fin-yr"
-              style="margin-bottom: 8px"
-            ></div>
+            <div class="card-hd-mr" id="home-fin-subtitle"></div>
           </div>
           <div class="card-body" style="padding-top: 8px">
             <div
@@ -1457,7 +1453,7 @@
               </div>
             </div>
             <button
-              onclick="gotoTab('finance')"
+              onclick="gotoFinanceWithYear()"
               style="
                 display: block;
                 width: 100%;
@@ -1896,7 +1892,6 @@
 
     <script>
       // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
-      // 🔑 REPLACE with your own Firebase project config from the Firebase Console.
       const firebaseConfig = {
         apiKey: "AIzaSyDAOBhfkcrbh_-oJ1UYN161Vgfh4Mougj8",
         authDomain: "ganapati-utsav.firebaseapp.com",
@@ -1914,16 +1909,17 @@
       const CY = new Date().getFullYear(),
         SY = 2024,
         EY = 2034;
-      const STORAGE_KEY = "ganapati_shenawade_v1";
       const GANESH_DATE_2026 = new Date("2026-09-14T00:00:00");
 
       let admTab = "murti";
       let pendingPhotos = { murti: null, prasad: null };
       let isAdminLoggedIn = false;
-      let dataLoaded = false;
       let D = { pw: "piyu45", murti: {}, prasad: {}, finance: {} };
       let allYears = [];
       for (let y = SY; y <= EY; y++) allYears.push(y);
+
+      // Track which year is shown on the home finance card
+      let homeFinYear = CY;
 
       // ─── DEFAULT DATA (ALL EMPTY) ─────────────────────────────────────────────
       function defaultData() {
@@ -1946,14 +1942,12 @@
         txt.textContent = msg;
       }
 
-      // Save entire D to Firestore
       async function cloudSave() {
         setSyncStatus(
           "loading",
           "Saving to Firebase… / फायरबेसवर सेव होत आहे…"
         );
         try {
-          // Clone D and strip photo data for cloud (photos stored as base64 in the doc)
           const slim = {
             pw: D.pw,
             murti: {},
@@ -1981,7 +1975,6 @@
         }
       }
 
-      // Load from Firestore
       async function cloudLoad() {
         setSyncStatus(
           "loading",
@@ -1992,7 +1985,6 @@
           if (doc.exists) {
             const data = doc.data();
             if (data && data.murti && data.prasad) {
-              // Merge: Firebase wins for names/phones/photos, but preserve local photos if Firebase lacks them
               for (let y of allYears) {
                 if (data.murti[y]) {
                   if (!data.murti[y].photo && D.murti[y] && D.murti[y].photo)
@@ -2011,7 +2003,6 @@
               D.murti = data.murti;
               D.prasad = data.prasad;
               if (data.finance) D.finance = data.finance;
-              dataLoaded = true;
               setSyncStatus(
                 "ok",
                 "✅ Firebase loaded — data synced across all devices"
@@ -2022,7 +2013,6 @@
           }
           // No data in Firebase → use local fallback (which may be empty)
           localLoad();
-          // If local has data, push it to Firebase (but only if there is any non-empty record)
           let hasData = false;
           for (let y of allYears) {
             if (
@@ -2036,7 +2026,6 @@
           if (hasData) {
             await cloudSave();
           } else {
-            // Ensure all years exist with empty objects
             for (let y of allYears) {
               if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
               if (!D.prasad[y])
@@ -2055,7 +2044,6 @@
         }
       }
 
-      // Local storage fallback
       function localSave() {
         try {
           localStorage.setItem("gup5", JSON.stringify(D));
@@ -2075,7 +2063,6 @@
             }
           }
         } catch (e) {}
-        // Ensure all years exist
         for (let y of allYears) {
           if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
           if (!D.prasad[y]) D.prasad[y] = { name: "", phone: "", photo: "" };
@@ -2289,6 +2276,7 @@
           b.onclick = () => lookup(y);
           c.appendChild(b);
         }
+        // Default to current year
         lookup(CY);
       }
 
@@ -2317,9 +2305,47 @@
           : "";
         document.getElementById("lk-p-av").innerHTML = avatarHTML(pr, "🍛");
         document.getElementById("lookup").style.display = "block";
+
+        // Update home finance to match selected year
+        homeFinYear = y;
+        updateHomeFinance(y);
       }
 
+      function updateHomeFinance(y) {
+  ensureFinYear(y);
+  const fin = (D.finance && D.finance[y]) || { collections: [], expenses: [] };
+  const totalCol = (fin.collections || []).reduce((s, e) => s + (+e.amt || 0), 0);
+  const totalExp = (fin.expenses || []).reduce((s, e) => s + (+e.amt || 0), 0);
+  const bal = totalCol - totalExp;
+
+  document.getElementById("home-fin-col").textContent = fmt(totalCol);
+  document.getElementById("home-fin-exp").textContent = fmt(totalExp);
+  document.getElementById("home-fin-bal").textContent = fmt(Math.abs(bal));
+  const balEl = document.getElementById("home-fin-bal");
+  balEl.style.color = bal >= 0 ? "#1565C0" : "#C62828";
+
+  // Update labels – now only year (no month)
+  document.getElementById("home-fin-year-label").textContent = y;
+}
+
       function renderHome() {
+        // Stats
+        let mb = 0,
+          pb = 0,
+          mo = 0,
+          po = 0;
+        for (let y of allYears) {
+          if (D.murti && D.murti[y] && D.murti[y].name) mb++;
+          else mo++;
+          if (D.prasad && D.prasad[y] && D.prasad[y].name) pb++;
+          else po++;
+        }
+        document.getElementById("smb").textContent = mb;
+        document.getElementById("spb").textContent = pb;
+        document.getElementById("smo").textContent = mo;
+        document.getElementById("spo").textContent = po;
+
+        // Current year hero cards
         const mr = (D.murti && D.murti[CY]) || {},
           pr = (D.prasad && D.prasad[CY]) || {};
         document.getElementById("hmy").textContent = CY;
@@ -2339,40 +2365,8 @@
           ? `<img src="${pr.photo}" />`
           : "🍛";
 
-        let mb = 0,
-          pb = 0,
-          mo = 0,
-          po = 0;
-        for (let y of allYears) {
-          if (D.murti && D.murti[y] && D.murti[y].name) mb++;
-          else mo++;
-          if (D.prasad && D.prasad[y] && D.prasad[y].name) pb++;
-          else po++;
-        }
-        document.getElementById("smb").textContent = mb;
-        document.getElementById("spb").textContent = pb;
-        document.getElementById("smo").textContent = mo;
-        document.getElementById("spo").textContent = po;
-
-        ensureFinYear(CY);
-        const fin = (D.finance && D.finance[CY]) || {
-          collections: [],
-          expenses: [],
-        };
-        const hfc = (fin.collections || []).reduce(
-          (s, e) => s + (+e.amt || 0),
-          0
-        );
-        const hfe = (fin.expenses || []).reduce((s, e) => s + (+e.amt || 0), 0);
-        const hfb = hfc - hfe;
-        document.getElementById("home-fin-yr").textContent = CY + " वर्ष";
-        document.getElementById("home-fin-col").textContent = fmt(hfc);
-        document.getElementById("home-fin-exp").textContent = fmt(hfe);
-        document.getElementById("home-fin-bal").textContent = fmt(
-          Math.abs(hfb)
-        );
-        const balEl = document.getElementById("home-fin-bal");
-        balEl.style.color = hfb >= 0 ? "#1565C0" : "#C62828";
+        // Finance card for currently selected year (homeFinYear)
+        updateHomeFinance(homeFinYear);
       }
 
       function renderList(type, q) {
@@ -2425,13 +2419,26 @@
         if (map[name] !== undefined)
           document.querySelectorAll(".nav-btn")[map[name]].classList.add("on");
         if (name === "finance") {
-          buildFinYearSelect();
+          // Set the finance year dropdown to the homeFinYear
+          const sel = document.getElementById("finYear");
+          if (sel) {
+            sel.value = homeFinYear;
+          }
           renderFinance();
         }
         if (name === "admin" && isAdminLoggedIn) {
           renderAdmTable();
           renderFinance();
         }
+      }
+
+      // Go to Finance tab with current home year
+      function gotoFinanceWithYear() {
+        const sel = document.getElementById("finYear");
+        if (sel) {
+          sel.value = homeFinYear;
+        }
+        gotoTab("finance");
       }
 
       // ─── ADMIN ──────────────────────────────────────────────────────────────────
@@ -2709,6 +2716,8 @@
         toggleForm(type);
         cloudSave();
         renderFinance();
+        // Also update home finance if this year is the one shown
+        if (y === homeFinYear) updateHomeFinance(y);
       }
 
       function delEntry(type, idx) {
@@ -2719,6 +2728,7 @@
         else D.finance[y].expenses.splice(idx, 1);
         cloudSave();
         renderFinance();
+        if (y === homeFinYear) updateHomeFinance(y);
       }
 
       function renderFinance() {
@@ -2875,7 +2885,7 @@
       // ─── REFRESH ALL ────────────────────────────────────────────────────────────
       function refreshAll() {
         buildSelects(CY, CY);
-        buildChips();
+        buildChips(); // this calls lookup(CY) which updates home finance
         renderHome();
         renderList("murti");
         renderList("prasad");
@@ -2895,7 +2905,10 @@
       D.prasad = def.prasad;
       D.finance = def.finance;
 
-      // Then load from Firebase (async)
+      // Set homeFinYear to current year
+      homeFinYear = CY;
+
+      // Load from Firebase (async)
       cloudLoad();
 
       // ─── EXPOSE GLOBALLY ──────────────────────────────────────────────────────
@@ -2918,6 +2931,7 @@
       window.buildFinYearSelect = buildFinYearSelect;
       window.finYear = finYear;
       window.fmt = fmt;
+      window.gotoFinanceWithYear = gotoFinanceWithYear;
     </script>
   </body>
 </html>
