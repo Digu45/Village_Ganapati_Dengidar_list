@@ -645,8 +645,8 @@ let D=defaultData();
 // STEP 2: New project → SQL Editor → run the SQL below
 // STEP 3: Settings → API → copy URL and anon key here
 // ══════════════════════════════════════════════════════════
-const SB_URL = 'PASTE_YOUR_SUPABASE_URL_HERE';
-const SB_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
+const SB_URL = 'https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8';
 
 // SQL to run once in Supabase SQL Editor:
 // create table if not exists ganapati_data (key text primary key, value text);
@@ -660,7 +660,7 @@ function setSyncStatus(state,msg){
 }
 
 function isConfigured(){
-  return SB_URL!=='PASTE_YOUR_SUPABASE_URL_HERE' && SB_KEY!=='PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
+  return SB_URL!=='https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/' && SB_KEY!=='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8';
 }
 
 async function sbGet(key){
@@ -815,7 +815,7 @@ function saveSupabaseConfig(){
   const key=document.getElementById('sbKey').value.trim();
   if(!url||!key||!url.includes('supabase.co')){alert('कृपया valid URL आणि Key भरा');return;}
   // Show instructions to update the file
-  alert('✅ तुमचे values:\n\nURL: '+url+'\n\nKey: '+key.substring(0,30)+'...\n\n👉 आता ganapati.html फाइल Notepad मध्ये उघडा\n👉 PASTE_YOUR_SUPABASE_URL_HERE च्या जागी URL टाका\n👉 PASTE_YOUR_SUPABASE_ANON_KEY_HERE च्या जागी Key टाका\n👉 File save करा आणि GitHub वर upload करा');
+  alert('✅ तुमचे values:\n\nURL: '+url+'\n\nKey: '+key.substring(0,30)+'...\n\n👉 आता ganapati.html फाइल Notepad मध्ये उघडा\n👉 https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/ च्या जागी URL टाका\n👉 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8 च्या जागी Key टाका\n👉 File save करा आणि GitHub वर upload करा');
 }
 
 // show setup banner if not configured
