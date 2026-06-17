@@ -309,7 +309,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
     <li><a href="https://supabase.com" target="_blank" style="color:#1565C0;font-weight:700">supabase.com</a> → Sign up → New Project → <strong>ganapati</strong> → Southeast Asia</li>
     <li>SQL Editor → Run करा: <code>create table if not exists ganapati_data (key text primary key, value text); alter table ganapati_data disable row level security;</code></li>
     <li>Settings → API → <strong>Project URL</strong> आणि <strong>anon key</strong> कॉपी करा</li>
-    <li>ganapati.html Notepad मध्ये उघडा → <code>https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/</code> आणि <code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8</code> च्या जागी paste करा → Save → GitHub upload</li>
+    <li>ganapati.html Notepad मध्ये उघडा → <code>PASTE_YOUR_SUPABASE_URL_HERE</code> आणि <code>PASTE_YOUR_SUPABASE_ANON_KEY_HERE</code> च्या जागी paste करा → Save → GitHub upload</li>
   </ol>
   <div class="sb-inp-wrap" style="margin-top:10px">
     <label>तुमचा Supabase URL paste करा</label>
@@ -645,7 +645,7 @@ let D=defaultData();
 // STEP 2: New project → SQL Editor → run the SQL below
 // STEP 3: Settings → API → copy URL and anon key here
 // ══════════════════════════════════════════════════════════
-const SB_URL = 'https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/';
+const SB_URL = 'https://gsaufzbmfyelcpwwetpm.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8';
 
 // SQL to run once in Supabase SQL Editor:
@@ -660,7 +660,7 @@ function setSyncStatus(state,msg){
 }
 
 function isConfigured(){
-  return SB_URL!=='https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/' && SB_KEY!=='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8';
+  return SB_URL!=='PASTE_YOUR_SUPABASE_URL_HERE' && SB_KEY!=='PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
 }
 
 async function sbGet(key){
@@ -815,7 +815,7 @@ function saveSupabaseConfig(){
   const key=document.getElementById('sbKey').value.trim();
   if(!url||!key||!url.includes('supabase.co')){alert('कृपया valid URL आणि Key भरा');return;}
   // Show instructions to update the file
-  alert('✅ तुमचे values:\n\nURL: '+url+'\n\nKey: '+key.substring(0,30)+'...\n\n👉 आता ganapati.html फाइल Notepad मध्ये उघडा\n👉 https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/ च्या जागी URL टाका\n👉 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8 च्या जागी Key टाका\n👉 File save करा आणि GitHub वर upload करा');
+  alert('✅ तुमचे values:\n\nURL: '+url+'\n\nKey: '+key.substring(0,30)+'...\n\n👉 आता ganapati.html फाइल Notepad मध्ये उघडा\n👉 PASTE_YOUR_SUPABASE_URL_HERE च्या जागी URL टाका\n👉 PASTE_YOUR_SUPABASE_ANON_KEY_HERE च्या जागी Key टाका\n👉 File save करा आणि GitHub वर upload करा');
 }
 
 // show setup banner if not configured
