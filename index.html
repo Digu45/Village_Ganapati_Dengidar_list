@@ -2894,10 +2894,7 @@
       D.murti = def.murti;
       D.prasad = def.prasad;
       D.finance = def.finance;
-      // Try loading local first for speed, then cloud
-      localLoad();
-      // If local has data, use it as base, but cloud will override
-      refreshAll();
+
       // Then load from Firebase (async)
       cloudLoad();
 
