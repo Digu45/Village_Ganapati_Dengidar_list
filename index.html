@@ -301,21 +301,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 <!-- HOME -->
 <div class="pg on" id="pg-home">
   <div class="setup-banner" id="setupBanner">
-  <h3>⚙️ Supabase Database Setup — एकदाच करायचे आहे!</h3>
+  <h3>⚠️ Database Connect नाही — Data Mobile वर दिसणार नाही!</h3>
+  <p style="font-size:13px;color:#555;margin-bottom:10px;line-height:1.6">
+    खालील steps करा — नंतर <strong>file मध्ये URL व Key टाका</strong> → GitHub वर upload करा
+  </p>
   <ol>
-    <li><strong><a href="https://supabase.com" target="_blank" style="color:#1565C0">supabase.com</a></strong> वर जा → Gmail ने Sign up करा (Free)</li>
-    <li>New Project → Name: <code>ganapati</code> → Region: <strong>Southeast Asia</strong></li>
-    <li><strong>SQL Editor</strong> → New query → हे paste करा व Run करा:<br>
-    <code style="display:block;margin-top:4px;background:#1A1A2E;color:#00D4FF;padding:8px;border-radius:6px;font-size:11px;white-space:pre">create table if not exists ganapati_data (key text primary key, value text);
-alter table ganapati_data disable row level security;</code></li>
-    <li><strong>Settings → API</strong> → Project URL आणि anon public key कॉपी करा</li>
+    <li><a href="https://supabase.com" target="_blank" style="color:#1565C0;font-weight:700">supabase.com</a> → Sign up → New Project → <strong>ganapati</strong> → Southeast Asia</li>
+    <li>SQL Editor → Run करा: <code>create table if not exists ganapati_data (key text primary key, value text); alter table ganapati_data disable row level security;</code></li>
+    <li>Settings → API → <strong>Project URL</strong> आणि <strong>anon key</strong> कॉपी करा</li>
+    <li>ganapati.html Notepad मध्ये उघडा → <code>https://gsaufzbmfyelcpwwetpm.supabase.co/rest/v1/</code> आणि <code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzYXVmemJtZnllbGNwd3dldHBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjYzNjksImV4cCI6MjA5NzI0MjM2OX0.lVQKgYtYLVNTAYHQKLW39gNut1ZPRteeR0EWFUJoOG8</code> च्या जागी paste करा → Save → GitHub upload</li>
   </ol>
-  <div class="sb-inp-wrap">
-    <label>Project URL (https://xxxxx.supabase.co)</label>
+  <div class="sb-inp-wrap" style="margin-top:10px">
+    <label>तुमचा Supabase URL paste करा</label>
     <input type="text" id="sbUrl" placeholder="https://abcdefghij.supabase.co"/>
-    <label>Anon Public Key</label>
+    <label>तुमची Anon Key paste करा</label>
     <input type="text" id="sbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."/>
-    <button class="btn btn-red btn-full" onclick="saveSupabaseConfig()" style="margin-top:4px">✅ Connect करा — सर्व devices वर sync होईल!</button>
+    <button class="btn btn-red btn-full" onclick="saveSupabaseConfig()" style="margin-top:4px">📋 Values दाखवा (file मध्ये manually टाकण्यासाठी)</button>
   </div>
 </div>
 <div class="stats">
@@ -644,8 +645,8 @@ let D=defaultData();
 // STEP 2: New project → SQL Editor → run the SQL below
 // STEP 3: Settings → API → copy URL and anon key here
 // ══════════════════════════════════════════════════════════
-const SB_URL = localStorage.getItem('sb_url') || 'YOUR_SUPABASE_URL';
-const SB_KEY = localStorage.getItem('sb_key') || 'YOUR_SUPABASE_ANON_KEY';
+const SB_URL = 'PASTE_YOUR_SUPABASE_URL_HERE';
+const SB_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
 
 // SQL to run once in Supabase SQL Editor:
 // create table if not exists ganapati_data (key text primary key, value text);
@@ -659,7 +660,7 @@ function setSyncStatus(state,msg){
 }
 
 function isConfigured(){
-  return SB_URL!=='YOUR_SUPABASE_URL' && SB_KEY!=='YOUR_SUPABASE_ANON_KEY';
+  return SB_URL!=='PASTE_YOUR_SUPABASE_URL_HERE' && SB_KEY!=='PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
 }
 
 async function sbGet(key){
@@ -809,21 +810,19 @@ function initCalendar(){
 
 // ── SETUP CONFIG SAVE ──
 function saveSupabaseConfig(){
+  // This function shows you what to copy into the file
   const url=document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
   const key=document.getElementById('sbKey').value.trim();
   if(!url||!key||!url.includes('supabase.co')){alert('कृपया valid URL आणि Key भरा');return;}
-  localStorage.setItem('sb_url',url);
-  localStorage.setItem('sb_key',key);
-  location.reload(); // reload with new config
+  // Show instructions to update the file
+  alert('✅ तुमचे values:\n\nURL: '+url+'\n\nKey: '+key.substring(0,30)+'...\n\n👉 आता ganapati.html फाइल Notepad मध्ये उघडा\n👉 PASTE_YOUR_SUPABASE_URL_HERE च्या जागी URL टाका\n👉 PASTE_YOUR_SUPABASE_ANON_KEY_HERE च्या जागी Key टाका\n👉 File save करा आणि GitHub वर upload करा');
 }
 
 // show setup banner if not configured
 function checkSetupNeeded(){
-  const url=localStorage.getItem('sb_url')||'';
-  const key=localStorage.getItem('sb_key')||'';
-  if(!url||!key){
+  if(!isConfigured()){
     document.getElementById('setupBanner').style.display='block';
-    setSyncStatus('err','⚠️ Database setup करा — खाली instructions पहा');
+    setSyncStatus('err','⚠️ Supabase URL/Key file मध्ये टाका — खाली instructions पहा');
   }
 }
 
