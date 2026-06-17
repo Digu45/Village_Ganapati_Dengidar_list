@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
@@ -8,13 +7,13 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1A;min-height:100vh;font-size:15px}
- 
+
 /* HEADER */
 .hdr{background:linear-gradient(135deg,#B71C1C,#C8390A,#E65100);padding:22px 20px 18px;text-align:center}
 .hdr-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:5px}
 .hdr-title{font-size:19px;font-weight:800;color:#fff;line-height:1.35;margin-bottom:2px}
 .hdr-mr{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:14px}
- 
+
 /* CALENDAR + COUNTDOWN STRIP */
 .cal-strip{display:flex;gap:10px;padding:12px 14px;background:rgba(0,0,0,0.18);margin:0}
 .cal-box{flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.18);min-width:0}
@@ -22,14 +21,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .cal-date{font-size:22px;font-weight:800;color:#fff;line-height:1}
 .cal-day{font-size:12px;font-weight:600;color:rgba(255,255,255,0.85);margin-top:2px}
 .cal-month{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px}
- 
+
 .countdown-box{flex:1.4;background:rgba(255,200,0,0.18);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,220,0,0.3);min-width:0;text-align:center}
 .cd-label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:4px}
 .cd-num{font-size:28px;font-weight:900;color:#FFD700;line-height:1;text-shadow:0 0 12px rgba(255,215,0,0.5)}
 .cd-unit{font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px}
 .cd-mr{font-size:11px;color:rgba(255,220,100,0.85);margin-top:3px;font-weight:600}
 .cd-date-note{font-size:10px;color:rgba(255,255,255,0.5);margin-top:4px}
- 
+
 /* DATE PILLS ROW */
 .date-pills{display:flex;gap:6px;padding:0 14px 12px;overflow-x:auto;scrollbar-width:none}
 .date-pills::-webkit-scrollbar{display:none}
@@ -41,22 +40,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .dpill-day{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,0.55)}
 .dpill-date{font-size:16px;font-weight:800;color:#fff;line-height:1.1}
 .dpill-name{font-size:9px;color:rgba(255,255,255,0.55);margin-top:1px}
- 
+
 /* NAV */
 .nav{display:flex;background:#fff;border-bottom:1px solid #E5E5E5;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .nav-btn{flex:1;padding:11px 2px;font-size:11px;font-weight:700;color:#999;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;line-height:1.35}
 .nav-btn.on{color:#C8390A;border-bottom-color:#C8390A}
- 
+
 /* SYNC BAR */
 .sync-bar{background:#FFF8E1;border-bottom:1px solid #FFE082;padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:#795548}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0}
 .sync-dot.loading{background:#FF9800;animation:pulse 1s infinite}
 .sync-dot.err{background:#F44336}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
- 
+
 .main{padding:14px}
 .pg{display:none}.pg.on{display:block}
- 
+
 /* HERO CARDS */
 .hero{border-radius:14px;padding:18px 20px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
 .hero.red{background:linear-gradient(135deg,#C8390A,#E65100)}
@@ -71,28 +70,28 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .hero-nm{font-size:17px;font-weight:700;color:#fff;margin-top:4px;line-height:1.25}
 .hero-ph{font-size:12px;color:rgba(255,255,255,0.7);margin-top:3px}
 .hero-tag{display:inline-block;margin-top:10px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:.5px}
- 
+
 /* STATS */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .stat{background:#fff;border-radius:10px;border:1px solid #E8E8E8;padding:13px 14px}
 .stat-n{font-size:28px;font-weight:800;color:#C8390A;line-height:1}
 .stat-mr{font-size:12px;color:#888;font-weight:600;margin-top:2px}
 .stat-en{font-size:10px;color:#bbb}
- 
+
 /* CARD */
 .card{background:#fff;border-radius:12px;border:1px solid #E8E8E8;overflow:hidden;margin-bottom:12px}
 .card-hd{padding:13px 16px 0}
 .card-hd-en{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#bbb}
 .card-hd-mr{font-size:14px;font-weight:700;color:#1A1A1A;margin-top:1px;margin-bottom:10px}
 .card-body{padding:0 16px 16px}
- 
+
 /* CHIPS */
 .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #DDD;background:#fff;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
 .chip.on{background:#C8390A;color:#fff;border-color:#C8390A}
 .chip.past{opacity:.5}
- 
+
 /* LOOKUP */
 .lookup{background:#FEF7F5;border-radius:10px;border:1.5px solid #C8390A;padding:16px;display:none}
 .lk-yr{font-size:36px;font-weight:800;color:#C8390A;line-height:1;margin-bottom:12px}
@@ -104,7 +103,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .lk-avatar img{width:100%;height:100%;object-fit:cover}
 .lk-val{font-size:15px;font-weight:700;color:#1A1A1A}
 .lk-ph{font-size:12px;color:#888}
- 
+
 /* DONOR LIST */
 .dl{display:flex;flex-direction:column;gap:8px}
 .di{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;border:1px solid #E8E8E8;padding:12px 14px;transition:all .2s}
@@ -128,13 +127,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .di.curr .di-ph{color:rgba(255,255,255,0.7)}
 .di-tag{font-size:9px;font-weight:800;letter-spacing:.8px;background:#C8390A;color:#fff;padding:3px 9px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .di.curr .di-tag{background:rgba(255,255,255,0.25);color:#fff;border:1px solid rgba(255,255,255,0.4);font-size:10px;padding:4px 11px;border-radius:12px}
- 
+
 /* SEARCH */
 .srch{position:relative;margin-bottom:12px}
 .srch input{width:100%;padding:11px 14px 11px 38px;border:1px solid #DDD;border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff}
 .srch input:focus{border-color:#C8390A}
 .srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#bbb;font-size:15px}
- 
+
 /* ADMIN */
 .lock-wrap{text-align:center;padding:44px 20px}
 .lock-ico{font-size:48px;margin-bottom:14px}
@@ -195,7 +194,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .fin-year-sel label{font-size:12px;font-weight:700;color:#888;white-space:nowrap}
 .fin-year-sel select{flex:1;padding:8px 12px;border:1px solid #DDD;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
 .fin-year-sel select:focus{border-color:#2E7D32}
- 
+
 .fin-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .fin-stat{border-radius:12px;padding:14px;text-align:center}
 .fin-stat.green{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff}
@@ -205,13 +204,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .fin-stat-n{font-size:22px;font-weight:800;line-height:1}
 .fin-stat-l{font-size:10px;opacity:.8;margin-top:3px;letter-spacing:.5px}
 .fin-stat-mr{font-size:11px;opacity:.7;margin-top:1px}
- 
+
 .fin-progress-wrap{background:#fff;border-radius:12px;border:1px solid #E8E8E8;padding:14px;margin-bottom:14px}
 .fin-progress-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:8px}
 .fin-bar-bg{background:#F0F0F0;border-radius:20px;height:12px;overflow:hidden}
 .fin-bar{height:100%;border-radius:20px;transition:width .5s;background:linear-gradient(90deg,#2E7D32,#66BB6A)}
 .fin-bar.over{background:linear-gradient(90deg,#C62828,#EF5350)}
- 
+
 .fin-section{background:#fff;border-radius:12px;border:1px solid #E8E8E8;margin-bottom:12px;overflow:hidden}
 .fin-sec-hd{padding:11px 14px;border-bottom:1px solid #EEE;display:flex;justify-content:space-between;align-items:center}
 .fin-sec-hd-left{display:flex;flex-direction:column;gap:1px}
@@ -222,7 +221,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .fin-total-badge{font-size:14px;font-weight:800;padding:4px 12px;border-radius:20px}
 .fin-total-badge.green{background:#2E7D32;color:#fff}
 .fin-total-badge.red{background:#C62828;color:#fff}
- 
+
 .fin-entry{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #F5F5F5}
 .fin-entry:last-child{border-bottom:none}
 .fin-entry-name{flex:1;font-size:14px;font-weight:600;color:#1A1A1A}
@@ -232,7 +231,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .fin-entry-del{background:none;border:none;color:#ddd;font-size:16px;cursor:pointer;padding:2px 6px}
 .fin-entry-del:hover{color:#C62828}
 .fin-empty{padding:20px;text-align:center;color:#bbb;font-size:13px}
- 
+
 .fin-add-form{padding:12px 14px;background:#FAFAFA;border-top:1px solid #EEE;display:flex;flex-direction:column;gap:8px}
 .fin-add-row{display:flex;gap:8px}
 .fin-add-row input{flex:1;padding:9px 12px;border:1px solid #DDD;border-radius:8px;font-size:13px;font-family:inherit;outline:none;min-width:0}
@@ -240,19 +239,27 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
 .fin-add-row .amt-input{max-width:110px}
 .btn-green{background:#2E7D32;color:#fff;border:none}
 .btn-green:hover{background:#1B5E20}
- 
+
+.setup-banner{background:#FFF3E0;border:2px solid #FF9800;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:none}
+.setup-banner h3{color:#E65100;font-size:14px;margin-bottom:8px}
+.setup-banner ol{margin-left:16px;font-size:13px;color:#555;line-height:1.8}
+.setup-banner code{background:#EEE;padding:1px 5px;border-radius:3px;font-size:12px}
+.sb-inp-wrap{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.sb-inp-wrap label{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.sb-inp-wrap input{padding:9px 12px;border:1.5px solid #DDD;border-radius:8px;font-size:13px;font-family:inherit;outline:none}
+.sb-inp-wrap input:focus{border-color:#E65100}
 .footer{text-align:center;padding:20px 16px;color:#ccc;font-size:11px;border-top:1px solid #EEE;background:#fff;margin-top:8px;line-height:1.7}
 @media(max-width:360px){.hdr-title{font-size:17px}.hero-yr{font-size:26px}.frow{flex-direction:column}.cal-date{font-size:18px}.cd-num{font-size:24px}}
 </style>
 </head>
 <body>
- 
+
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-sub">Ganapati Utsav · गणेश उत्सव</div>
   <div class="hdr-title">Chhatrapati Shivaji Maharaj Tarun Mandal</div>
   <div class="hdr-mr">छत्रपती शिवाजी महाराज तरुण मंडळ, शेनवडे</div>
- 
+
   <!-- CALENDAR + COUNTDOWN -->
   <div class="cal-strip">
     <div class="cal-box">
@@ -269,17 +276,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <div class="cd-date-note">14 Sep 2026 · सोमवार</div>
     </div>
   </div>
- 
+
   <!-- NEXT 5 DAYS PILLS -->
   <div class="date-pills" id="datePills"></div>
 </div>
- 
+
 <!-- SYNC BAR -->
 <div class="sync-bar" id="syncBar">
   <div class="sync-dot loading" id="syncDot"></div>
   <span id="syncMsg">Syncing data across devices... / डेटा सिंक होत आहे...</span>
 </div>
- 
+
 <!-- NAV -->
 <div class="nav">
   <button class="nav-btn on" onclick="gotoTab('home')">🏠<br>Home</button>
@@ -288,18 +295,36 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
   <button class="nav-btn" onclick="gotoTab('finance')">💰<br>Finance</button>
   <button class="nav-btn" onclick="gotoTab('admin')">🔒<br>Admin</button>
 </div>
- 
+
 <div class="main">
- 
+
 <!-- HOME -->
 <div class="pg on" id="pg-home">
-  <div class="stats">
+  <div class="setup-banner" id="setupBanner">
+  <h3>⚙️ Supabase Database Setup — एकदाच करायचे आहे!</h3>
+  <ol>
+    <li><strong><a href="https://supabase.com" target="_blank" style="color:#1565C0">supabase.com</a></strong> वर जा → Gmail ने Sign up करा (Free)</li>
+    <li>New Project → Name: <code>ganapati</code> → Region: <strong>Southeast Asia</strong></li>
+    <li><strong>SQL Editor</strong> → New query → हे paste करा व Run करा:<br>
+    <code style="display:block;margin-top:4px;background:#1A1A2E;color:#00D4FF;padding:8px;border-radius:6px;font-size:11px;white-space:pre">create table if not exists ganapati_data (key text primary key, value text);
+alter table ganapati_data disable row level security;</code></li>
+    <li><strong>Settings → API</strong> → Project URL आणि anon public key कॉपी करा</li>
+  </ol>
+  <div class="sb-inp-wrap">
+    <label>Project URL (https://xxxxx.supabase.co)</label>
+    <input type="text" id="sbUrl" placeholder="https://abcdefghij.supabase.co"/>
+    <label>Anon Public Key</label>
+    <input type="text" id="sbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."/>
+    <button class="btn btn-red btn-full" onclick="saveSupabaseConfig()" style="margin-top:4px">✅ Connect करा — सर्व devices वर sync होईल!</button>
+  </div>
+</div>
+<div class="stats">
     <div class="stat"><div class="stat-n" id="smb">0</div><div class="stat-mr">मूर्ती नोंदणी</div><div class="stat-en">Idol booked</div></div>
     <div class="stat"><div class="stat-n" id="spb">0</div><div class="stat-mr">प्रसाद नोंदणी</div><div class="stat-en">Prasad booked</div></div>
     <div class="stat"><div class="stat-n" id="smo">0</div><div class="stat-mr">मूर्ती उपलब्ध</div><div class="stat-en">Idol open</div></div>
     <div class="stat"><div class="stat-n" id="spo">0</div><div class="stat-mr">प्रसाद उपलब्ध</div><div class="stat-en">Prasad open</div></div>
   </div>
- 
+
   <div class="hero red">
     <div class="hero-lbl-en">This year's idol donor</div>
     <div class="hero-lbl-mr">या वर्षीचे मूर्ती देणगीदार</div>
@@ -313,7 +338,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
     </div>
     <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
   </div>
- 
+
   <div class="hero blue">
     <div class="hero-lbl-en">This year's prasad donor</div>
     <div class="hero-lbl-mr">या वर्षीचे महाप्रसाद देणगीदार</div>
@@ -327,7 +352,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
     </div>
     <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
   </div>
- 
+
   <div class="card">
     <div class="card-hd">
       <div class="card-hd-en">Look up by year</div>
@@ -354,7 +379,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       </div>
     </div>
   </div>
- 
+
   <div class="card" style="margin-top:0">
     <div class="card-hd">
       <div class="card-hd-en">This year's finance / या वर्षाचे आर्थिक</div>
@@ -378,29 +403,29 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <button onclick="gotoTab('finance')" style="display:block;width:100%;margin-top:10px;padding:9px;background:#F5F5F5;border:1px solid #E0E0E0;border-radius:8px;font-size:12px;font-weight:700;color:#555;cursor:pointer">💰 View full finance details →</button>
     </div>
   </div>
- 
+
 </div>
- 
+
 <!-- IDOL LIST -->
 <div class="pg" id="pg-murti">
   <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('murti',this.value)"/></div>
   <div class="dl" id="murtiList"></div>
 </div>
- 
+
 <!-- PRASAD LIST -->
 <div class="pg" id="pg-prasad">
   <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('prasad',this.value)"/></div>
   <div class="dl" id="prasadList"></div>
 </div>
- 
+
 <!-- FINANCE -->
 <div class="pg" id="pg-finance">
- 
+
   <div class="fin-year-sel">
     <label>Year / वर्ष :</label>
     <select id="finYear" onchange="renderFinance()"></select>
   </div>
- 
+
   <div class="fin-summary">
     <div class="fin-stat green">
       <div class="fin-stat-n" id="fin-total-col">₹0</div>
@@ -418,7 +443,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <div class="fin-stat-mr" id="fin-balance-mr"></div>
     </div>
   </div>
- 
+
   <div class="fin-progress-wrap">
     <div class="fin-progress-label">
       <span>Spent / खर्च</span>
@@ -427,7 +452,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
     <div class="fin-bar-bg"><div class="fin-bar" id="fin-bar" style="width:0%"></div></div>
     <div style="font-size:11px;color:#aaa;margin-top:6px;text-align:center" id="fin-bar-note">of total collected spent</div>
   </div>
- 
+
   <!-- COLLECTIONS -->
   <div class="fin-section">
     <div class="fin-sec-hd green">
@@ -453,7 +478,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <button class="btn btn-green btn-sm btn-full" onclick="toggleForm('col')" id="fin-col-toggle-btn" style="display:none">＋ Add Collection / देणगी जोडा</button>
     </div>
   </div>
- 
+
   <!-- EXPENSES -->
   <div class="fin-section">
     <div class="fin-sec-hd red">
@@ -479,9 +504,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
       <button class="btn btn-sm btn-full" onclick="toggleForm('exp')" id="fin-exp-toggle-btn" style="display:none;background:#FFEBEE;color:#C62828;border:1px solid #FFCDD2;font-weight:700;border-radius:8px;cursor:pointer">＋ Add Expense / खर्च जोडा</button>
     </div>
   </div>
- 
+
 </div>
- 
+
 <!-- ADMIN -->
 <div class="pg" id="pg-admin">
   <div class="lock-wrap" id="lockWrap">
@@ -495,14 +520,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
     </div>
     <div class="err" id="pwErr">❌ Wrong password! / चुकीचा संकेतशब्द!</div>
   </div>
- 
+
   <div class="adm-panel" id="admPanel">
     <div class="adm-top">
       <strong>⚙️ Admin Panel</strong>
       <button class="btn btn-out btn-sm" onclick="lockAdmin()">🔒 Exit</button>
     </div>
     <div id="alertBox" class="alert"></div>
- 
+
     <div class="adm-sec">
       <div class="adm-hd red">
         <div class="adm-hd-en">Add / Edit idol donor</div>
@@ -522,7 +547,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
         <button class="btn btn-red btn-full" onclick="save('murti')">✅ Save Idol Donor / जतन करा</button>
       </div>
     </div>
- 
+
     <div class="adm-sec">
       <div class="adm-hd blue">
         <div class="adm-hd-en">Add / Edit prasad donor</div>
@@ -542,7 +567,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
         <button class="btn btn-blue btn-full" onclick="save('prasad')">✅ Save Prasad Donor / जतन करा</button>
       </div>
     </div>
- 
+
     <div class="adm-sec">
       <div class="adm-hd gray">
         <div class="adm-hd-en">All records / सर्व नोंदी</div>
@@ -561,7 +586,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
         </table>
       </div>
     </div>
- 
+
     <div class="adm-sec">
       <div class="adm-hd gray"><div class="adm-hd-en">Change password / संकेतशब्द बदला</div></div>
       <div class="adm-form">
@@ -575,12 +600,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F7F4F0;color:#1A1A1
   </div>
 </div>
 </div>
- 
+
 <div class="footer">
   🕉️ Chhatrapati Shivaji Maharaj Tarun Mandal · छत्रपती शिवाजी महाराज तरुण मंडळ<br>
   Shenawade · शेनवडे · Ganapati Utsav Donor Management
 </div>
- 
+
 <script>
 // ── CONSTANTS ──
 const CY=new Date().getFullYear(), SY=2024, EY=2034;
@@ -589,7 +614,7 @@ const GANESH_DATE_2026=new Date('2026-09-14T00:00:00'); // Ganesh Chaturthi 2026
 let admTab='murti';
 let pendingPhotos={murti:null,prasad:null};
 let isAdminLoggedIn=false; // tracks if admin is currently logged in
- 
+
 // ── DEFAULT DATA ──
 function defaultData(){
   const d={pw:'piyu45',murti:{},prasad:{},finance:{}};
@@ -612,75 +637,125 @@ function defaultData(){
   return d;
 }
 let D=defaultData();
- 
-// ── CLOUD SYNC via window.storage ──
+
+// ══════════════════════════════════════════════════════════
+// SUPABASE CONFIG — Free forever, no expiry
+// STEP 1: go to https://supabase.com → sign up free
+// STEP 2: New project → SQL Editor → run the SQL below
+// STEP 3: Settings → API → copy URL and anon key here
+// ══════════════════════════════════════════════════════════
+const SB_URL = localStorage.getItem('sb_url') || 'YOUR_SUPABASE_URL';
+const SB_KEY = localStorage.getItem('sb_key') || 'YOUR_SUPABASE_ANON_KEY';
+
+// SQL to run once in Supabase SQL Editor:
+// create table if not exists ganapati_data (key text primary key, value text);
+// alter table ganapati_data disable row level security;
+
 function setSyncStatus(state,msg){
   const dot=document.getElementById('syncDot');
   const txt=document.getElementById('syncMsg');
   dot.className='sync-dot'+(state==='loading'?' loading':state==='err'?' err':'');
   txt.textContent=msg;
 }
- 
+
+function isConfigured(){
+  return SB_URL!=='YOUR_SUPABASE_URL' && SB_KEY!=='YOUR_SUPABASE_ANON_KEY';
+}
+
+async function sbGet(key){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/ganapati_data?key=eq.${key}&select=value`,{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    const j=await r.json();
+    return j&&j[0]?JSON.parse(j[0].value):null;
+  }catch(e){return null;}
+}
+
+async function sbSet(key,value){
+  try{
+    await fetch(`${SB_URL}/rest/v1/ganapati_data`,{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key,value:JSON.stringify(value)})
+    });
+  }catch(e){console.error('SB save error',e);}
+}
+
 async function cloudLoad(){
+  if(!isConfigured()){
+    setSyncStatus('err','⚠️ Supabase not configured — see setup guide below');
+    localLoad();refreshAll();return;
+  }
   setSyncStatus('loading','Loading data from cloud... / क्लाउडवरून डेटा लोड होत आहे...');
   try{
-    const res=await window.storage.get(STORAGE_KEY,true);
-    if(res&&res.value){
-      const parsed=JSON.parse(res.value);
-      if(parsed&&parsed.murti&&parsed.prasad){
-        // merge: cloud wins for names/phones, keep local photos if cloud has none
-        for(let y=SY;y<=EY;y++){
-          if(parsed.murti[y]){
-            if(!parsed.murti[y].photo&&D.murti[y]&&D.murti[y].photo)
-              parsed.murti[y].photo=D.murti[y].photo;
-          }
-          if(parsed.prasad[y]){
-            if(!parsed.prasad[y].photo&&D.prasad[y]&&D.prasad[y].photo)
-              parsed.prasad[y].photo=D.prasad[y].photo;
-          }
+    const parsed=await sbGet('main');
+    if(parsed&&parsed.murti&&parsed.prasad){
+      for(let y=SY;y<=EY;y++){
+        if(parsed.murti[y]){
+          // keep local photo if cloud has none (photos stored locally to save DB space)
+          if(!parsed.murti[y].photo&&D.murti[y]&&D.murti[y].photo)
+            parsed.murti[y].photo=D.murti[y].photo;
         }
-        if(parsed.pw) D.pw=parsed.pw;
-        D.murti=parsed.murti;
-        D.prasad=parsed.prasad;
-        if(parsed.finance) D.finance=parsed.finance;
+        if(parsed.prasad[y]){
+          if(!parsed.prasad[y].photo&&D.prasad[y]&&D.prasad[y].photo)
+            parsed.prasad[y].photo=D.prasad[y].photo;
+        }
       }
+      if(parsed.pw) D.pw=parsed.pw;
+      D.murti=parsed.murti;
+      D.prasad=parsed.prasad;
+      if(parsed.finance) D.finance=parsed.finance;
     }
     setSyncStatus('ok','✅ Data synced — same on all devices / सर्व डिव्हाइसवर डेटा सिंक झाला');
   }catch(e){
-    setSyncStatus('err','⚠️ Could not sync — showing local data / लोकल डेटा दाखवत आहे');
+    setSyncStatus('err','⚠️ Could not sync — showing local data');
   }
+  localLoad(); // merge local photos on top
   refreshAll();
 }
- 
+
 async function cloudSave(){
-  setSyncStatus('loading','Saving to cloud... / क्लाउडवर सेव होत आहे...');
+  setSyncStatus('loading','Saving... / सेव होत आहे...');
+  // always save locally first (photos stored here)
+  localSave();
+  if(!isConfigured()){
+    setSyncStatus('err','⚠️ Supabase not set up — data saved locally only');
+    return;
+  }
   try{
-    // strip large photos from cloud (store text data only in cloud, photos stay local)
+    // save text data to Supabase (no photos — too large for free DB)
     const slim={pw:D.pw,murti:{},prasad:{},finance:D.finance||{}};
     for(let y=SY;y<=EY;y++){
       slim.murti[y]={name:D.murti[y].name||'',phone:D.murti[y].phone||'',photo:''};
       slim.prasad[y]={name:D.prasad[y].name||'',phone:D.prasad[y].phone||'',photo:''};
     }
-    await window.storage.set(STORAGE_KEY,JSON.stringify(slim),true);
-    // save photos locally only (they're too big for cloud)
-    localSave();
+    await sbSet('main',slim);
     setSyncStatus('ok','✅ Saved & synced to all devices / सर्व डिव्हाइसवर सेव झाले');
   }catch(e){
-    localSave();
-    setSyncStatus('err','⚠️ Cloud save failed, saved locally / लोकल सेव झाले');
+    setSyncStatus('err','⚠️ Cloud save failed, saved locally');
   }
 }
- 
+
 function localSave(){
+  // photos + all data stored in localStorage (device-specific)
   try{localStorage.setItem('gup5',JSON.stringify(D));}catch(e){}
 }
 function localLoad(){
   try{
     const s=localStorage.getItem('gup5');
-    if(s){const p=JSON.parse(s);if(p&&p.murti&&p.prasad){D.murti=p.murti;D.prasad=p.prasad;if(p.pw)D.pw=p.pw;if(p.finance)D.finance=p.finance;}}
+    if(s){const p=JSON.parse(s);if(p&&p.murti&&p.prasad){
+      // only merge photos from local into current D (names come from Supabase)
+      for(let y=SY;y<=EY;y++){
+        if(p.murti[y]&&p.murti[y].photo&&!D.murti[y].photo) D.murti[y].photo=p.murti[y].photo;
+        if(p.prasad[y]&&p.prasad[y].photo&&!D.prasad[y].photo) D.prasad[y].photo=p.prasad[y].photo;
+      }
+      if(p.pw&&!D.pw) D.pw=p.pw;
+      if(p.finance&&!Object.keys(D.finance||{}).length) D.finance=p.finance;
+    }}
   }catch(e){}
 }
- 
+
 // ── CALENDAR & COUNTDOWN ──
 function initCalendar(){
   const now=new Date();
@@ -688,11 +763,11 @@ function initCalendar(){
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const mrMonths=['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
   const mrDays=['रविवार','सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
- 
+
   document.getElementById('calDate').textContent=now.getDate();
   document.getElementById('calDay').textContent=days[now.getDay()]+' / '+mrDays[now.getDay()];
   document.getElementById('calMonth').textContent=months[now.getMonth()]+' '+now.getFullYear()+' · '+mrMonths[now.getMonth()];
- 
+
   // countdown
   function updateCountdown(){
     const n=new Date();
@@ -713,7 +788,7 @@ function initCalendar(){
   }
   updateCountdown();
   setInterval(updateCountdown,60000);
- 
+
   // date pills — today + next 6 days
   const pills=document.getElementById('datePills');
   pills.innerHTML='';
@@ -731,13 +806,34 @@ function initCalendar(){
     </div>`;
   }
 }
- 
+
+// ── SETUP CONFIG SAVE ──
+function saveSupabaseConfig(){
+  const url=document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
+  const key=document.getElementById('sbKey').value.trim();
+  if(!url||!key||!url.includes('supabase.co')){alert('कृपया valid URL आणि Key भरा');return;}
+  localStorage.setItem('sb_url',url);
+  localStorage.setItem('sb_key',key);
+  location.reload(); // reload with new config
+}
+
+// show setup banner if not configured
+function checkSetupNeeded(){
+  const url=localStorage.getItem('sb_url')||'';
+  const key=localStorage.getItem('sb_key')||'';
+  if(!url||!key){
+    document.getElementById('setupBanner').style.display='block';
+    setSyncStatus('err','⚠️ Database setup करा — खाली instructions पहा');
+  }
+}
+
 // ── BOOT ──
 initCalendar();
 localLoad(); // load local data first (instant)
 refreshAll(); // show immediately
+checkSetupNeeded(); // show setup banner if needed
 cloudLoad(); // then sync from cloud (overwrites if newer)
- 
+
 function refreshAll(){
   buildSelects(CY,CY);
   buildChips();
@@ -746,7 +842,7 @@ function refreshAll(){
   renderList('prasad');
   switchAdmTab('murti');
 }
- 
+
 function buildSelects(keepMurti,keepPrasad){
   ['mYr','pYr'].forEach((id,i)=>{
     const type=i===0?'murti':'prasad';
@@ -762,7 +858,7 @@ function buildSelects(keepMurti,keepPrasad){
     }
   });
 }
- 
+
 function autoFill(type){
   const yr=+document.getElementById(type==='murti'?'mYr':'pYr').value;
   const rec=D[type][yr]||{name:'',phone:'',photo:''};
@@ -773,7 +869,7 @@ function autoFill(type){
   if(rec.photo){prev.innerHTML=`<img src="${rec.photo}"/>`;}
   else{prev.innerHTML='📷';}
 }
- 
+
 function previewPhoto(type,input){
   const file=input.files[0];
   if(!file)return;
@@ -795,7 +891,7 @@ function previewPhoto(type,input){
   };
   img.src=url;
 }
- 
+
 function buildChips(){
   const c=document.getElementById('chips');c.innerHTML='';
   for(let y=SY;y<=EY;y++){
@@ -805,12 +901,12 @@ function buildChips(){
   }
   lookup(CY);
 }
- 
+
 function avatarHTML(rec,fallback){
   if(rec&&rec.photo)return`<img src="${rec.photo}"/>`;
   return fallback;
 }
- 
+
 function lookup(y){
   document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',+c.textContent===y));
   const mr=D.murti[y]||{},pr=D.prasad[y]||{};
@@ -823,7 +919,7 @@ function lookup(y){
   document.getElementById('lk-p-av').innerHTML=avatarHTML(pr,'🍛');
   document.getElementById('lookup').style.display='block';
 }
- 
+
 function renderHome(){
   const mr=D.murti[CY]||{},pr=D.prasad[CY]||{};
   document.getElementById('hmy').textContent=CY;
@@ -853,7 +949,7 @@ function renderHome(){
   const balEl=document.getElementById('home-fin-bal');
   balEl.style.color=hfb>=0?'#1565C0':'#C62828';
 }
- 
+
 function renderList(type,q){
   const el=document.getElementById(type+'List');el.innerHTML='';
   for(let y=SY;y<=EY;y++){
@@ -875,9 +971,9 @@ function renderList(type,q){
     </div>`;
   }
 }
- 
+
 function filterList(t,v){renderList(t,v.trim()||undefined);}
- 
+
 function gotoTab(name){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
@@ -887,7 +983,7 @@ function gotoTab(name){
   });
   if(name==='finance'){buildFinYearSelect();renderFinance();}
 }
- 
+
 function checkPw(){
   const entered=document.getElementById('pwInput').value;
   document.getElementById('pwErr').style.display='none';
@@ -903,7 +999,7 @@ function checkPw(){
     document.getElementById('pwErr').style.display='block';
   }
 }
- 
+
 function lockAdmin(){
   isAdminLoggedIn=false;
   document.getElementById('lockWrap').style.display='block';
@@ -912,13 +1008,13 @@ function lockAdmin(){
   document.getElementById('pwErr').style.display='none';
   renderFinance(); // refresh finance to hide edit buttons
 }
- 
+
 function toast(msg,type){
   const a=document.getElementById('alertBox');
   a.className='alert '+(type||'ok');a.textContent=msg;a.style.display='block';
   setTimeout(()=>{a.style.display='none';},3500);
 }
- 
+
 function save(type){
   const yrEl=document.getElementById(type==='murti'?'mYr':'pYr');
   const yr=+yrEl.value;
@@ -935,14 +1031,14 @@ function save(type){
   cloudSave();
   toast('✅ Saved & synced! / जतन व सिंक झाले — '+yr+' : '+nm,'ok');
 }
- 
+
 function editRecord(type,y){
   document.getElementById(type==='murti'?'mYr':'pYr').value=y;
   autoFill(type);
   document.getElementById(type==='murti'?'mYr':'pYr').closest('.adm-sec').scrollIntoView({behavior:'smooth',block:'start'});
   toast('✏️ Editing '+y+' — update and save','ok');
 }
- 
+
 function del(type,y){
   if(!confirm('Delete this record?\nहे रेकॉर्ड काढायचे का?'))return;
   D[type][y]={name:'',phone:'',photo:''};
@@ -954,14 +1050,14 @@ function del(type,y){
   cloudSave();
   toast('🗑️ Record deleted / रेकॉर्ड काढला','ok');
 }
- 
+
 function switchAdmTab(type){
   admTab=type;
   document.getElementById('at-m').classList.toggle('on',type==='murti');
   document.getElementById('at-p').classList.toggle('on',type==='prasad');
   renderAdmTable();
 }
- 
+
 function renderAdmTable(){
   const tb=document.getElementById('admTbody');tb.innerHTML='';
   for(let y=SY;y<=EY;y++){
@@ -980,7 +1076,7 @@ function renderAdmTable(){
     </tr>`;
   }
 }
- 
+
 function changePw(){
   const a=document.getElementById('np1').value,b=document.getElementById('np2').value;
   if(!a){toast('Enter a new password','err');return;}
@@ -990,14 +1086,14 @@ function changePw(){
   document.getElementById('np1').value='';document.getElementById('np2').value='';
   toast('🔑 Password updated / संकेतशब्द बदलला','ok');
 }
- 
+
 // ── FINANCE ──────────────────────────────────────────────────────────────────
 // D.finance = { 2025: { collections:[{name,amt,note,date}], expenses:[{name,amt,note,date}] }, ... }
 function ensureFinYear(y){
   if(!D.finance)D.finance={};
   if(!D.finance[y])D.finance[y]={collections:[],expenses:[]};
 }
- 
+
 function buildFinYearSelect(){
   const s=document.getElementById('finYear');
   if(!s)return;
@@ -1009,11 +1105,11 @@ function buildFinYearSelect(){
     s.add(o);
   }
 }
- 
+
 function finYear(){return +document.getElementById('finYear').value||CY;}
- 
+
 function fmt(n){return'₹'+Number(n).toLocaleString('en-IN');}
- 
+
 function renderFinance(){
   buildFinYearSelect();
   const y=finYear();
@@ -1022,14 +1118,14 @@ function renderFinance(){
   const totalCol=fin.collections.reduce((s,e)=>s+(+e.amt||0),0);
   const totalExp=fin.expenses.reduce((s,e)=>s+(+e.amt||0),0);
   const bal=totalCol-totalExp;
- 
+
   document.getElementById('fin-total-col').textContent=fmt(totalCol);
   document.getElementById('fin-total-exp').textContent=fmt(totalExp);
   document.getElementById('fin-balance').textContent=fmt(Math.abs(bal));
   document.getElementById('fin-balance-mr').textContent=bal>=0?'शिल्लक आहे ✅':'तूट आहे ⚠️';
   document.getElementById('fin-col-badge').textContent=fmt(totalCol);
   document.getElementById('fin-exp-badge').textContent=fmt(totalExp);
- 
+
   // progress bar
   const pct=totalCol>0?Math.min(Math.round(totalExp/totalCol*100),100):0;
   const bar=document.getElementById('fin-bar');
@@ -1037,11 +1133,11 @@ function renderFinance(){
   bar.className='fin-bar'+(pct>=100?' over':'');
   document.getElementById('fin-pct').textContent=pct+'%';
   document.getElementById('fin-bar-note').textContent=pct+'% of collected amount spent';
- 
+
   // balance card color
   const bc=document.getElementById('fin-balance').closest('.fin-stat');
   bc.className='fin-stat '+(bal>=0?'blue':'red');
- 
+
   // show/hide add buttons — ADMIN ONLY
   ['fin-col-toggle-btn','fin-exp-toggle-btn'].forEach(id=>{
     const el=document.getElementById(id);
@@ -1054,7 +1150,7 @@ function renderFinance(){
     if(cf) cf.style.display='none';
     if(ef) ef.style.display='none';
   }
- 
+
   // admin badge on finance page
   let badge=document.getElementById('fin-admin-badge');
   if(!badge){
@@ -1070,7 +1166,7 @@ function renderFinance(){
     badge.style.background='#FFF8E1';badge.style.color='#795548';badge.style.border='1px solid #FFE082';
     badge.textContent='👁️ View only — login as Admin to add or edit entries';
   }
- 
+
   // collections list
   const cl=document.getElementById('fin-col-list');
   if(fin.collections.length===0){
@@ -1088,7 +1184,7 @@ function renderFinance(){
         ${isAdminLoggedIn?`<button class="fin-entry-del" onclick="delEntry('col',${i})" title="Delete">✕</button>`:''}
       </div>`).join('');
   }
- 
+
   // expenses list with running balance
   const el=document.getElementById('fin-exp-list');
   if(fin.expenses.length===0){
@@ -1121,7 +1217,7 @@ function renderFinance(){
     el.innerHTML=rows;
   }
 }
- 
+
 // ── AUTO PHOTO BY NAME ─────────────────────────────────────────────────────
 // Search all years in both murti and prasad for a matching name → return their photo
 function findPhotoByName(name){
@@ -1137,7 +1233,7 @@ function findPhotoByName(name){
   }
   return null;
 }
- 
+
 function onNameInput(type){
   // only auto-fill photo if no photo already pending/loaded for this slot
   const yr=+document.getElementById(type==='murti'?'mYr':'pYr').value;
@@ -1168,7 +1264,7 @@ function toggleForm(type){
     form.querySelector('input').focus();
   }
 }
- 
+
 function addEntry(type){
   const y=finYear();
   ensureFinYear(y);
@@ -1190,7 +1286,7 @@ function addEntry(type){
   cloudSave();
   renderFinance();
 }
- 
+
 function delEntry(type,idx){
   if(!confirm('Delete this entry?'))return;
   const y=finYear();
