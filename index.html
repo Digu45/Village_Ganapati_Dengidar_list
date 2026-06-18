@@ -1,2937 +1,1321 @@
 <!DOCTYPE html>
 <html lang="mr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ganapati Utsav — Shenawade</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ganapati Utsav — Shenawade</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <style>
+    /* ─── All existing styles (unchanged) ─── */
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:#f7f4f0; color:#1a1a1a; min-height:100vh; font-size:15px; }
+    .hdr { background:linear-gradient(135deg,#b71c1c,#c8390a,#e65100); padding:22px 20px 18px; text-align:center; }
+    .hdr-sub { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:5px; }
+    .hdr-title { font-size:19px; font-weight:800; color:#fff; line-height:1.35; margin-bottom:2px; }
+    .hdr-mr { font-size:13px; color:rgba(255,255,255,0.75); margin-bottom:14px; }
+    .cal-strip { display:flex; gap:10px; padding:12px 14px; background:rgba(0,0,0,0.18); margin:0; }
+    .cal-box { flex:1; background:rgba(255,255,255,0.12); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,255,255,0.18); min-width:0; }
+    .cal-icon { font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.8px; text-transform:uppercase; margin-bottom:3px; }
+    .cal-date { font-size:22px; font-weight:800; color:#fff; line-height:1; }
+    .cal-day { font-size:12px; font-weight:600; color:rgba(255,255,255,0.85); margin-top:2px; }
+    .cal-month { font-size:11px; color:rgba(255,255,255,0.6); margin-top:1px; }
+    .countdown-box { flex:1.4; background:rgba(255,200,0,0.18); border-radius:10px; padding:10px 12px; border:1px solid rgba(255,220,0,0.3); min-width:0; text-align:center; }
+    .cd-label { font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.65); margin-bottom:4px; }
+    .cd-num { font-size:28px; font-weight:900; color:#ffd700; line-height:1; text-shadow:0 0 12px rgba(255,215,0,0.5); }
+    .cd-unit { font-size:11px; color:rgba(255,255,255,0.7); margin-top:2px; }
+    .cd-mr { font-size:11px; color:rgba(255,220,100,0.85); margin-top:3px; font-weight:600; }
+    .cd-date-note { font-size:10px; color:rgba(255,255,255,0.5); margin-top:4px; }
+    .date-pills { display:flex; gap:6px; padding:0 14px 12px; overflow-x:auto; scrollbar-width:none; }
+    .date-pills::-webkit-scrollbar { display:none; }
+    .dpill { flex-shrink:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:9px; padding:6px 12px; text-align:center; cursor:default; }
+    .dpill.today { background:rgba(255,255,255,0.92); border-color:#fff; }
+    .dpill.today .dpill-day { color:#c8390a; }
+    .dpill.today .dpill-date { color:#c8390a; }
+    .dpill.today .dpill-name { color:#888; }
+    .dpill-day { font-size:9px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.55); }
+    .dpill-date { font-size:16px; font-weight:800; color:#fff; line-height:1.1; }
+    .dpill-name { font-size:9px; color:rgba(255,255,255,0.55); margin-top:1px; }
+    .nav { display:flex; background:#fff; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:50; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+    .nav-btn { flex:1; padding:11px 2px; font-size:11px; font-weight:700; color:#999; border:none; background:none; cursor:pointer; border-bottom:2px solid transparent; line-height:1.35; }
+    .nav-btn.on { color:#c8390a; border-bottom-color:#c8390a; }
+    .sync-bar { background:#fff8e1; border-bottom:1px solid #ffe082; padding:7px 14px; display:flex; align-items:center; gap:8px; font-size:12px; color:#795548; }
+    .sync-dot { width:8px; height:8px; border-radius:50%; background:#4caf50; flex-shrink:0; }
+    .sync-dot.loading { background:#ff9800; animation:pulse 1s infinite; }
+    .sync-dot.err { background:#f44336; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    .main { padding:14px; }
+    .pg { display:none; }
+    .pg.on { display:block; }
+    .hero { border-radius:14px; padding:18px 20px; margin-bottom:12px; color:#fff; position:relative; overflow:hidden; }
+    .hero.red { background:linear-gradient(135deg,#c8390a,#e65100); }
+    .hero.blue { background:linear-gradient(135deg,#1565c0,#1976d2); }
+    .hero::after { content:"✨"; position:absolute; bottom:10px; right:16px; font-size:22px; opacity:0.25; }
+    .hero-lbl-en { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:1px; }
+    .hero-lbl-mr { font-size:13px; font-weight:600; color:rgba(255,255,255,0.82); margin-bottom:10px; }
+    .hero-row { display:flex; align-items:center; gap:14px; }
+    .hero-avatar { width:56px; height:56px; border-radius:50%; border:3px solid rgba(255,255,255,0.5); background:rgba(255,255,255,0.2); flex-shrink:0; font-size:24px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .hero-avatar img { width:100%; height:100%; object-fit:cover; }
+    .hero-yr { font-size:30px; font-weight:800; color:#fff; line-height:1; }
+    .hero-nm { font-size:17px; font-weight:700; color:#fff; margin-top:4px; line-height:1.25; }
+    .hero-ph { font-size:12px; color:rgba(255,255,255,0.7); margin-top:3px; }
+    .hero-tag { display:inline-block; margin-top:10px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.35); color:#fff; font-size:10px; font-weight:700; padding:3px 12px; border-radius:20px; letter-spacing:0.5px; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+    .stat { background:#fff; border-radius:10px; border:1px solid #e8e8e8; padding:13px 14px; }
+    .stat-n { font-size:28px; font-weight:800; color:#c8390a; line-height:1; }
+    .stat-mr { font-size:12px; color:#888; font-weight:600; margin-top:2px; }
+    .stat-en { font-size:10px; color:#bbb; }
+    .card { background:#fff; border-radius:12px; border:1px solid #e8e8e8; overflow:hidden; margin-bottom:12px; }
+    .card-hd { padding:13px 16px 0; }
+    .card-hd-en { font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:#bbb; }
+    .card-hd-mr { font-size:14px; font-weight:700; color:#1a1a1a; margin-top:1px; margin-bottom:10px; }
+    .card-body { padding:0 16px 16px; }
+    .chips { display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; margin-bottom:12px; scrollbar-width:none; }
+    .chips::-webkit-scrollbar { display:none; }
+    .chip { padding:6px 13px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #ddd; background:#fff; color:#888; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:all 0.15s; }
+    .chip.on { background:#c8390a; color:#fff; border-color:#c8390a; }
+    .chip.past { opacity:0.5; }
+    .lookup { background:#fef7f5; border-radius:10px; border:1.5px solid #c8390a; padding:16px; display:none; }
+    .lk-yr { font-size:36px; font-weight:800; color:#c8390a; line-height:1; margin-bottom:12px; }
+    .lk-row { margin-bottom:10px; }
+    .lk-en { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#bbb; }
+    .lk-mr { font-size:12px; font-weight:700; color:#888; margin-bottom:2px; }
+    .lk-info { display:flex; align-items:center; gap:10px; margin-top:4px; }
+    .lk-avatar { width:38px; height:38px; border-radius:50%; border:2px solid #c8390a; background:#fef7f5; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .lk-avatar img { width:100%; height:100%; object-fit:cover; }
+    .lk-val { font-size:15px; font-weight:700; color:#1a1a1a; }
+    .lk-ph { font-size:12px; color:#888; }
+    .dl { display:flex; flex-direction:column; gap:8px; }
+    .di { display:flex; align-items:center; gap:12px; background:#fff; border-radius:10px; border:1px solid #e8e8e8; padding:12px 14px; transition:all 0.2s; }
+    .di.curr { background:linear-gradient(135deg,#c8390a 0%,#e65100 60%,#ff8f00 100%); border:none; border-radius:14px; padding:18px; box-shadow:0 6px 24px rgba(200,57,10,0.45),0 2px 8px rgba(200,57,10,0.2); position:relative; overflow:hidden; }
+    .di.curr::before { content:''; position:absolute; top:-30px; right:-30px; width:100px; height:100px; background:rgba(255,255,255,0.08); border-radius:50%; }
+    .di.curr::after { content:'✨'; position:absolute; bottom:10px; right:14px; font-size:20px; opacity:0.3; }
+    .di.past { filter:blur(0.6px); opacity:0.45; transform:scale(0.97); }
+    .di.upcoming { filter:blur(0.5px); opacity:0.6; transform:scale(0.98); }
+    .di.empty { border-style:dashed; }
+    .di-avatar { width:40px; height:40px; border-radius:50%; border:2px solid #e8e8e8; background:#f5f5f5; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .di-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .di.curr .di-avatar { width:50px; height:50px; border:3px solid rgba(255,255,255,0.6); }
+    .di-yr { font-size:13px; font-weight:800; min-width:36px; color:#bbb; flex-shrink:0; }
+    .di.curr .di-yr { font-size:20px; font-weight:800; color:rgba(255,255,255,0.7); min-width:46px; }
+    .di-info { flex:1; min-width:0; }
+    .di-nm { font-size:14px; font-weight:700; color:#1a1a1a; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .di.curr .di-nm { font-size:18px; font-weight:800; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.2); white-space:normal; }
+    .di.past .di-nm { color:#aaa; font-weight:500; }
+    .di.empty .di-nm { color:#ccc; font-style:italic; font-weight:400; }
+    .di-ph { font-size:11px; color:#aaa; margin-top:2px; }
+    .di.curr .di-ph { color:rgba(255,255,255,0.7); }
+    .di-tag { font-size:9px; font-weight:800; letter-spacing:0.8px; background:#c8390a; color:#fff; padding:3px 9px; border-radius:10px; white-space:nowrap; flex-shrink:0; }
+    .di.curr .di-tag { background:rgba(255,255,255,0.25); color:#fff; border:1px solid rgba(255,255,255,0.4); font-size:10px; padding:4px 11px; border-radius:12px; }
+    .srch { position:relative; margin-bottom:12px; }
+    .srch input { width:100%; padding:11px 14px 11px 38px; border:1px solid #ddd; border-radius:10px; font-size:14px; font-family:inherit; outline:none; background:#fff; }
+    .srch input:focus { border-color:#c8390a; }
+    .srch-ico { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#bbb; font-size:15px; }
+    .lock-wrap { text-align:center; padding:44px 20px; }
+    .lock-ico { font-size:48px; margin-bottom:14px; }
+    .lock-en { font-size:18px; font-weight:700; margin-bottom:2px; }
+    .lock-mr { font-size:14px; color:#888; margin-bottom:6px; }
+    .lock-hint { font-size:12px; color:#bbb; margin-bottom:20px; line-height:1.6; }
+    .pw-row { display:flex; gap:8px; max-width:300px; margin:0 auto 10px; }
+    .pw-row input { flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:9px; font-size:14px; font-family:inherit; outline:none; }
+    .pw-row input:focus { border-color:#c8390a; }
+    .err { color:#c62828; font-size:13px; font-weight:600; display:none; margin-top:6px; }
+    .btn { display:inline-block; padding:11px 18px; border-radius:9px; font-size:13px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+    .btn-red { background:#c8390a; color:#fff; }
+    .btn-blue { background:#1565c0; color:#fff; }
+    .btn-out { background:#fff; border:1px solid #ddd; color:#444; }
+    .btn-del { background:#fdedec; color:#c62828; border:1px solid #fadbd8; }
+    .btn-sm { padding:6px 11px; font-size:11px; border-radius:7px; }
+    .btn-full { width:100%; text-align:center; display:block; }
+    .adm-panel { display:none; }
+    .adm-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .adm-sec { background:#fff; border-radius:12px; border:1px solid #e8e8e8; margin-bottom:12px; overflow:hidden; }
+    .adm-hd { padding:11px 16px; border-bottom:1px solid #eee; display:flex; flex-direction:column; gap:1px; }
+    .adm-hd-en { font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:700; }
+    .adm-hd-mr { font-size:13px; font-weight:700; }
+    .adm-hd.red .adm-hd-en { color:#c8390a; }
+    .adm-hd.red { background:#fef7f5; }
+    .adm-hd.blue .adm-hd-en { color:#1565c0; }
+    .adm-hd.blue { background:#ebf5fb; }
+    .adm-hd.gray .adm-hd-en { color:#666; }
+    .adm-hd.gray { background:#f8f8f8; }
+    .adm-form { padding:14px 16px; display:flex; flex-direction:column; gap:11px; }
+    .fg { display:flex; flex-direction:column; gap:3px; }
+    .fg .lben { font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#bbb; font-weight:700; }
+    .fg .lbmr { font-size:12px; font-weight:700; color:#999; }
+    .fg input,.fg select { padding:10px 13px; border:1px solid #ddd; border-radius:8px; font-size:14px; font-family:inherit; outline:none; width:100%; margin-top:2px; }
+    .fg input:focus,.fg select:focus { border-color:#c8390a; }
+    .frow { display:flex; gap:10px; }
+    .frow .fg { flex:1; }
+    .photo-upload-wrap { display:flex; align-items:center; gap:14px; padding:12px 16px; background:#fafafa; border-radius:10px; border:1px dashed #ddd; }
+    .photo-preview { width:60px; height:60px; border-radius:50%; border:2px solid #ddd; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:24px; overflow:hidden; flex-shrink:0; }
+    .photo-preview img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .photo-upload-btn { flex:1; }
+    .photo-upload-btn label { display:block; padding:9px 14px; background:#fff; border:1px solid #ddd; border-radius:8px; font-size:13px; font-weight:600; color:#555; cursor:pointer; text-align:center; }
+    .photo-upload-btn label:hover { border-color:#c8390a; color:#c8390a; }
+    .photo-upload-btn input[type="file"] { display:none; }
+    .atabs { display:flex; gap:7px; margin-bottom:12px; }
+    .atab { padding:6px 14px; border-radius:20px; font-size:11px; font-weight:700; border:1px solid #ddd; background:#fff; color:#888; cursor:pointer; }
+    .atab.on { background:#c8390a; color:#fff; border-color:#c8390a; }
+    .tbl { width:100%; border-collapse:collapse; font-size:13px; }
+    .tbl th { padding:9px 12px; text-align:left; background:#f8f8f8; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aaa; border-bottom:1px solid #eee; }
+    .tbl td { padding:9px 12px; border-bottom:1px solid #f5f5f5; vertical-align:middle; }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tr.curr td { background:#fef7f5; }
+    .tbl-wrap { padding:0 16px 14px; overflow-x:auto; }
+    .tbl-avatar { width:32px; height:32px; border-radius:50%; border:1.5px solid #eee; background:#f5f5f5; display:flex; align-items:center; justify-content:center; font-size:14px; overflow:hidden; flex-shrink:0; }
+    .tbl-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .alert { padding:11px 14px; border-radius:8px; font-size:13px; font-weight:600; margin-bottom:12px; display:none; }
+    .alert.ok { background:#eafaf1; color:#1e8449; border:1px solid #a9dfbf; }
+    .alert.err { background:#fdedec; color:#c62828; border:1px solid #f5b7b1; }
+    .fin-year-sel { display:flex; align-items:center; gap:10px; margin-bottom:14px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; padding:12px 14px; }
+    .fin-year-sel label { font-size:12px; font-weight:700; color:#888; white-space:nowrap; }
+    .fin-year-sel select { flex:1; padding:8px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px; font-family:inherit; outline:none; }
+    .fin-year-sel select:focus { border-color:#2e7d32; }
+    .fin-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+    .fin-stat { border-radius:12px; padding:14px; text-align:center; }
+    .fin-stat.green { background:linear-gradient(135deg,#1b5e20,#2e7d32); color:#fff; }
+    .fin-stat.red { background:linear-gradient(135deg,#b71c1c,#c62828); color:#fff; }
+    .fin-stat.blue { background:linear-gradient(135deg,#1565c0,#1976d2); color:#fff; }
+    .fin-stat.orange { background:linear-gradient(135deg,#e65100,#f57c00); color:#fff; }
+    .fin-stat-n { font-size:22px; font-weight:800; line-height:1; }
+    .fin-stat-l { font-size:10px; opacity:0.8; margin-top:3px; letter-spacing:0.5px; }
+    .fin-stat-mr { font-size:11px; opacity:0.7; margin-top:1px; }
+    .fin-progress-wrap { background:#fff; border-radius:12px; border:1px solid #e8e8e8; padding:14px; margin-bottom:14px; }
+    .fin-progress-label { display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:8px; }
+    .fin-bar-bg { background:#f0f0f0; border-radius:20px; height:12px; overflow:hidden; }
+    .fin-bar { height:100%; border-radius:20px; transition:width 0.5s; background:linear-gradient(90deg,#2e7d32,#66bb6a); }
+    .fin-bar.over { background:linear-gradient(90deg,#c62828,#ef5350); }
+    .fin-section { background:#fff; border-radius:12px; border:1px solid #e8e8e8; margin-bottom:12px; overflow:hidden; }
+    .fin-sec-hd { padding:11px 14px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; }
+    .fin-sec-hd-left { display:flex; flex-direction:column; gap:1px; }
+    .fin-sec-hd-en { font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:700; }
+    .fin-sec-hd-mr { font-size:13px; font-weight:700; }
+    .fin-sec-hd.green .fin-sec-hd-en { color:#2e7d32; }
+    .fin-sec-hd.green { background:#f1f8e9; }
+    .fin-sec-hd.red .fin-sec-hd-en { color:#c62828; }
+    .fin-sec-hd.red { background:#ffebee; }
+    .fin-total-badge { font-size:14px; font-weight:800; padding:4px 12px; border-radius:20px; }
+    .fin-total-badge.green { background:#2e7d32; color:#fff; }
+    .fin-total-badge.red { background:#c62828; color:#fff; }
+    .fin-entry { display:flex; align-items:center; gap:10px; padding:11px 14px; border-bottom:1px solid #f5f5f5; flex-wrap:wrap; }
+    .fin-entry:last-child { border-bottom:none; }
+    .fin-entry-name { flex:1; font-size:14px; font-weight:600; color:#1a1a1a; min-width:120px; }
+    .fin-entry-sub { font-size:11px; color:#aaa; margin-top:1px; }
+    .fin-entry-amt { font-size:16px; font-weight:800; color:#2e7d32; white-space:nowrap; }
+    .fin-entry-amt.exp { color:#c62828; }
+    .fin-entry-del { background:none; border:none; color:#ddd; font-size:16px; cursor:pointer; padding:2px 6px; }
+    .fin-entry-del:hover { color:#c62828; }
+    .fin-entry-edit { background:none; border:none; color:#1565c0; font-size:16px; cursor:pointer; padding:2px 6px; }
+    .fin-entry-edit:hover { color:#0d47a1; }
+    .fin-entry-bill { background:none; border:none; font-size:16px; cursor:pointer; padding:2px 6px; }
+    .fin-entry-bill input[type="file"] { display:none; }
+    .fin-empty { padding:20px; text-align:center; color:#bbb; font-size:13px; }
+    .fin-add-form { padding:12px 14px; background:#fafafa; border-top:1px solid #eee; display:flex; flex-direction:column; gap:8px; }
+    .fin-add-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .fin-add-row input { flex:1; padding:9px 12px; border:1px solid #ddd; border-radius:8px; font-size:13px; font-family:inherit; outline:none; min-width:0; }
+    .fin-add-row input:focus { border-color:#2e7d32; }
+    .fin-add-row .amt-input { max-width:110px; }
+    .btn-green { background:#2e7d32; color:#fff; border:none; }
+    .btn-green:hover { background:#1b5e20; }
+    .btn-small-icon { padding:2px 6px; font-size:14px; background:none; border:none; cursor:pointer; }
+    .owner-credit { text-align:center; font-size:11px; color:#aaa; margin-top:12px; padding-top:8px; border-top:1px solid #eee; }
+    .admin-note { font-size:12px; color:#888; margin-top:4px; border-top:1px solid #eee; padding-top:8px; text-align:center; }
+    .password-contact-note { margin-top:12px; font-size:13px; color:#e45a5a; background:rgba(255,215,0,0.2); padding:6px 14px; border-radius:8px; display:inline-block; border:1px solid rgba(255,215,0,0.3); }
+    .footer { text-align:center; padding:20px 16px; color:#ccc; font-size:11px; border-top:1px solid #eee; background:#fff; margin-top:8px; line-height:1.7; }
+    @media (max-width:360px) { .hdr-title { font-size:17px; } .hero-yr { font-size:26px; } .frow { flex-direction:column; } .cal-date { font-size:18px; } .cd-num { font-size:24px; } }
+  </style>
+</head>
+<body>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-    <style>
-      /* ─── STYLES (unchanged) ─── */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        font-family: "Segoe UI", system-ui, sans-serif;
-        background: #f7f4f0;
-        color: #1a1a1a;
-        min-height: 100vh;
-        font-size: 15px;
-      }
-      .hdr {
-        background: linear-gradient(135deg, #b71c1c, #c8390a, #e65100);
-        padding: 22px 20px 18px;
-        text-align: center;
-      }
-      .hdr-sub {
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 5px;
-      }
-      .hdr-title {
-        font-size: 19px;
-        font-weight: 800;
-        color: #fff;
-        line-height: 1.35;
-        margin-bottom: 2px;
-      }
-      .hdr-mr {
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.75);
-        margin-bottom: 14px;
-      }
-      .cal-strip {
-        display: flex;
-        gap: 10px;
-        padding: 12px 14px;
-        background: rgba(0, 0, 0, 0.18);
-        margin: 0;
-      }
-      .cal-box {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 10px;
-        padding: 10px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        min-width: 0;
-      }
-      .cal-icon {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.6);
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        margin-bottom: 3px;
-      }
-      .cal-date {
-        font-size: 22px;
-        font-weight: 800;
-        color: #fff;
-        line-height: 1;
-      }
-      .cal-day {
-        font-size: 12px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.85);
-        margin-top: 2px;
-      }
-      .cal-month {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.6);
-        margin-top: 1px;
-      }
-      .countdown-box {
-        flex: 1.4;
-        background: rgba(255, 200, 0, 0.18);
-        border-radius: 10px;
-        padding: 10px 12px;
-        border: 1px solid rgba(255, 220, 0, 0.3);
-        min-width: 0;
-        text-align: center;
-      }
-      .cd-label {
-        font-size: 10px;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.65);
-        margin-bottom: 4px;
-      }
-      .cd-num {
-        font-size: 28px;
-        font-weight: 900;
-        color: #ffd700;
-        line-height: 1;
-        text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
-      }
-      .cd-unit {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: 2px;
-      }
-      .cd-mr {
-        font-size: 11px;
-        color: rgba(255, 220, 100, 0.85);
-        margin-top: 3px;
-        font-weight: 600;
-      }
-      .cd-date-note {
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.5);
-        margin-top: 4px;
-      }
-      .date-pills {
-        display: flex;
-        gap: 6px;
-        padding: 0 14px 12px;
-        overflow-x: auto;
-        scrollbar-width: none;
-      }
-      .date-pills::-webkit-scrollbar {
-        display: none;
-      }
-      .dpill {
-        flex-shrink: 0;
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 9px;
-        padding: 6px 12px;
-        text-align: center;
-        cursor: default;
-      }
-      .dpill.today {
-        background: rgba(255, 255, 255, 0.92);
-        border-color: #fff;
-      }
-      .dpill.today .dpill-day {
-        color: #c8390a;
-      }
-      .dpill.today .dpill-date {
-        color: #c8390a;
-      }
-      .dpill.today .dpill-name {
-        color: #888;
-      }
-      .dpill-day {
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.55);
-      }
-      .dpill-date {
-        font-size: 16px;
-        font-weight: 800;
-        color: #fff;
-        line-height: 1.1;
-      }
-      .dpill-name {
-        font-size: 9px;
-        color: rgba(255, 255, 255, 0.55);
-        margin-top: 1px;
-      }
-      .nav {
-        display: flex;
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-      }
-      .nav-btn {
-        flex: 1;
-        padding: 11px 2px;
-        font-size: 11px;
-        font-weight: 700;
-        color: #999;
-        border: none;
-        background: none;
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        line-height: 1.35;
-      }
-      .nav-btn.on {
-        color: #c8390a;
-        border-bottom-color: #c8390a;
-      }
-      .sync-bar {
-        background: #fff8e1;
-        border-bottom: 1px solid #ffe082;
-        padding: 7px 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: #795548;
-      }
-      .sync-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #4caf50;
-        flex-shrink: 0;
-      }
-      .sync-dot.loading {
-        background: #ff9800;
-        animation: pulse 1s infinite;
-      }
-      .sync-dot.err {
-        background: #f44336;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.3;
-        }
-      }
-      .main {
-        padding: 14px;
-      }
-      .pg {
-        display: none;
-      }
-      .pg.on {
-        display: block;
-      }
-      .hero {
-        border-radius: 14px;
-        padding: 18px 20px;
-        margin-bottom: 12px;
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-      }
-      .hero.red {
-        background: linear-gradient(135deg, #c8390a, #e65100);
-      }
-      .hero.blue {
-        background: linear-gradient(135deg, #1565c0, #1976d2);
-      }
-      .hero::after {
-        content: "✨";
-        position: absolute;
-        bottom: 10px;
-        right: 16px;
-        font-size: 22px;
-        opacity: 0.25;
-      }
-      .hero-lbl-en {
-        font-size: 10px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 1px;
-      }
-      .hero-lbl-mr {
-        font-size: 13px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.82);
-        margin-bottom: 10px;
-      }
-      .hero-row {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .hero-avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.2);
-        flex-shrink: 0;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-      .hero-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .hero-yr {
-        font-size: 30px;
-        font-weight: 800;
-        color: #fff;
-        line-height: 1;
-      }
-      .hero-nm {
-        font-size: 17px;
-        font-weight: 700;
-        color: #fff;
-        margin-top: 4px;
-        line-height: 1.25;
-      }
-      .hero-ph {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: 3px;
-      }
-      .hero-tag {
-        display: inline-block;
-        margin-top: 10px;
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        color: #fff;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 3px 12px;
-        border-radius: 20px;
-        letter-spacing: 0.5px;
-      }
-      .stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-      .stat {
-        background: #fff;
-        border-radius: 10px;
-        border: 1px solid #e8e8e8;
-        padding: 13px 14px;
-      }
-      .stat-n {
-        font-size: 28px;
-        font-weight: 800;
-        color: #c8390a;
-        line-height: 1;
-      }
-      .stat-mr {
-        font-size: 12px;
-        color: #888;
-        font-weight: 600;
-        margin-top: 2px;
-      }
-      .stat-en {
-        font-size: 10px;
-        color: #bbb;
-      }
-      .card {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e8e8e8;
-        overflow: hidden;
-        margin-bottom: 12px;
-      }
-      .card-hd {
-        padding: 13px 16px 0;
-      }
-      .card-hd-en {
-        font-size: 10px;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        color: #bbb;
-      }
-      .card-hd-mr {
-        font-size: 14px;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-top: 1px;
-        margin-bottom: 10px;
-      }
-      .card-body {
-        padding: 0 16px 16px;
-      }
-      .chips {
-        display: flex;
-        gap: 7px;
-        overflow-x: auto;
-        padding-bottom: 2px;
-        margin-bottom: 12px;
-        scrollbar-width: none;
-      }
-      .chips::-webkit-scrollbar {
-        display: none;
-      }
-      .chip {
-        padding: 6px 13px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        border: 1px solid #ddd;
-        background: #fff;
-        color: #888;
-        cursor: pointer;
-        white-space: nowrap;
-        flex-shrink: 0;
-        transition: all 0.15s;
-      }
-      .chip.on {
-        background: #c8390a;
-        color: #fff;
-        border-color: #c8390a;
-      }
-      .chip.past {
-        opacity: 0.5;
-      }
-      .lookup {
-        background: #fef7f5;
-        border-radius: 10px;
-        border: 1.5px solid #c8390a;
-        padding: 16px;
-        display: none;
-      }
-      .lk-yr {
-        font-size: 36px;
-        font-weight: 800;
-        color: #c8390a;
-        line-height: 1;
-        margin-bottom: 12px;
-      }
-      .lk-row {
-        margin-bottom: 10px;
-      }
-      .lk-en {
-        font-size: 10px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #bbb;
-      }
-      .lk-mr {
-        font-size: 12px;
-        font-weight: 700;
-        color: #888;
-        margin-bottom: 2px;
-      }
-      .lk-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 4px;
-      }
-      .lk-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 2px solid #c8390a;
-        background: #fef7f5;
-        flex-shrink: 0;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-      .lk-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .lk-val {
-        font-size: 15px;
-        font-weight: 700;
-        color: #1a1a1a;
-      }
-      .lk-ph {
-        font-size: 12px;
-        color: #888;
-      }
-      .dl {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .di {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: #fff;
-        border-radius: 10px;
-        border: 1px solid #e8e8e8;
-        padding: 12px 14px;
-        transition: all 0.2s;
-      }
-      .di.curr {
-        background: linear-gradient(
-          135deg,
-          #c8390a 0%,
-          #e65100 60%,
-          #ff8f00 100%
-        );
-        border: none;
-        border-radius: 14px;
-        padding: 18px;
-        box-shadow: 0 6px 24px rgba(200, 57, 10, 0.45),
-          0 2px 8px rgba(200, 57, 10, 0.2);
-        position: relative;
-        overflow: hidden;
-      }
-      .di.curr::before {
-        content: "";
-        position: absolute;
-        top: -30px;
-        right: -30px;
-        width: 100px;
-        height: 100px;
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 50%;
-      }
-      .di.curr::after {
-        content: "✨";
-        position: absolute;
-        bottom: 10px;
-        right: 14px;
-        font-size: 20px;
-        opacity: 0.3;
-      }
-      .di.past {
-        filter: blur(0.6px);
-        opacity: 0.45;
-        transform: scale(0.97);
-      }
-      .di.upcoming {
-        filter: blur(0.5px);
-        opacity: 0.6;
-        transform: scale(0.98);
-      }
-      .di.empty {
-        border-style: dashed;
-      }
-      .di-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #e8e8e8;
-        background: #f5f5f5;
-        flex-shrink: 0;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-      .di-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-      .di.curr .di-avatar {
-        width: 50px;
-        height: 50px;
-        border: 3px solid rgba(255, 255, 255, 0.6);
-      }
-      .di-yr {
-        font-size: 13px;
-        font-weight: 800;
-        min-width: 36px;
-        color: #bbb;
-        flex-shrink: 0;
-      }
-      .di.curr .di-yr {
-        font-size: 20px;
-        font-weight: 800;
-        color: rgba(255, 255, 255, 0.7);
-        min-width: 46px;
-      }
-      .di-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .di-nm {
-        font-size: 14px;
-        font-weight: 700;
-        color: #1a1a1a;
-        line-height: 1.3;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .di.curr .di-nm {
-        font-size: 18px;
-        font-weight: 800;
-        color: #fff;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-        white-space: normal;
-      }
-      .di.past .di-nm {
-        color: #aaa;
-        font-weight: 500;
-      }
-      .di.empty .di-nm {
-        color: #ccc;
-        font-style: italic;
-        font-weight: 400;
-      }
-      .di-ph {
-        font-size: 11px;
-        color: #aaa;
-        margin-top: 2px;
-      }
-      .di.curr .di-ph {
-        color: rgba(255, 255, 255, 0.7);
-      }
-      .di-tag {
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 0.8px;
-        background: #c8390a;
-        color: #fff;
-        padding: 3px 9px;
-        border-radius: 10px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .di.curr .di-tag {
-        background: rgba(255, 255, 255, 0.25);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        font-size: 10px;
-        padding: 4px 11px;
-        border-radius: 12px;
-      }
-      .srch {
-        position: relative;
-        margin-bottom: 12px;
-      }
-      .srch input {
-        width: 100%;
-        padding: 11px 14px 11px 38px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        font-size: 14px;
-        font-family: inherit;
-        outline: none;
-        background: #fff;
-      }
-      .srch input:focus {
-        border-color: #c8390a;
-      }
-      .srch-ico {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #bbb;
-        font-size: 15px;
-      }
-      .lock-wrap {
-        text-align: center;
-        padding: 44px 20px;
-      }
-      .lock-ico {
-        font-size: 48px;
-        margin-bottom: 14px;
-      }
-      .lock-en {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 2px;
-      }
-      .lock-mr {
-        font-size: 14px;
-        color: #888;
-        margin-bottom: 6px;
-      }
-      .lock-hint {
-        font-size: 12px;
-        color: #bbb;
-        margin-bottom: 20px;
-        line-height: 1.6;
-      }
-      .pw-row {
-        display: flex;
-        gap: 8px;
-        max-width: 300px;
-        margin: 0 auto 10px;
-      }
-      .pw-row input {
-        flex: 1;
-        padding: 11px 14px;
-        border: 1px solid #ddd;
-        border-radius: 9px;
-        font-size: 14px;
-        font-family: inherit;
-        outline: none;
-      }
-      .pw-row input:focus {
-        border-color: #c8390a;
-      }
-      .err {
-        color: #c62828;
-        font-size: 13px;
-        font-weight: 600;
-        display: none;
-        margin-top: 6px;
-      }
-      .btn {
-        display: inline-block;
-        padding: 11px 18px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 700;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        transition: all 0.15s;
-      }
-      .btn-red {
-        background: #c8390a;
-        color: #fff;
-      }
-      .btn-blue {
-        background: #1565c0;
-        color: #fff;
-      }
-      .btn-out {
-        background: #fff;
-        border: 1px solid #ddd;
-        color: #444;
-      }
-      .btn-del {
-        background: #fdedec;
-        color: #c62828;
-        border: 1px solid #fadbd8;
-      }
-      .btn-sm {
-        padding: 6px 11px;
-        font-size: 11px;
-        border-radius: 7px;
-      }
-      .btn-full {
-        width: 100%;
-        text-align: center;
-        display: block;
-      }
-      .adm-panel {
-        display: none;
-      }
-      .adm-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 14px;
-      }
-      .adm-sec {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e8e8e8;
-        margin-bottom: 12px;
-        overflow: hidden;
-      }
-      .adm-hd {
-        padding: 11px 16px;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-      .adm-hd-en {
-        font-size: 10px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-      .adm-hd-mr {
-        font-size: 13px;
-        font-weight: 700;
-      }
-      .adm-hd.red .adm-hd-en {
-        color: #c8390a;
-      }
-      .adm-hd.red {
-        background: #fef7f5;
-      }
-      .adm-hd.blue .adm-hd-en {
-        color: #1565c0;
-      }
-      .adm-hd.blue {
-        background: #ebf5fb;
-      }
-      .adm-hd.gray .adm-hd-en {
-        color: #666;
-      }
-      .adm-hd.gray {
-        background: #f8f8f8;
-      }
-      .adm-form {
-        padding: 14px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 11px;
-      }
-      .fg {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-      }
-      .fg .lben {
-        font-size: 9px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #bbb;
-        font-weight: 700;
-      }
-      .fg .lbmr {
-        font-size: 12px;
-        font-weight: 700;
-        color: #999;
-      }
-      .fg input,
-      .fg select {
-        padding: 10px 13px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
-        outline: none;
-        width: 100%;
-        margin-top: 2px;
-      }
-      .fg input:focus,
-      .fg select:focus {
-        border-color: #c8390a;
-      }
-      .frow {
-        display: flex;
-        gap: 10px;
-      }
-      .frow .fg {
-        flex: 1;
-      }
-      .photo-upload-wrap {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 16px;
-        background: #fafafa;
-        border-radius: 10px;
-        border: 1px dashed #ddd;
-      }
-      .photo-preview {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 2px solid #ddd;
-        background: #f0f0f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        overflow: hidden;
-        flex-shrink: 0;
-      }
-      .photo-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-      .photo-upload-btn {
-        flex: 1;
-      }
-      .photo-upload-btn label {
-        display: block;
-        padding: 9px 14px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #555;
-        cursor: pointer;
-        text-align: center;
-      }
-      .photo-upload-btn label:hover {
-        border-color: #c8390a;
-        color: #c8390a;
-      }
-      .photo-upload-btn input[type="file"] {
-        display: none;
-      }
-      .atabs {
-        display: flex;
-        gap: 7px;
-        margin-bottom: 12px;
-      }
-      .atab {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-        border: 1px solid #ddd;
-        background: #fff;
-        color: #888;
-        cursor: pointer;
-      }
-      .atab.on {
-        background: #c8390a;
-        color: #fff;
-        border-color: #c8390a;
-      }
-      .tbl {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-      }
-      .tbl th {
-        padding: 9px 12px;
-        text-align: left;
-        background: #f8f8f8;
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #aaa;
-        border-bottom: 1px solid #eee;
-      }
-      .tbl td {
-        padding: 9px 12px;
-        border-bottom: 1px solid #f5f5f5;
-        vertical-align: middle;
-      }
-      .tbl tr:last-child td {
-        border-bottom: none;
-      }
-      .tbl tr.curr td {
-        background: #fef7f5;
-      }
-      .tbl-wrap {
-        padding: 0 16px 14px;
-        overflow-x: auto;
-      }
-      .tbl-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 1.5px solid #eee;
-        background: #f5f5f5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        overflow: hidden;
-        flex-shrink: 0;
-      }
-      .tbl-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-      .alert {
-        padding: 11px 14px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        display: none;
-      }
-      .alert.ok {
-        background: #eafaf1;
-        color: #1e8449;
-        border: 1px solid #a9dfbf;
-      }
-      .alert.err {
-        background: #fdedec;
-        color: #c62828;
-        border: 1px solid #f5b7b1;
-      }
-      .fin-year-sel {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 14px;
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e8e8e8;
-        padding: 12px 14px;
-      }
-      .fin-year-sel label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #888;
-        white-space: nowrap;
-      }
-      .fin-year-sel select {
-        flex: 1;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
-        outline: none;
-      }
-      .fin-year-sel select:focus {
-        border-color: #2e7d32;
-      }
-      .fin-summary {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .fin-stat {
-        border-radius: 12px;
-        padding: 14px;
-        text-align: center;
-      }
-      .fin-stat.green {
-        background: linear-gradient(135deg, #1b5e20, #2e7d32);
-        color: #fff;
-      }
-      .fin-stat.red {
-        background: linear-gradient(135deg, #b71c1c, #c62828);
-        color: #fff;
-      }
-      .fin-stat.blue {
-        background: linear-gradient(135deg, #1565c0, #1976d2);
-        color: #fff;
-      }
-      .fin-stat.orange {
-        background: linear-gradient(135deg, #e65100, #f57c00);
-        color: #fff;
-      }
-      .fin-stat-n {
-        font-size: 22px;
-        font-weight: 800;
-        line-height: 1;
-      }
-      .fin-stat-l {
-        font-size: 10px;
-        opacity: 0.8;
-        margin-top: 3px;
-        letter-spacing: 0.5px;
-      }
-      .fin-stat-mr {
-        font-size: 11px;
-        opacity: 0.7;
-        margin-top: 1px;
-      }
-      .fin-progress-wrap {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e8e8e8;
-        padding: 14px;
-        margin-bottom: 14px;
-      }
-      .fin-progress-label {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-      .fin-bar-bg {
-        background: #f0f0f0;
-        border-radius: 20px;
-        height: 12px;
-        overflow: hidden;
-      }
-      .fin-bar {
-        height: 100%;
-        border-radius: 20px;
-        transition: width 0.5s;
-        background: linear-gradient(90deg, #2e7d32, #66bb6a);
-      }
-      .fin-bar.over {
-        background: linear-gradient(90deg, #c62828, #ef5350);
-      }
-      .fin-section {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e8e8e8;
-        margin-bottom: 12px;
-        overflow: hidden;
-      }
-      .fin-sec-hd {
-        padding: 11px 14px;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .fin-sec-hd-left {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-      .fin-sec-hd-en {
-        font-size: 10px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-      .fin-sec-hd-mr {
-        font-size: 13px;
-        font-weight: 700;
-      }
-      .fin-sec-hd.green .fin-sec-hd-en {
-        color: #2e7d32;
-      }
-      .fin-sec-hd.green {
-        background: #f1f8e9;
-      }
-      .fin-sec-hd.red .fin-sec-hd-en {
-        color: #c62828;
-      }
-      .fin-sec-hd.red {
-        background: #ffebee;
-      }
-      .fin-total-badge {
-        font-size: 14px;
-        font-weight: 800;
-        padding: 4px 12px;
-        border-radius: 20px;
-      }
-      .fin-total-badge.green {
-        background: #2e7d32;
-        color: #fff;
-      }
-      .fin-total-badge.red {
-        background: #c62828;
-        color: #fff;
-      }
-      .fin-entry {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 14px;
-        border-bottom: 1px solid #f5f5f5;
-      }
-      .fin-entry:last-child {
-        border-bottom: none;
-      }
-      .fin-entry-name {
-        flex: 1;
-        font-size: 14px;
-        font-weight: 600;
-        color: #1a1a1a;
-      }
-      .fin-entry-sub {
-        font-size: 11px;
-        color: #aaa;
-        margin-top: 1px;
-      }
-      .fin-entry-amt {
-        font-size: 16px;
-        font-weight: 800;
-        color: #2e7d32;
-        white-space: nowrap;
-      }
-      .fin-entry-amt.exp {
-        color: #c62828;
-      }
-      .fin-entry-del {
-        background: none;
-        border: none;
-        color: #ddd;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 2px 6px;
-      }
-      .fin-entry-del:hover {
-        color: #c62828;
-      }
-      .fin-empty {
-        padding: 20px;
-        text-align: center;
-        color: #bbb;
-        font-size: 13px;
-      }
-      .fin-add-form {
-        padding: 12px 14px;
-        background: #fafafa;
-        border-top: 1px solid #eee;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .fin-add-row {
-        display: flex;
-        gap: 8px;
-      }
-      .fin-add-row input {
-        flex: 1;
-        padding: 9px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 13px;
-        font-family: inherit;
-        outline: none;
-        min-width: 0;
-      }
-      .fin-add-row input:focus {
-        border-color: #2e7d32;
-      }
-      .fin-add-row .amt-input {
-        max-width: 110px;
-      }
-      .btn-green {
-        background: #2e7d32;
-        color: #fff;
-        border: none;
-      }
-      .btn-green:hover {
-        background: #1b5e20;
-      }
-      .footer {
-        text-align: center;
-        padding: 20px 16px;
-        color: #ccc;
-        font-size: 11px;
-        border-top: 1px solid #eee;
-        background: #fff;
-        margin-top: 8px;
-        line-height: 1.7;
-      }
-      @media (max-width: 360px) {
-        .hdr-title {
-          font-size: 17px;
-        }
-        .hero-yr {
-          font-size: 26px;
-        }
-        .frow {
-          flex-direction: column;
-        }
-        .cal-date {
-          font-size: 18px;
-        }
-        .cd-num {
-          font-size: 24px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- HEADER -->
-    <div class="hdr">
-      <div class="hdr-sub">Ganapati Utsav · गणेश उत्सव</div>
-      <div class="hdr-title">Chhatrapati Shivaji Maharaj Tarun Mandal</div>
-      <div class="hdr-mr">छत्रपती शिवाजी महाराज तरुण मंडळ, शेनवडे</div>
-
-      <!-- CALENDAR + COUNTDOWN -->
-      <div class="cal-strip">
-        <div class="cal-box">
-          <div class="cal-icon">📅 Today / आज</div>
-          <div class="cal-date" id="calDate"></div>
-          <div class="cal-day" id="calDay"></div>
-          <div class="cal-month" id="calMonth"></div>
-        </div>
-        <div class="countdown-box">
-          <div class="cd-label">🎉 Ganesh Utsav 2026</div>
-          <div class="cd-num" id="cdNum">—</div>
-          <div class="cd-unit">days remaining / दिवस बाकी</div>
-          <div class="cd-mr" id="cdMr"></div>
-          <div class="cd-date-note">14 Sep 2026 · सोमवार</div>
-        </div>
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-sub">Ganapati Utsav · गणेश उत्सव</div>
+    <div class="hdr-title">Chhatrapati Shivaji Maharaj Tarun Mandal</div>
+    <div class="hdr-mr">छत्रपती शिवाजी महाराज तरुण मंडळ, शेनवडे</div>
+    <div class="cal-strip">
+      <div class="cal-box">
+        <div class="cal-icon">📅 Today / आज</div>
+        <div class="cal-date" id="calDate"></div>
+        <div class="cal-day" id="calDay"></div>
+        <div class="cal-month" id="calMonth"></div>
       </div>
-
-      <!-- NEXT 5 DAYS PILLS -->
-      <div class="date-pills" id="datePills"></div>
+      <div class="countdown-box">
+        <div class="cd-label">🎉 Ganesh Utsav 2026</div>
+        <div class="cd-num" id="cdNum">—</div>
+        <div class="cd-unit">days remaining / दिवस बाकी</div>
+        <div class="cd-mr" id="cdMr"></div>
+        <div class="cd-date-note">14 Sep 2026 · सोमवार</div>
+      </div>
     </div>
+    <div class="date-pills" id="datePills"></div>
+  </div>
 
-    <!-- SYNC BAR -->
-    <div class="sync-bar" id="syncBar">
-      <div class="sync-dot loading" id="syncDot"></div>
-      <span id="syncMsg"
-        >Connecting to Firebase… / फायरबेसशी कनेक्ट होत आहे…</span
-      >
-    </div>
+  <!-- SYNC BAR -->
+  <div class="sync-bar" id="syncBar">
+    <div class="sync-dot loading" id="syncDot"></div>
+    <span id="syncMsg">Connecting to Firebase… / फायरबेसशी कनेक्ट होत आहे…</span>
+  </div>
 
-    <!-- NAV -->
-    <div class="nav">
-      <button class="nav-btn on" onclick="gotoTab('home')">🏠<br />Home</button>
-      <button class="nav-btn" onclick="gotoTab('murti')">🕉️<br />Idol</button>
-      <button class="nav-btn" onclick="gotoTab('prasad')">
-        🍛<br />Prasad
-      </button>
-      <button class="nav-btn" onclick="gotoTab('finance')">
-        💰<br />Finance
-      </button>
-      <button class="nav-btn" onclick="gotoTab('admin')">🔒<br />Admin</button>
-    </div>
+  <!-- NAV -->
+  <div class="nav">
+    <button class="nav-btn on" onclick="gotoTab('home')">🏠<br>Home</button>
+    <button class="nav-btn" onclick="gotoTab('murti')">🕉️<br>Idol</button>
+    <button class="nav-btn" onclick="gotoTab('prasad')">🍛<br>Prasad</button>
+    <button class="nav-btn" onclick="gotoTab('finance')">💰<br>Finance</button>
+    <button class="nav-btn" onclick="gotoTab('admin')">🔒<br>Admin</button>
+  </div>
 
-    <div class="main">
-      <!-- HOME -->
-      <div class="pg on" id="pg-home">
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-n" id="smb">0</div>
-            <div class="stat-mr">मूर्ती नोंदणी</div>
-            <div class="stat-en">Idol booked</div>
-          </div>
-          <div class="stat">
-            <div class="stat-n" id="spb">0</div>
-            <div class="stat-mr">प्रसाद नोंदणी</div>
-            <div class="stat-en">Prasad booked</div>
-          </div>
-          <div class="stat">
-            <div class="stat-n" id="smo">0</div>
-            <div class="stat-mr">मूर्ती उपलब्ध</div>
-            <div class="stat-en">Idol open</div>
-          </div>
-          <div class="stat">
-            <div class="stat-n" id="spo">0</div>
-            <div class="stat-mr">प्रसाद उपलब्ध</div>
-            <div class="stat-en">Prasad open</div>
+  <div class="main">
+    <!-- HOME -->
+    <div class="pg on" id="pg-home">
+      <div class="stats">
+        <div class="stat"><div class="stat-n" id="smb">0</div><div class="stat-mr">मूर्ती नोंदणी</div><div class="stat-en">Idol booked</div></div>
+        <div class="stat"><div class="stat-n" id="spb">0</div><div class="stat-mr">प्रसाद नोंदणी</div><div class="stat-en">Prasad booked</div></div>
+        <div class="stat"><div class="stat-n" id="smo">0</div><div class="stat-mr">मूर्ती उपलब्ध</div><div class="stat-en">Idol open</div></div>
+        <div class="stat"><div class="stat-n" id="spo">0</div><div class="stat-mr">प्रसाद उपलब्ध</div><div class="stat-en">Prasad open</div></div>
+      </div>
+
+      <div class="hero red">
+        <div class="hero-lbl-en">This year's idol donor</div>
+        <div class="hero-lbl-mr">या वर्षीचे मूर्ती देणगीदार</div>
+        <div class="hero-row">
+          <div class="hero-avatar" id="hm-avatar">🕉️</div>
+          <div>
+            <div class="hero-yr" id="hmy"></div>
+            <div class="hero-nm" id="hmn"></div>
+            <div class="hero-ph" id="hmp"></div>
           </div>
         </div>
+        <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
+      </div>
 
-        <div class="hero red">
-          <div class="hero-lbl-en">This year's idol donor</div>
-          <div class="hero-lbl-mr">या वर्षीचे मूर्ती देणगीदार</div>
-          <div class="hero-row">
-            <div class="hero-avatar" id="hm-avatar">🕉️</div>
-            <div>
-              <div class="hero-yr" id="hmy"></div>
-              <div class="hero-nm" id="hmn"></div>
-              <div class="hero-ph" id="hmp"></div>
-            </div>
-          </div>
-          <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
-        </div>
-
-        <div class="hero blue">
-          <div class="hero-lbl-en">This year's prasad donor</div>
-          <div class="hero-lbl-mr">या वर्षीचे महाप्रसाद देणगीदार</div>
-          <div class="hero-row">
-            <div class="hero-avatar" id="hp-avatar">🍛</div>
-            <div>
-              <div class="hero-yr" id="hpy"></div>
-              <div class="hero-nm" id="hpn"></div>
-              <div class="hero-ph" id="hpp"></div>
-            </div>
-          </div>
-          <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
-        </div>
-
-        <div class="card">
-          <div class="card-hd">
-            <div class="card-hd-en">Look up by year</div>
-            <div class="card-hd-mr">वर्षानुसार शोधा</div>
-          </div>
-          <div class="card-body">
-            <div class="chips" id="chips"></div>
-            <div class="lookup" id="lookup">
-              <div class="lk-yr" id="lkyr"></div>
-              <div class="lk-row">
-                <div class="lk-en">Idol Donor</div>
-                <div class="lk-mr">मूर्ती देणगीदार</div>
-                <div class="lk-info">
-                  <div class="lk-avatar" id="lk-m-av">🕉️</div>
-                  <div>
-                    <div class="lk-val" id="lkm"></div>
-                    <div class="lk-ph" id="lkmp"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="lk-row" style="margin-bottom: 0">
-                <div class="lk-en">Prasad Donor</div>
-                <div class="lk-mr">महाप्रसाद देणगीदार</div>
-                <div class="lk-info">
-                  <div class="lk-avatar" id="lk-p-av">🍛</div>
-                  <div>
-                    <div class="lk-val" id="lkp"></div>
-                    <div class="lk-ph" id="lkpp"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="hero blue">
+        <div class="hero-lbl-en">This year's prasad donor</div>
+        <div class="hero-lbl-mr">या वर्षीचे महाप्रसाद देणगीदार</div>
+        <div class="hero-row">
+          <div class="hero-avatar" id="hp-avatar">🍛</div>
+          <div>
+            <div class="hero-yr" id="hpy"></div>
+            <div class="hero-nm" id="hpn"></div>
+            <div class="hero-ph" id="hpp"></div>
           </div>
         </div>
+        <div class="hero-tag">🎉 Current Year / चालू वर्ष</div>
+      </div>
 
-        <div class="card" style="margin-top: 0">
-          <div class="card-hd">
-            <div class="card-hd-en">
-              Finance for <span id="home-fin-year-label">2026</span>
-            </div>
-            <div class="card-hd-mr" id="home-fin-subtitle"></div>
-          </div>
-          <div class="card-body" style="padding-top: 8px">
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 8px;
-                text-align: center;
-              "
-            >
-              <div
-                style="
-                  background: #f1f8e9;
-                  border-radius: 10px;
-                  padding: 10px 6px;
-                "
-              >
-                <div
-                  style="font-size: 18px; font-weight: 800; color: #2e7d32"
-                  id="home-fin-col"
-                >
-                  ₹0
-                </div>
-                <div style="font-size: 10px; color: #888; margin-top: 2px">
-                  Collected<br />जमा
-                </div>
-              </div>
-              <div
-                style="
-                  background: #ffebee;
-                  border-radius: 10px;
-                  padding: 10px 6px;
-                "
-              >
-                <div
-                  style="font-size: 18px; font-weight: 800; color: #c62828"
-                  id="home-fin-exp"
-                >
-                  ₹0
-                </div>
-                <div style="font-size: 10px; color: #888; margin-top: 2px">
-                  Spent<br />खर्च
-                </div>
-              </div>
-              <div
-                style="
-                  background: #e3f2fd;
-                  border-radius: 10px;
-                  padding: 10px 6px;
-                "
-              >
-                <div
-                  style="font-size: 18px; font-weight: 800; color: #1565c0"
-                  id="home-fin-bal"
-                >
-                  ₹0
-                </div>
-                <div style="font-size: 10px; color: #888; margin-top: 2px">
-                  Balance<br />शिल्लक
-                </div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-en">Look up by year</div>
+          <div class="card-hd-mr">वर्षानुसार शोधा</div>
+        </div>
+        <div class="card-body">
+          <div class="chips" id="chips"></div>
+          <div class="lookup" id="lookup">
+            <div class="lk-yr" id="lkyr"></div>
+            <div class="lk-row">
+              <div class="lk-en">Idol Donor</div><div class="lk-mr">मूर्ती देणगीदार</div>
+              <div class="lk-info">
+                <div class="lk-avatar" id="lk-m-av">🕉️</div>
+                <div><div class="lk-val" id="lkm"></div><div class="lk-ph" id="lkmp"></div></div>
               </div>
             </div>
-            <button
-              onclick="gotoFinanceWithYear()"
-              style="
-                display: block;
-                width: 100%;
-                margin-top: 10px;
-                padding: 9px;
-                background: #f5f5f5;
-                border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                font-size: 12px;
-                font-weight: 700;
-                color: #555;
-                cursor: pointer;
-              "
-            >
-              💰 View full finance details →
-            </button>
+            <div class="lk-row" style="margin-bottom:0">
+              <div class="lk-en">Prasad Donor</div><div class="lk-mr">महाप्रसाद देणगीदार</div>
+              <div class="lk-info">
+                <div class="lk-avatar" id="lk-p-av">🍛</div>
+                <div><div class="lk-val" id="lkp"></div><div class="lk-ph" id="lkpp"></div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- IDOL LIST -->
-      <div class="pg" id="pg-murti">
-        <div class="srch">
-          <span class="srch-ico">🔍</span
-          ><input
-            type="text"
-            placeholder="Search name / नाव शोधा..."
-            oninput="filterList('murti',this.value)"
-          />
+      <div class="card" style="margin-top:0">
+        <div class="card-hd">
+          <div class="card-hd-en">Finance for <span id="home-fin-year-label">2026</span></div>
+          <div class="card-hd-mr" id="home-fin-subtitle"></div>
         </div>
-        <div class="dl" id="murtiList"></div>
-      </div>
-
-      <!-- PRASAD LIST -->
-      <div class="pg" id="pg-prasad">
-        <div class="srch">
-          <span class="srch-ico">🔍</span
-          ><input
-            type="text"
-            placeholder="Search name / नाव शोधा..."
-            oninput="filterList('prasad',this.value)"
-          />
-        </div>
-        <div class="dl" id="prasadList"></div>
-      </div>
-
-      <!-- FINANCE -->
-      <div class="pg" id="pg-finance">
-        <div class="fin-year-sel">
-          <label>Year / वर्ष :</label>
-          <select id="finYear" onchange="renderFinance()"></select>
-        </div>
-
-        <div class="fin-summary">
-          <div class="fin-stat green">
-            <div class="fin-stat-n" id="fin-total-col">₹0</div>
-            <div class="fin-stat-l">Total Collected</div>
-            <div class="fin-stat-mr">एकूण जमा</div>
-          </div>
-          <div class="fin-stat red">
-            <div class="fin-stat-n" id="fin-total-exp">₹0</div>
-            <div class="fin-stat-l">Total Spent</div>
-            <div class="fin-stat-mr">एकूण खर्च</div>
-          </div>
-          <div class="fin-stat blue" style="grid-column: span 2">
-            <div class="fin-stat-n" id="fin-balance">₹0</div>
-            <div class="fin-stat-l">Balance Remaining / शिल्लक</div>
-            <div class="fin-stat-mr" id="fin-balance-mr"></div>
-          </div>
-        </div>
-
-        <div class="fin-progress-wrap">
-          <div class="fin-progress-label">
-            <span>Spent / खर्च</span>
-            <span id="fin-pct">0%</span>
-          </div>
-          <div class="fin-bar-bg">
-            <div class="fin-bar" id="fin-bar" style="width: 0%"></div>
-          </div>
-          <div
-            style="
-              font-size: 11px;
-              color: #aaa;
-              margin-top: 6px;
-              text-align: center;
-            "
-            id="fin-bar-note"
-          >
-            of total collected spent
-          </div>
-        </div>
-
-        <!-- COLLECTIONS -->
-        <div class="fin-section">
-          <div class="fin-sec-hd green">
-            <div class="fin-sec-hd-left">
-              <div class="fin-sec-hd-en">Collections / देणग्या</div>
-              <div class="fin-sec-hd-mr">जमा झालेले पैसे</div>
+        <div class="card-body" style="padding-top:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+            <div style="background:#f1f8e9;border-radius:10px;padding:10px 6px;">
+              <div style="font-size:18px;font-weight:800;color:#2e7d32" id="home-fin-col">₹0</div>
+              <div style="font-size:10px;color:#888;margin-top:2px;">Collected<br>जमा</div>
             </div>
-            <div class="fin-total-badge green" id="fin-col-badge">₹0</div>
-          </div>
-          <div id="fin-col-list"></div>
-          <div class="fin-add-form" id="fin-col-form" style="display: none">
-            <div class="fin-add-row">
-              <input
-                type="text"
-                id="colName"
-                placeholder="Name / नाव (e.g. Ramesh Patil)"
-              />
-              <input
-                type="number"
-                id="colAmt"
-                class="amt-input"
-                placeholder="₹ Amount"
-                min="1"
-              />
+            <div style="background:#ffebee;border-radius:10px;padding:10px 6px;">
+              <div style="font-size:18px;font-weight:800;color:#c62828" id="home-fin-exp">₹0</div>
+              <div style="font-size:10px;color:#888;margin-top:2px;">Spent<br>खर्च</div>
             </div>
-            <input
-              type="text"
-              id="colNote"
-              placeholder="Note / टीप (optional)"
-              style="
-                padding: 9px 12px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-size: 13px;
-                font-family: inherit;
-                outline: none;
-              "
-            />
-            <div class="fin-add-row">
-              <button
-                class="btn btn-green btn-sm btn-full"
-                onclick="addEntry('col')"
-              >
-                ✅ Add Collection / जोडा
-              </button>
-              <button class="btn btn-out btn-sm" onclick="toggleForm('col')">
-                Cancel
-              </button>
+            <div style="background:#e3f2fd;border-radius:10px;padding:10px 6px;">
+              <div style="font-size:18px;font-weight:800;color:#1565c0" id="home-fin-bal">₹0</div>
+              <div style="font-size:10px;color:#888;margin-top:2px;">Balance<br>शिल्लक</div>
             </div>
           </div>
-          <div style="padding: 10px 14px; border-top: 1px solid #eee">
-            <button
-              class="btn btn-green btn-sm btn-full"
-              onclick="toggleForm('col')"
-              id="fin-col-toggle-btn"
-              style="display: none"
-            >
-              ＋ Add Collection / देणगी जोडा
-            </button>
-          </div>
-        </div>
-
-        <!-- EXPENSES -->
-        <div class="fin-section">
-          <div class="fin-sec-hd red">
-            <div class="fin-sec-hd-left">
-              <div class="fin-sec-hd-en">Expenses / खर्च</div>
-              <div class="fin-sec-hd-mr">झालेले खर्च</div>
-            </div>
-            <div class="fin-total-badge red" id="fin-exp-badge">₹0</div>
-          </div>
-          <div id="fin-exp-list"></div>
-          <div class="fin-add-form" id="fin-exp-form" style="display: none">
-            <div class="fin-add-row">
-              <input
-                type="text"
-                id="expName"
-                placeholder="Item / वस्तू (e.g. Decoration)"
-              />
-              <input
-                type="number"
-                id="expAmt"
-                class="amt-input"
-                placeholder="₹ Amount"
-                min="1"
-              />
-            </div>
-            <input
-              type="text"
-              id="expNote"
-              placeholder="Note / टीप (optional)"
-              style="
-                padding: 9px 12px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-size: 13px;
-                font-family: inherit;
-                outline: none;
-              "
-            />
-            <div class="fin-add-row">
-              <button
-                class="btn btn-sm btn-full"
-                onclick="addEntry('exp')"
-                style="background: #c62828; color: #fff; border: none"
-              >
-                ✅ Add Expense / खर्च जोडा
-              </button>
-              <button class="btn btn-out btn-sm" onclick="toggleForm('exp')">
-                Cancel
-              </button>
-            </div>
-          </div>
-          <div style="padding: 10px 14px; border-top: 1px solid #eee">
-            <button
-              class="btn btn-sm btn-full"
-              onclick="toggleForm('exp')"
-              id="fin-exp-toggle-btn"
-              style="
-                display: none;
-                background: #ffebee;
-                color: #c62828;
-                border: 1px solid #ffcdd2;
-                font-weight: 700;
-                border-radius: 8px;
-                cursor: pointer;
-              "
-            >
-              ＋ Add Expense / खर्च जोडा
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADMIN -->
-      <div class="pg" id="pg-admin">
-        <div class="lock-wrap" id="lockWrap">
-          <div class="lock-ico">🔐</div>
-          <div class="lock-en">Admin Area</div>
-          <div class="lock-mr">अॅडमिन क्षेत्र</div>
-          <div class="lock-hint">
-            Enter password to manage donor records<br />नोंद जोडण्यासाठी
-            संकेतशब्द द्या
-          </div>
-          <div class="pw-row">
-            <input
-              type="password"
-              id="pwInput"
-              placeholder="Password / संकेतशब्द"
-              onkeydown="if(event.key==='Enter')checkPw()"
-            />
-            <button class="btn btn-red" onclick="checkPw()">Enter</button>
-          </div>
-          <div class="err" id="pwErr">
-            ❌ Wrong password! / चुकीचा संकेतशब्द!
-          </div>
-        </div>
-
-        <div class="adm-panel" id="admPanel">
-          <div class="adm-top">
-            <strong>⚙️ Admin Panel</strong>
-            <button class="btn btn-out btn-sm" onclick="lockAdmin()">
-              🔒 Exit
-            </button>
-          </div>
-          <div id="alertBox" class="alert"></div>
-
-          <div class="adm-sec">
-            <div class="adm-hd red">
-              <div class="adm-hd-en">Add / Edit idol donor</div>
-              <div class="adm-hd-mr">🕉️ मूर्ती देणगीदार जोडा / बदला</div>
-            </div>
-            <div class="adm-form">
-              <div class="fg">
-                <div class="lben">Select Year / वर्ष निवडा</div>
-                <select id="mYr" onchange="autoFill('murti')"></select>
-              </div>
-              <div class="photo-upload-wrap">
-                <div class="photo-preview" id="mPhotoPreview">📷</div>
-                <div class="photo-upload-btn">
-                  <label
-                    >📸 Upload Photo / फोटो अपलोड करा<input
-                      type="file"
-                      id="mPhoto"
-                      accept="image/*"
-                      onchange="previewPhoto('murti',this)"
-                  /></label>
-                  <div
-                    style="
-                      font-size: 11px;
-                      color: #bbb;
-                      margin-top: 4px;
-                      text-align: center;
-                    "
-                  >
-                    Round profile photo
-                  </div>
-                </div>
-              </div>
-              <div class="fg">
-                <div class="lben">Full Name / पूर्ण नाव</div>
-                <input
-                  type="text"
-                  id="mNm"
-                  placeholder="e.g. Bajirao Krishna Vapilkar"
-                  oninput="onNameInput('murti')"
-                />
-              </div>
-              <div class="fg">
-                <div class="lben">Mobile Number / मोबाइल नंबर</div>
-                <input
-                  type="tel"
-                  id="mPh"
-                  placeholder="e.g. 9876543210"
-                  maxlength="10"
-                />
-              </div>
-              <button class="btn btn-red btn-full" onclick="save('murti')">
-                ✅ Save Idol Donor / जतन करा
-              </button>
-            </div>
-          </div>
-
-          <div class="adm-sec">
-            <div class="adm-hd blue">
-              <div class="adm-hd-en">Add / Edit prasad donor</div>
-              <div class="adm-hd-mr">🍛 महाप्रसाद देणगीदार जोडा / बदला</div>
-            </div>
-            <div class="adm-form">
-              <div class="fg">
-                <div class="lben">Select Year / वर्ष निवडा</div>
-                <select id="pYr" onchange="autoFill('prasad')"></select>
-              </div>
-              <div class="photo-upload-wrap">
-                <div class="photo-preview" id="pPhotoPreview">📷</div>
-                <div class="photo-upload-btn">
-                  <label
-                    >📸 Upload Photo / फोटो अपलोड करा<input
-                      type="file"
-                      id="pPhoto"
-                      accept="image/*"
-                      onchange="previewPhoto('prasad',this)"
-                  /></label>
-                  <div
-                    style="
-                      font-size: 11px;
-                      color: #bbb;
-                      margin-top: 4px;
-                      text-align: center;
-                    "
-                  >
-                    Round profile photo
-                  </div>
-                </div>
-              </div>
-              <div class="fg">
-                <div class="lben">Full Name / पूर्ण नाव</div>
-                <input
-                  type="text"
-                  id="pNm"
-                  placeholder="e.g. Sambhaji Bajirao Sutar"
-                  oninput="onNameInput('prasad')"
-                />
-              </div>
-              <div class="fg">
-                <div class="lben">Mobile Number / मोबाइल नंबर</div>
-                <input
-                  type="tel"
-                  id="pPh"
-                  placeholder="e.g. 9876543210"
-                  maxlength="10"
-                />
-              </div>
-              <button class="btn btn-blue btn-full" onclick="save('prasad')">
-                ✅ Save Prasad Donor / जतन करा
-              </button>
-            </div>
-          </div>
-
-          <div class="adm-sec">
-            <div class="adm-hd gray">
-              <div class="adm-hd-en">All records / सर्व नोंदी</div>
-              <div class="adm-hd-mr">पहा, संपादित करा, काढा</div>
-            </div>
-            <div style="padding: 12px 16px 0">
-              <div class="atabs">
-                <button
-                  class="atab on"
-                  id="at-m"
-                  onclick="switchAdmTab('murti')"
-                >
-                  🕉️ Idol
-                </button>
-                <button class="atab" id="at-p" onclick="switchAdmTab('prasad')">
-                  🍛 Prasad
-                </button>
-              </div>
-            </div>
-            <div class="tbl-wrap">
-              <table class="tbl">
-                <thead>
-                  <tr>
-                    <th>Year</th>
-                    <th>Photo</th>
-                    <th>Name / नाव</th>
-                    <th>Mobile</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="admTbody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="adm-sec">
-            <div class="adm-hd gray">
-              <div class="adm-hd-en">Change password / संकेतशब्द बदला</div>
-            </div>
-            <div class="adm-form">
-              <div class="frow">
-                <div class="fg">
-                  <div class="lben">New Password</div>
-                  <input type="password" id="np1" placeholder="New" />
-                </div>
-                <div class="fg">
-                  <div class="lben">Confirm</div>
-                  <input type="password" id="np2" placeholder="Confirm" />
-                </div>
-              </div>
-              <button class="btn btn-out" onclick="changePw()">
-                🔑 Update Password
-              </button>
-            </div>
-          </div>
+          <button onclick="gotoFinanceWithYear()" style="display:block;width:100%;margin-top:10px;padding:9px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:700;color:#555;cursor:pointer;">💰 View full finance details →</button>
+          <div class="owner-credit">Designed &amp; Maintained by Digvijay Vapilkar</div>
         </div>
       </div>
     </div>
 
-    <div class="footer">
-      🕉️ Chhatrapati Shivaji Maharaj Tarun Mandal · छत्रपती शिवाजी महाराज तरुण
-      मंडळ<br />
-      Shenawade · शेनवडे · Ganapati Utsav Donor Management
+    <!-- IDOL LIST -->
+    <div class="pg" id="pg-murti">
+      <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('murti',this.value)"/></div>
+      <div class="dl" id="murtiList"></div>
     </div>
 
-    <script>
-      // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
-      const firebaseConfig = {
-        apiKey: "AIzaSyDAOBhfkcrbh_-oJ1UYN161Vgfh4Mougj8",
-        authDomain: "ganapati-utsav.firebaseapp.com",
-        projectId: "ganapati-utsav",
-        storageBucket: "ganapati-utsav.firebasestorage.app",
-        messagingSenderId: "1046496345188",
-        appId: "1:1046496345188:web:4aa1ff5bcba97b4d613371",
-      };
+    <!-- PRASAD LIST -->
+    <div class="pg" id="pg-prasad">
+      <div class="srch"><span class="srch-ico">🔍</span><input type="text" placeholder="Search name / नाव शोधा..." oninput="filterList('prasad',this.value)"/></div>
+      <div class="dl" id="prasadList"></div>
+    </div>
 
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
+    <!-- FINANCE -->
+    <div class="pg" id="pg-finance">
+      <div class="fin-year-sel"><label>Year / वर्ष :</label><select id="finYear" onchange="renderFinance()"></select></div>
+      <div class="fin-summary">
+        <div class="fin-stat green"><div class="fin-stat-n" id="fin-total-col">₹0</div><div class="fin-stat-l">Total Collected</div><div class="fin-stat-mr">एकूण जमा</div></div>
+        <div class="fin-stat red"><div class="fin-stat-n" id="fin-total-exp">₹0</div><div class="fin-stat-l">Total Spent</div><div class="fin-stat-mr">एकूण खर्च</div></div>
+        <div class="fin-stat blue" style="grid-column:span 2"><div class="fin-stat-n" id="fin-balance">₹0</div><div class="fin-stat-l">Balance Remaining / शिल्लक</div><div class="fin-stat-mr" id="fin-balance-mr"></div></div>
+      </div>
+      <div class="fin-progress-wrap">
+        <div class="fin-progress-label"><span>Spent / खर्च</span><span id="fin-pct">0%</span></div>
+        <div class="fin-bar-bg"><div class="fin-bar" id="fin-bar" style="width:0%"></div></div>
+        <div style="font-size:11px;color:#aaa;margin-top:6px;text-align:center;" id="fin-bar-note">of total collected spent</div>
+      </div>
 
-      // ─── CONSTANTS ──────────────────────────────────────────────────────────────
-      const CY = new Date().getFullYear(),
-        SY = 2024,
-        EY = 2034;
-      const GANESH_DATE_2026 = new Date("2026-09-14T00:00:00");
+      <!-- COLLECTIONS -->
+      <div class="fin-section">
+        <div class="fin-sec-hd green">
+          <div class="fin-sec-hd-left"><div class="fin-sec-hd-en">Collections / देणग्या</div><div class="fin-sec-hd-mr">जमा झालेले पैसे</div></div>
+          <div class="fin-total-badge green" id="fin-col-badge">₹0</div>
+        </div>
+        <div id="fin-col-list"></div>
+        <div class="fin-add-form" id="fin-col-form" style="display:none;">
+          <div class="fin-add-row">
+            <input type="text" id="colName" placeholder="Name / नाव (e.g. Ramesh Patil)" />
+            <input type="number" id="colAmt" class="amt-input" placeholder="₹ Amount" min="1" />
+          </div>
+          <input type="text" id="colNote" placeholder="Note / टीप (optional)" style="padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit;outline:none;" />
+          <div class="fin-add-row">
+            <button class="btn btn-green btn-sm btn-full" id="col-submit-btn" onclick="addEntry('col')">✅ Add Collection / जोडा</button>
+            <button class="btn btn-out btn-sm" onclick="cancelEdit('col')">Cancel</button>
+          </div>
+        </div>
+        <div style="padding:10px 14px;border-top:1px solid #eee;">
+          <button class="btn btn-green btn-sm btn-full" onclick="toggleForm('col')" id="fin-col-toggle-btn" style="display:none;">＋ Add Collection / देणगी जोडा</button>
+        </div>
+      </div>
 
-      let admTab = "murti";
-      let pendingPhotos = { murti: null, prasad: null };
-      let isAdminLoggedIn = false;
-      let D = { pw: "piyu45", murti: {}, prasad: {}, finance: {} };
-      let allYears = [];
-      for (let y = SY; y <= EY; y++) allYears.push(y);
+      <!-- EXPENSES -->
+      <div class="fin-section">
+        <div class="fin-sec-hd red">
+          <div class="fin-sec-hd-left"><div class="fin-sec-hd-en">Expenses / खर्च</div><div class="fin-sec-hd-mr">झालेले खर्च</div></div>
+          <div class="fin-total-badge red" id="fin-exp-badge">₹0</div>
+        </div>
+        <div id="fin-exp-list"></div>
+        <div class="fin-add-form" id="fin-exp-form" style="display:none;">
+          <div class="fin-add-row">
+            <input type="text" id="expName" placeholder="Item / वस्तू (e.g. Decoration)" />
+            <input type="number" id="expAmt" class="amt-input" placeholder="₹ Amount" min="1" />
+          </div>
+          <input type="text" id="expNote" placeholder="Note / टीप (optional)" style="padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit;outline:none;" />
+          <div class="fin-add-row">
+            <button class="btn btn-sm btn-full" id="exp-submit-btn" onclick="addEntry('exp')" style="background:#c62828;color:#fff;border:none;">✅ Add Expense / खर्च जोडा</button>
+            <button class="btn btn-out btn-sm" onclick="cancelEdit('exp')">Cancel</button>
+          </div>
+        </div>
+        <div style="padding:10px 14px;border-top:1px solid #eee;">
+          <button class="btn btn-sm btn-full" onclick="toggleForm('exp')" id="fin-exp-toggle-btn" style="display:none;background:#ffebee;color:#c62828;border:1px solid #ffcdd2;font-weight:700;border-radius:8px;cursor:pointer;">＋ Add Expense / खर्च जोडा</button>
+        </div>
+      </div>
+    </div>
 
-      // Track which year is shown on the home finance card
-      let homeFinYear = CY;
+    <!-- ADMIN -->
+    <div class="pg" id="pg-admin">
+      <div class="lock-wrap" id="lockWrap">
+        <div class="lock-ico">🔐</div>
+        <div class="lock-en">Admin Area</div>
+        <div class="lock-mr">अॅडमिन क्षेत्र</div>
+        <div class="lock-hint">Enter password to manage donor records<br>नोंद जोडण्यासाठी संकेतशब्द द्या</div>
+        <div class="pw-row">
+          <input type="password" id="pwInput" placeholder="Password / संकेतशब्द" onkeydown="if(event.key==='Enter')checkPw()" />
+          <button class="btn btn-red" onclick="checkPw()">Enter</button>
+        </div>
+        <!-- 👇 New highlighted contact note -->
+        <div class="password-contact-note">📞 For password, contact <strong>Digvijay Vapilkar</strong></div>
+        <div class="err" id="pwErr">❌ Wrong password! / चुकीचा संकेतशब्द!</div>
+      </div>
 
-      // ─── DEFAULT DATA (ALL EMPTY) ─────────────────────────────────────────────
-      function defaultData() {
-        const d = { pw: "piyu45", murti: {}, prasad: {}, finance: {} };
+      <div class="adm-panel" id="admPanel">
+        <div class="adm-top">
+          <strong>⚙️ Admin Panel</strong>
+          <button class="btn btn-out btn-sm" onclick="lockAdmin()">🔒 Exit</button>
+        </div>
+        <div id="alertBox" class="alert"></div>
+
+        <div class="adm-sec">
+          <div class="adm-hd red"><div class="adm-hd-en">Add / Edit idol donor</div><div class="adm-hd-mr">🕉️ मूर्ती देणगीदार जोडा / बदला</div></div>
+          <div class="adm-form">
+            <div class="fg"><div class="lben">Select Year / वर्ष निवडा</div><select id="mYr" onchange="autoFill('murti')"></select></div>
+            <div class="photo-upload-wrap">
+              <div class="photo-preview" id="mPhotoPreview">📷</div>
+              <div class="photo-upload-btn">
+                <label>📸 Upload Photo / फोटो अपलोड करा<input type="file" id="mPhoto" accept="image/*" onchange="previewPhoto('murti',this)" /></label>
+                <div style="font-size:11px;color:#bbb;margin-top:4px;text-align:center;">Round profile photo</div>
+              </div>
+            </div>
+            <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="mNm" placeholder="e.g. Bajirao Krishna Vapilkar" oninput="onNameInput('murti')" /></div>
+            <div class="fg"><div class="lben">Mobile Number / मोबाइल नंबर</div><input type="tel" id="mPh" placeholder="e.g. 9876543210" maxlength="10" /></div>
+            <button class="btn btn-red btn-full" onclick="save('murti')">✅ Save Idol Donor / जतन करा</button>
+          </div>
+        </div>
+
+        <div class="adm-sec">
+          <div class="adm-hd blue"><div class="adm-hd-en">Add / Edit prasad donor</div><div class="adm-hd-mr">🍛 महाप्रसाद देणगीदार जोडा / बदला</div></div>
+          <div class="adm-form">
+            <div class="fg"><div class="lben">Select Year / वर्ष निवडा</div><select id="pYr" onchange="autoFill('prasad')"></select></div>
+            <div class="photo-upload-wrap">
+              <div class="photo-preview" id="pPhotoPreview">📷</div>
+              <div class="photo-upload-btn">
+                <label>📸 Upload Photo / फोटो अपलोड करा<input type="file" id="pPhoto" accept="image/*" onchange="previewPhoto('prasad',this)" /></label>
+                <div style="font-size:11px;color:#bbb;margin-top:4px;text-align:center;">Round profile photo</div>
+              </div>
+            </div>
+            <div class="fg"><div class="lben">Full Name / पूर्ण नाव</div><input type="text" id="pNm" placeholder="e.g. Sambhaji Bajirao Sutar" oninput="onNameInput('prasad')" /></div>
+            <div class="fg"><div class="lben">Mobile Number / मोबाइल नंबर</div><input type="tel" id="pPh" placeholder="e.g. 9876543210" maxlength="10" /></div>
+            <button class="btn btn-blue btn-full" onclick="save('prasad')">✅ Save Prasad Donor / जतन करा</button>
+          </div>
+        </div>
+
+        <div class="adm-sec">
+          <div class="adm-hd gray"><div class="adm-hd-en">All records / सर्व नोंदी</div><div class="adm-hd-mr">पहा, संपादित करा, काढा</div></div>
+          <div style="padding:12px 16px 0;">
+            <div class="atabs">
+              <button class="atab on" id="at-m" onclick="switchAdmTab('murti')">🕉️ Idol</button>
+              <button class="atab" id="at-p" onclick="switchAdmTab('prasad')">🍛 Prasad</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>Year</th><th>Photo</th><th>Name / नाव</th><th>Mobile</th><th></th></tr></thead>
+              <tbody id="admTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="adm-sec">
+          <div class="adm-hd gray"><div class="adm-hd-en">Change password / संकेतशब्द बदला</div></div>
+          <div class="adm-form">
+            <div class="frow">
+              <div class="fg"><div class="lben">New Password</div><input type="password" id="np1" placeholder="New" /></div>
+              <div class="fg"><div class="lben">Confirm</div><input type="password" id="np2" placeholder="Confirm" /></div>
+            </div>
+            <button class="btn btn-out" onclick="changePw()">🔑 Update Password</button>
+            <div class="admin-note">🔒 Admin password is managed by <strong>Digvijay Vapilkar</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">🕉️ Chhatrapati Shivaji Maharaj Tarun Mandal · छत्रपती शिवाजी महाराज तरुण मंडळ<br>Shenawade · शेनवडे · Ganapati Utsav Donor Management</div>
+
+  <script>
+    // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAOBhfkcrbh_-oJ1UYN161Vgfh4Mougj8",
+      authDomain: "ganapati-utsav.firebaseapp.com",
+      projectId: "ganapati-utsav",
+      storageBucket: "ganapati-utsav.firebasestorage.app",
+      messagingSenderId: "1046496345188",
+      appId: "1:1046496345188:web:4aa1ff5bcba97b4d613371",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ─── CONSTANTS ──────────────────────────────────────────────────────────────
+    const CY = new Date().getFullYear(), SY = 2024, EY = 2034;
+    const GANESH_DATE_2026 = new Date("2026-09-14T00:00:00");
+    let admTab = "murti";
+    let pendingPhotos = { murti: null, prasad: null };
+    let isAdminLoggedIn = false;
+    let D = { pw: "piyu45", murti: {}, prasad: {}, finance: {} };
+    let allYears = [];
+    for (let y = SY; y <= EY; y++) allYears.push(y);
+    let homeFinYear = CY;
+
+    // Edit state for finance
+    let editingType = null; // 'col' or 'exp'
+    let editingIndex = -1;
+
+    // ─── DEFAULT DATA ─────────────────────────────────────────────────────────────
+    function defaultData() {
+      const d = { pw: "piyu45", murti: {}, prasad: {}, finance: {} };
+      for (let y of allYears) {
+        d.murti[y] = { name: "", phone: "", photo: "" };
+        d.prasad[y] = { name: "", phone: "", photo: "" };
+        d.finance[y] = { collections: [], expenses: [] };
+      }
+      return d;
+    }
+
+    // ─── FIREBASE HELPERS ──────────────────────────────────────────────────────
+    function setSyncStatus(state, msg) {
+      const dot = document.getElementById("syncDot");
+      const txt = document.getElementById("syncMsg");
+      dot.className = "sync-dot" + (state === "loading" ? " loading" : state === "err" ? " err" : "");
+      txt.textContent = msg;
+    }
+
+    async function cloudSave() {
+      setSyncStatus("loading", "Saving to Firebase… / फायरबेसवर सेव होत आहे…");
+      try {
+        const slim = { pw: D.pw, murti: {}, prasad: {}, finance: D.finance || {} };
         for (let y of allYears) {
-          d.murti[y] = { name: "", phone: "", photo: "" };
-          d.prasad[y] = { name: "", phone: "", photo: "" };
-          d.finance[y] = { collections: [], expenses: [] };
+          slim.murti[y] = { name: D.murti[y]?.name || "", phone: D.murti[y]?.phone || "", photo: D.murti[y]?.photo || "" };
+          slim.prasad[y] = { name: D.prasad[y]?.name || "", phone: D.prasad[y]?.phone || "", photo: D.prasad[y]?.photo || "" };
         }
-        return d;
+        await db.collection("ganapati").doc("data").set(slim);
+        setSyncStatus("ok", "✅ Saved to Firebase — synced to all devices");
+      } catch (e) {
+        console.error("Firebase save error:", e);
+        setSyncStatus("err", "⚠️ Firebase save failed — check console");
+        localSave();
       }
+    }
 
-      // ─── FIREBASE HELPERS ──────────────────────────────────────────────────────
-      function setSyncStatus(state, msg) {
-        const dot = document.getElementById("syncDot");
-        const txt = document.getElementById("syncMsg");
-        dot.className =
-          "sync-dot" +
-          (state === "loading" ? " loading" : state === "err" ? " err" : "");
-        txt.textContent = msg;
-      }
-
-      async function cloudSave() {
-        setSyncStatus(
-          "loading",
-          "Saving to Firebase… / फायरबेसवर सेव होत आहे…"
-        );
-        try {
-          const slim = {
-            pw: D.pw,
-            murti: {},
-            prasad: {},
-            finance: D.finance || {},
-          };
-          for (let y of allYears) {
-            slim.murti[y] = {
-              name: D.murti[y]?.name || "",
-              phone: D.murti[y]?.phone || "",
-              photo: D.murti[y]?.photo || "",
-            };
-            slim.prasad[y] = {
-              name: D.prasad[y]?.name || "",
-              phone: D.prasad[y]?.phone || "",
-              photo: D.prasad[y]?.photo || "",
-            };
-          }
-          await db.collection("ganapati").doc("data").set(slim);
-          setSyncStatus("ok", "✅ Saved to Firebase — synced to all devices");
-        } catch (e) {
-          console.error("Firebase save error:", e);
-          setSyncStatus("err", "⚠️ Firebase save failed — check console");
-          localSave();
-        }
-      }
-
-      async function cloudLoad() {
-        setSyncStatus(
-          "loading",
-          "Loading from Firebase… / फायरबेसवरून लोड होत आहे…"
-        );
-        try {
-          const doc = await db.collection("ganapati").doc("data").get();
-          if (doc.exists) {
-            const data = doc.data();
-            if (data && data.murti && data.prasad) {
-              for (let y of allYears) {
-                if (data.murti[y]) {
-                  if (!data.murti[y].photo && D.murti[y] && D.murti[y].photo)
-                    data.murti[y].photo = D.murti[y].photo;
-                } else {
-                  data.murti[y] = { name: "", phone: "", photo: "" };
-                }
-                if (data.prasad[y]) {
-                  if (!data.prasad[y].photo && D.prasad[y] && D.prasad[y].photo)
-                    data.prasad[y].photo = D.prasad[y].photo;
-                } else {
-                  data.prasad[y] = { name: "", phone: "", photo: "" };
-                }
-              }
-              if (data.pw) D.pw = data.pw;
-              D.murti = data.murti;
-              D.prasad = data.prasad;
-              if (data.finance) D.finance = data.finance;
-              setSyncStatus(
-                "ok",
-                "✅ Firebase loaded — data synced across all devices"
-              );
-              refreshAll();
-              return;
-            }
-          }
-          // No data in Firebase → use local fallback (which may be empty)
-          localLoad();
-          let hasData = false;
-          for (let y of allYears) {
-            if (
-              (D.murti[y] && D.murti[y].name) ||
-              (D.prasad[y] && D.prasad[y].name)
-            ) {
-              hasData = true;
-              break;
-            }
-          }
-          if (hasData) {
-            await cloudSave();
-          } else {
+    async function cloudLoad() {
+      setSyncStatus("loading", "Loading from Firebase… / फायरबेसवरून लोड होत आहे…");
+      try {
+        const doc = await db.collection("ganapati").doc("data").get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data && data.murti && data.prasad) {
             for (let y of allYears) {
-              if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
-              if (!D.prasad[y])
-                D.prasad[y] = { name: "", phone: "", photo: "" };
-              if (!D.finance[y])
-                D.finance[y] = { collections: [], expenses: [] };
+              if (data.murti[y]) {
+                if (!data.murti[y].photo && D.murti[y] && D.murti[y].photo) data.murti[y].photo = D.murti[y].photo;
+              } else data.murti[y] = { name: "", phone: "", photo: "" };
+              if (data.prasad[y]) {
+                if (!data.prasad[y].photo && D.prasad[y] && D.prasad[y].photo) data.prasad[y].photo = D.prasad[y].photo;
+              } else data.prasad[y] = { name: "", phone: "", photo: "" };
             }
-            setSyncStatus("ok", "✅ Ready — add data using Admin panel");
+            if (data.pw) D.pw = data.pw;
+            D.murti = data.murti;
+            D.prasad = data.prasad;
+            if (data.finance) D.finance = data.finance;
+            setSyncStatus("ok", "✅ Firebase loaded — data synced across all devices");
+            refreshAll();
+            return;
           }
-          refreshAll();
-        } catch (e) {
-          console.error("Firebase load error:", e);
-          setSyncStatus("err", "⚠️ Firebase unavailable — using local data");
-          localLoad();
-          refreshAll();
         }
-      }
-
-      function localSave() {
-        try {
-          localStorage.setItem("gup5", JSON.stringify(D));
-        } catch (e) {}
-      }
-
-      function localLoad() {
-        try {
-          const s = localStorage.getItem("gup5");
-          if (s) {
-            const p = JSON.parse(s);
-            if (p && p.murti && p.prasad) {
-              D.murti = p.murti;
-              D.prasad = p.prasad;
-              if (p.pw) D.pw = p.pw;
-              if (p.finance) D.finance = p.finance;
-            }
-          }
-        } catch (e) {}
+        localLoad();
+        let hasData = false;
         for (let y of allYears) {
-          if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
-          if (!D.prasad[y]) D.prasad[y] = { name: "", phone: "", photo: "" };
-          if (!D.finance[y]) D.finance[y] = { collections: [], expenses: [] };
+          if ((D.murti[y] && D.murti[y].name) || (D.prasad[y] && D.prasad[y].name)) { hasData = true; break; }
         }
-      }
-
-      // ─── CALENDAR ──────────────────────────────────────────────────────────────
-      function initCalendar() {
-        const now = new Date();
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
-        const months = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ];
-        const mrMonths = [
-          "जानेवारी",
-          "फेब्रुवारी",
-          "मार्च",
-          "एप्रिल",
-          "मे",
-          "जून",
-          "जुलै",
-          "ऑगस्ट",
-          "सप्टेंबर",
-          "ऑक्टोबर",
-          "नोव्हेंबर",
-          "डिसेंबर",
-        ];
-        const mrDays = [
-          "रविवार",
-          "सोमवार",
-          "मंगळवार",
-          "बुधवार",
-          "गुरुवार",
-          "शुक्रवार",
-          "शनिवार",
-        ];
-
-        document.getElementById("calDate").textContent = now.getDate();
-        document.getElementById("calDay").textContent =
-          days[now.getDay()] + " / " + mrDays[now.getDay()];
-        document.getElementById("calMonth").textContent =
-          months[now.getMonth()] +
-          " " +
-          now.getFullYear() +
-          " · " +
-          mrMonths[now.getMonth()];
-
-        function updateCountdown() {
-          const n = new Date();
-          n.setHours(0, 0, 0, 0);
-          const g = new Date(GANESH_DATE_2026);
-          g.setHours(0, 0, 0, 0);
-          const diff = Math.round((g - n) / (1000 * 60 * 60 * 24));
-          if (diff > 0) {
-            document.getElementById("cdNum").textContent = diff;
-            document.getElementById("cdMr").textContent = diff + " दिवस";
-          } else if (diff === 0) {
-            document.getElementById("cdNum").textContent = "🎉";
-            document.getElementById("cdMr").textContent = "आज गणेश उत्सव!";
-          } else {
-            document.getElementById("cdNum").textContent = "🕉️";
-            document.getElementById("cdMr").textContent = "उत्सव संपला";
-          }
-        }
-        updateCountdown();
-        setInterval(updateCountdown, 60000);
-
-        const pills = document.getElementById("datePills");
-        pills.innerHTML = "";
-        const shortDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const mrShortDays = [
-          "रवि",
-          "सोम",
-          "मंगळ",
-          "बुध",
-          "गुरु",
-          "शुक्र",
-          "शनि",
-        ];
-        for (let i = 0; i < 7; i++) {
-          const d = new Date(now);
-          d.setDate(now.getDate() + i);
-          const isToday = i === 0;
-          const label =
-            i === 0
-              ? "Today / आज"
-              : i === 1
-              ? "Tomorrow / उद्या"
-              : shortDays[d.getDay()] + " / " + mrShortDays[d.getDay()];
-          pills.innerHTML += `<div class="dpill${isToday ? " today" : ""}">
-              <div class="dpill-day">${label}</div>
-              <div class="dpill-date">${d.getDate()}</div>
-              <div class="dpill-name">${months[d.getMonth()].substring(
-                0,
-                3
-              )} '${String(d.getFullYear()).slice(2)}</div>
-            </div>`;
-        }
-      }
-
-      // ─── RENDER HELPERS ─────────────────────────────────────────────────────────
-      function buildSelects(keepMurti, keepPrasad) {
-        ["mYr", "pYr"].forEach((id, i) => {
-          const type = i === 0 ? "murti" : "prasad";
-          const s = document.getElementById(id);
-          const keep =
-            i === 0
-              ? keepMurti != null
-                ? keepMurti
-                : +s.value || CY
-              : keepPrasad != null
-              ? keepPrasad
-              : +s.value || CY;
-          s.innerHTML = "";
+        if (hasData) await cloudSave();
+        else {
           for (let y of allYears) {
-            const rec = D[type] && D[type][y];
-            const label = y + (rec && rec.name ? " ✓" : "");
-            const o = new Option(label, y);
-            if (y === keep) o.selected = true;
-            s.add(o);
+            if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
+            if (!D.prasad[y]) D.prasad[y] = { name: "", phone: "", photo: "" };
+            if (!D.finance[y]) D.finance[y] = { collections: [], expenses: [] };
           }
-        });
-      }
-
-      function autoFill(type) {
-        const yr = +document.getElementById(type === "murti" ? "mYr" : "pYr")
-          .value;
-        const rec = (D[type] && D[type][yr]) || {
-          name: "",
-          phone: "",
-          photo: "",
-        };
-        document.getElementById(type === "murti" ? "mNm" : "pNm").value =
-          rec.name || "";
-        document.getElementById(type === "murti" ? "mPh" : "pPh").value =
-          rec.phone || "";
-        pendingPhotos[type] = null;
-        const prev = document.getElementById(
-          type === "murti" ? "mPhotoPreview" : "pPhotoPreview"
-        );
-        if (rec.photo) {
-          prev.innerHTML = `<img src="${rec.photo}" />`;
-        } else {
-          prev.innerHTML = "📷";
+          setSyncStatus("ok", "✅ Ready — add data using Admin panel");
         }
+        refreshAll();
+      } catch (e) {
+        console.error("Firebase load error:", e);
+        setSyncStatus("err", "⚠️ Firebase unavailable — using local data");
+        localLoad();
+        refreshAll();
       }
+    }
 
-      function previewPhoto(type, input) {
-        const file = input.files[0];
-        if (!file) return;
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = function () {
-          const canvas = document.createElement("canvas");
-          const max = 200;
-          let w = img.width,
-            h = img.height;
-          if (w > h) {
-            if (w > max) {
-              h = h * (max / w);
-              w = max;
-            }
-          } else {
-            if (h > max) {
-              w = w * (max / h);
-              h = max;
-            }
-          }
-          canvas.width = w;
-          canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-          const b64 = canvas.toDataURL("image/jpeg", 0.7);
-          pendingPhotos[type] = b64;
-          const prev = document.getElementById(
-            type === "murti" ? "mPhotoPreview" : "pPhotoPreview"
-          );
-          prev.innerHTML = `<img src="${b64}" />`;
-          URL.revokeObjectURL(url);
-        };
-        img.src = url;
-      }
-
-      function buildChips() {
-        const c = document.getElementById("chips");
-        c.innerHTML = "";
-        for (let y of allYears) {
-          const b = document.createElement("button");
-          b.className =
-            "chip" + (y < CY ? " past" : "") + (y === CY ? " on" : "");
-          b.textContent = y;
-          b.onclick = () => lookup(y);
-          c.appendChild(b);
-        }
-        // Default to current year
-        lookup(CY);
-      }
-
-      function avatarHTML(rec, fallback) {
-        if (rec && rec.photo) return `<img src="${rec.photo}" />`;
-        return fallback;
-      }
-
-      function lookup(y) {
-        document
-          .querySelectorAll(".chip")
-          .forEach((c) => c.classList.toggle("on", +c.textContent === y));
-        const mr = (D.murti && D.murti[y]) || {},
-          pr = (D.prasad && D.prasad[y]) || {};
-        document.getElementById("lkyr").textContent = y;
-        document.getElementById("lkm").textContent =
-          mr.name || "Not assigned / नोंद नाही";
-        document.getElementById("lkmp").textContent = mr.phone
-          ? "📱 " + mr.phone
-          : "";
-        document.getElementById("lk-m-av").innerHTML = avatarHTML(mr, "🕉️");
-        document.getElementById("lkp").textContent =
-          pr.name || "Not assigned / नोंद नाही";
-        document.getElementById("lkpp").textContent = pr.phone
-          ? "📱 " + pr.phone
-          : "";
-        document.getElementById("lk-p-av").innerHTML = avatarHTML(pr, "🍛");
-        document.getElementById("lookup").style.display = "block";
-
-        // Update home finance to match selected year
-        homeFinYear = y;
-        updateHomeFinance(y);
-      }
-
-      function updateHomeFinance(y) {
-  ensureFinYear(y);
-  const fin = (D.finance && D.finance[y]) || { collections: [], expenses: [] };
-  const totalCol = (fin.collections || []).reduce((s, e) => s + (+e.amt || 0), 0);
-  const totalExp = (fin.expenses || []).reduce((s, e) => s + (+e.amt || 0), 0);
-  const bal = totalCol - totalExp;
-
-  document.getElementById("home-fin-col").textContent = fmt(totalCol);
-  document.getElementById("home-fin-exp").textContent = fmt(totalExp);
-  document.getElementById("home-fin-bal").textContent = fmt(Math.abs(bal));
-  const balEl = document.getElementById("home-fin-bal");
-  balEl.style.color = bal >= 0 ? "#1565C0" : "#C62828";
-
-  // Update labels – now only year (no month)
-  document.getElementById("home-fin-year-label").textContent = y;
-}
-
-      function renderHome() {
-        // Stats
-        let mb = 0,
-          pb = 0,
-          mo = 0,
-          po = 0;
-        for (let y of allYears) {
-          if (D.murti && D.murti[y] && D.murti[y].name) mb++;
-          else mo++;
-          if (D.prasad && D.prasad[y] && D.prasad[y].name) pb++;
-          else po++;
-        }
-        document.getElementById("smb").textContent = mb;
-        document.getElementById("spb").textContent = pb;
-        document.getElementById("smo").textContent = mo;
-        document.getElementById("spo").textContent = po;
-
-        // Current year hero cards
-        const mr = (D.murti && D.murti[CY]) || {},
-          pr = (D.prasad && D.prasad[CY]) || {};
-        document.getElementById("hmy").textContent = CY;
-        document.getElementById("hmn").textContent = mr.name || "Not assigned";
-        document.getElementById("hmp").textContent = mr.phone
-          ? "📱 " + mr.phone
-          : "";
-        document.getElementById("hm-avatar").innerHTML = mr.photo
-          ? `<img src="${mr.photo}" />`
-          : "🕉️";
-        document.getElementById("hpy").textContent = CY;
-        document.getElementById("hpn").textContent = pr.name || "Not assigned";
-        document.getElementById("hpp").textContent = pr.phone
-          ? "📱 " + pr.phone
-          : "";
-        document.getElementById("hp-avatar").innerHTML = pr.photo
-          ? `<img src="${pr.photo}" />`
-          : "🍛";
-
-        // Finance card for currently selected year (homeFinYear)
-        updateHomeFinance(homeFinYear);
-      }
-
-      function renderList(type, q) {
-        const el = document.getElementById(type + "List");
-        if (!el) return;
-        el.innerHTML = "";
-        for (let y of allYears) {
-          const rec = (D[type] && D[type][y]) || {};
-          const nm = rec.name || "",
-            ph = rec.phone || "",
-            photo = rec.photo || "";
-          if (q && nm && !nm.toLowerCase().includes(q.toLowerCase())) continue;
-          if (q && !nm) continue;
-          const isEmpty = !nm,
-            isCurr = y === CY,
-            isPast = y < CY,
-            isUp = y > CY;
-          let cls =
-            "di" +
-            (isCurr ? " curr" : isPast ? " past" : isUp ? " upcoming" : "") +
-            (isEmpty ? " empty" : "");
-          const avHTML = photo ? `<img src="${photo}" />` : "👤";
-          el.innerHTML += `<div class="${cls}">
-              <div class="di-yr">${y}</div>
-              <div class="di-avatar">${avHTML}</div>
-              <div class="di-info">
-                <div class="di-nm">${
-                  nm || (isCurr ? "Not assigned yet" : "Available / उपलब्ध")
-                }</div>
-                ${ph ? `<div class="di-ph">📱 ${ph}</div>` : ""}
-              </div>
-              ${isCurr ? '<div class="di-tag">🎉 This Year</div>' : ""}
-            </div>`;
-        }
-      }
-
-      function filterList(t, v) {
-        renderList(t, v.trim() || undefined);
-      }
-
-      function gotoTab(name) {
-        document
-          .querySelectorAll(".pg")
-          .forEach((p) => p.classList.remove("on"));
-        document
-          .querySelectorAll(".nav-btn")
-          .forEach((b) => b.classList.remove("on"));
-        document.getElementById("pg-" + name).classList.add("on");
-        const map = { home: 0, murti: 1, prasad: 2, finance: 3, admin: 4 };
-        if (map[name] !== undefined)
-          document.querySelectorAll(".nav-btn")[map[name]].classList.add("on");
-        if (name === "finance") {
-          // Set the finance year dropdown to the homeFinYear
-          const sel = document.getElementById("finYear");
-          if (sel) {
-            sel.value = homeFinYear;
-          }
-          renderFinance();
-        }
-        if (name === "admin" && isAdminLoggedIn) {
-          renderAdmTable();
-          renderFinance();
-        }
-      }
-
-      // Go to Finance tab with current home year
-      function gotoFinanceWithYear() {
-        const sel = document.getElementById("finYear");
-        if (sel) {
-          sel.value = homeFinYear;
-        }
-        gotoTab("finance");
-      }
-
-      // ─── ADMIN ──────────────────────────────────────────────────────────────────
-      function checkPw() {
-        const entered = document.getElementById("pwInput").value;
-        document.getElementById("pwErr").style.display = "none";
-        if (entered === D.pw) {
-          isAdminLoggedIn = true;
-          document.getElementById("lockWrap").style.display = "none";
-          document.getElementById("admPanel").style.display = "block";
-          buildSelects(CY, CY);
-          autoFill("murti");
-          autoFill("prasad");
-          renderAdmTable();
-          renderFinance();
-        } else {
-          document.getElementById("pwErr").style.display = "block";
-        }
-      }
-
-      function lockAdmin() {
-        isAdminLoggedIn = false;
-        document.getElementById("lockWrap").style.display = "block";
-        document.getElementById("admPanel").style.display = "none";
-        document.getElementById("pwInput").value = "";
-        document.getElementById("pwErr").style.display = "none";
-        renderFinance();
-      }
-
-      function toast(msg, type) {
-        const a = document.getElementById("alertBox");
-        a.className = "alert " + (type || "ok");
-        a.textContent = msg;
-        a.style.display = "block";
-        setTimeout(() => {
-          a.style.display = "none";
-        }, 3500);
-      }
-
-      function save(type) {
-        const yrEl = document.getElementById(type === "murti" ? "mYr" : "pYr");
-        const yr = +yrEl.value;
-        const nm = document
-          .getElementById(type === "murti" ? "mNm" : "pNm")
-          .value.trim();
-        const ph = document
-          .getElementById(type === "murti" ? "mPh" : "pPh")
-          .value.trim();
-        if (!nm) {
-          toast("Please enter a name / कृपया नाव भरा", "err");
-          return;
-        }
-        const existingPhoto =
-          (D[type] && D[type][yr] && D[type][yr].photo) || "";
-        if (!D[type]) D[type] = {};
-        D[type][yr] = {
-          name: nm,
-          phone: ph,
-          photo: pendingPhotos[type] || existingPhoto,
-        };
-        pendingPhotos[type] = null;
-        const mKeep =
-          type === "murti" ? yr : +document.getElementById("mYr").value;
-        const pKeep =
-          type === "prasad" ? yr : +document.getElementById("pYr").value;
-        buildSelects(mKeep, pKeep);
-        renderList(type);
-        renderHome();
-        renderAdmTable();
-        cloudSave();
-        toast(
-          "✅ Saved & synced! / जतन व सिंक झाले — " + yr + " : " + nm,
-          "ok"
-        );
-      }
-
-      function editRecord(type, y) {
-        document.getElementById(type === "murti" ? "mYr" : "pYr").value = y;
-        autoFill(type);
-        document
-          .getElementById(type === "murti" ? "mYr" : "pYr")
-          .closest(".adm-sec")
-          .scrollIntoView({ behavior: "smooth", block: "start" });
-        toast("✏️ Editing " + y + " — update and save", "ok");
-      }
-
-      function del(type, y) {
-        if (!confirm("Delete this record?\nहे रेकॉर्ड काढायचे का?")) return;
-        if (!D[type]) D[type] = {};
-        D[type][y] = { name: "", phone: "", photo: "" };
-        const mKeep = +document.getElementById("mYr").value || CY;
-        const pKeep = +document.getElementById("pYr").value || CY;
-        buildSelects(mKeep, pKeep);
-        renderAdmTable();
-        renderList(type);
-        renderHome();
-        autoFill(type);
-        cloudSave();
-        toast("🗑️ Record deleted / रेकॉर्ड काढला", "ok");
-      }
-
-      function switchAdmTab(type) {
-        admTab = type;
-        document
-          .getElementById("at-m")
-          .classList.toggle("on", type === "murti");
-        document
-          .getElementById("at-p")
-          .classList.toggle("on", type === "prasad");
-        renderAdmTable();
-      }
-
-      function renderAdmTable() {
-        const tb = document.getElementById("admTbody");
-        if (!tb) return;
-        tb.innerHTML = "";
-        for (let y of allYears) {
-          const rec = (D[admTab] && D[admTab][y]) || {};
-          const nm = rec.name || "",
-            ph = rec.phone || "",
-            photo = rec.photo || "";
-          const avHTML = photo ? `<img src="${photo}" />` : "👤";
-          tb.innerHTML += `<tr class="${y === CY ? "curr" : ""}">
-              <td><strong>${y}</strong>${
-            y === CY
-              ? ' <span style="font-size:9px;background:#C8390A;color:#fff;padding:2px 6px;border-radius:7px">NOW</span>'
-              : ""
-          }</td>
-              <td><div class="tbl-avatar">${avHTML}</div></td>
-              <td style="color:${nm ? "#1A1A1A" : "#CCC"}">${nm || "—"}</td>
-              <td style="color:#888;font-size:12px">${ph || "—"}</td>
-              <td><div style="display:flex;gap:5px">
-                <button class="btn btn-out btn-sm" onclick="editRecord('${admTab}',${y})">✏️</button>
-                <button class="btn btn-del btn-sm" onclick="del('${admTab}',${y})">🗑️</button>
-              </div></td>
-            </tr>`;
-        }
-      }
-
-      function changePw() {
-        const a = document.getElementById("np1").value,
-          b = document.getElementById("np2").value;
-        if (!a) {
-          toast("Enter a new password", "err");
-          return;
-        }
-        if (a !== b) {
-          toast("Passwords do not match", "err");
-          return;
-        }
-        D.pw = a;
-        cloudSave();
-        document.getElementById("np1").value = "";
-        document.getElementById("np2").value = "";
-        toast("🔑 Password updated / संकेतशब्द बदलला", "ok");
-      }
-
-      function findPhotoByName(name) {
-        if (!name || name.length < 3) return null;
-        const key = name.trim().toLowerCase();
-        for (let y of allYears) {
-          for (const type of ["murti", "prasad"]) {
-            const rec = D[type] && D[type][y];
-            if (
-              rec &&
-              rec.name &&
-              rec.name.trim().toLowerCase() === key &&
-              rec.photo
-            ) {
-              return rec.photo;
-            }
+    function localSave() { try { localStorage.setItem("gup5", JSON.stringify(D)); } catch (e) {} }
+    function localLoad() {
+      try {
+        const s = localStorage.getItem("gup5");
+        if (s) {
+          const p = JSON.parse(s);
+          if (p && p.murti && p.prasad) {
+            D.murti = p.murti;
+            D.prasad = p.prasad;
+            if (p.pw) D.pw = p.pw;
+            if (p.finance) D.finance = p.finance;
           }
         }
-        return null;
-      }
-
-      function onNameInput(type) {
-        const yr = +document.getElementById(type === "murti" ? "mYr" : "pYr")
-          .value;
-        const existingPhoto =
-          (D[type] && D[type][yr] && D[type][yr].photo) || "";
-        if (pendingPhotos[type] || existingPhoto) return;
-        const nm = document
-          .getElementById(type === "murti" ? "mNm" : "pNm")
-          .value.trim();
-        const found = findPhotoByName(nm);
-        const prev = document.getElementById(
-          type === "murti" ? "mPhotoPreview" : "pPhotoPreview"
-        );
-        if (found) {
-          prev.innerHTML = `<img src="${found}" />`;
-          prev.title = "Auto-filled from previous record";
-          pendingPhotos[type] = found;
-        } else {
-          prev.innerHTML = "📷";
-          prev.title = "";
-        }
-      }
-
-      // ─── FINANCE ──────────────────────────────────────────────────────────────────
-      function ensureFinYear(y) {
-        if (!D.finance) D.finance = {};
+      } catch (e) {}
+      for (let y of allYears) {
+        if (!D.murti[y]) D.murti[y] = { name: "", phone: "", photo: "" };
+        if (!D.prasad[y]) D.prasad[y] = { name: "", phone: "", photo: "" };
         if (!D.finance[y]) D.finance[y] = { collections: [], expenses: [] };
       }
+    }
 
-      function buildFinYearSelect() {
-        const s = document.getElementById("finYear");
-        if (!s) return;
-        const cur = s.value || CY;
+    // ─── CALENDAR ──────────────────────────────────────────────────────────────
+    function initCalendar() {
+      const now = new Date();
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const mrMonths = ["जानेवारी","फेब्रुवारी","मार्च","एप्रिल","मे","जून","जुलै","ऑगस्ट","सप्टेंबर","ऑक्टोबर","नोव्हेंबर","डिसेंबर"];
+      const mrDays = ["रविवार","सोमवार","मंगळवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"];
+      document.getElementById("calDate").textContent = now.getDate();
+      document.getElementById("calDay").textContent = days[now.getDay()] + " / " + mrDays[now.getDay()];
+      document.getElementById("calMonth").textContent = months[now.getMonth()] + " " + now.getFullYear() + " · " + mrMonths[now.getMonth()];
+      function updateCountdown() {
+        const n = new Date(); n.setHours(0,0,0,0);
+        const g = new Date(GANESH_DATE_2026); g.setHours(0,0,0,0);
+        const diff = Math.round((g - n) / (1000*60*60*24));
+        if (diff > 0) { document.getElementById("cdNum").textContent = diff; document.getElementById("cdMr").textContent = diff + " दिवस"; }
+        else if (diff === 0) { document.getElementById("cdNum").textContent = "🎉"; document.getElementById("cdMr").textContent = "आज गणेश उत्सव!"; }
+        else { document.getElementById("cdNum").textContent = "🕉️"; document.getElementById("cdMr").textContent = "उत्सव संपला"; }
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 60000);
+      const pills = document.getElementById("datePills");
+      pills.innerHTML = "";
+      const shortDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+      const mrShortDays = ["रवि","सोम","मंगळ","बुध","गुरु","शुक्र","शनि"];
+      for (let i=0; i<7; i++) {
+        const d = new Date(now); d.setDate(now.getDate()+i);
+        const isToday = i===0;
+        const label = i===0 ? "Today / आज" : i===1 ? "Tomorrow / उद्या" : shortDays[d.getDay()] + " / " + mrShortDays[d.getDay()];
+        pills.innerHTML += `<div class="dpill${isToday ? " today" : ""}">
+          <div class="dpill-day">${label}</div>
+          <div class="dpill-date">${d.getDate()}</div>
+          <div class="dpill-name">${months[d.getMonth()].substring(0,3)} '${String(d.getFullYear()).slice(2)}</div>
+        </div>`;
+      }
+    }
+
+    // ─── RENDER HELPERS ─────────────────────────────────────────────────────────
+    function buildSelects(keepMurti, keepPrasad) {
+      ["mYr","pYr"].forEach((id,i) => {
+        const type = i===0 ? "murti" : "prasad";
+        const s = document.getElementById(id);
+        const keep = i===0 ? (keepMurti!=null ? keepMurti : +s.value||CY) : (keepPrasad!=null ? keepPrasad : +s.value||CY);
         s.innerHTML = "";
         for (let y of allYears) {
-          const o = new Option(y, y);
-          if (+y === +cur) o.selected = true;
+          const rec = D[type] && D[type][y];
+          const label = y + (rec && rec.name ? " ✓" : "");
+          const o = new Option(label, y);
+          if (y === keep) o.selected = true;
           s.add(o);
         }
-      }
+      });
+    }
 
-      function finYear() {
-        return +document.getElementById("finYear").value || CY;
-      }
+    function autoFill(type) {
+      const yr = +document.getElementById(type==="murti" ? "mYr" : "pYr").value;
+      const rec = (D[type] && D[type][yr]) || { name:"", phone:"", photo:"" };
+      document.getElementById(type==="murti" ? "mNm" : "pNm").value = rec.name || "";
+      document.getElementById(type==="murti" ? "mPh" : "pPh").value = rec.phone || "";
+      pendingPhotos[type] = null;
+      const prev = document.getElementById(type==="murti" ? "mPhotoPreview" : "pPhotoPreview");
+      if (rec.photo) { prev.innerHTML = `<img src="${rec.photo}" />`; } else { prev.innerHTML = "📷"; }
+    }
 
-      function fmt(n) {
-        return "₹" + Number(n).toLocaleString("en-IN");
-      }
+    function previewPhoto(type, input) {
+      const file = input.files[0];
+      if (!file) return;
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = function() {
+        const canvas = document.createElement("canvas");
+        const max = 200;
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > max) { h = h*(max/w); w = max; } } else { if (h > max) { w = w*(max/h); h = max; } }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img,0,0,w,h);
+        const b64 = canvas.toDataURL("image/jpeg",0.7);
+        pendingPhotos[type] = b64;
+        const prev = document.getElementById(type==="murti" ? "mPhotoPreview" : "pPhotoPreview");
+        prev.innerHTML = `<img src="${b64}" />`;
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
 
-      function toggleForm(type) {
+    function buildChips() {
+      const c = document.getElementById("chips");
+      c.innerHTML = "";
+      for (let y of allYears) {
+        const b = document.createElement("button");
+        b.className = "chip" + (y < CY ? " past" : "") + (y === CY ? " on" : "");
+        b.textContent = y;
+        b.onclick = () => lookup(y);
+        c.appendChild(b);
+      }
+      lookup(CY);
+    }
+
+    function avatarHTML(rec, fallback) { if (rec && rec.photo) return `<img src="${rec.photo}" />`; return fallback; }
+
+    function lookup(y) {
+      document.querySelectorAll(".chip").forEach(c => c.classList.toggle("on", +c.textContent === y));
+      const mr = (D.murti && D.murti[y]) || {}, pr = (D.prasad && D.prasad[y]) || {};
+      document.getElementById("lkyr").textContent = y;
+      document.getElementById("lkm").textContent = mr.name || "Not assigned / नोंद नाही";
+      document.getElementById("lkmp").textContent = mr.phone ? "📱 " + mr.phone : "";
+      document.getElementById("lk-m-av").innerHTML = avatarHTML(mr, "🕉️");
+      document.getElementById("lkp").textContent = pr.name || "Not assigned / नोंद नाही";
+      document.getElementById("lkpp").textContent = pr.phone ? "📱 " + pr.phone : "";
+      document.getElementById("lk-p-av").innerHTML = avatarHTML(pr, "🍛");
+      document.getElementById("lookup").style.display = "block";
+      homeFinYear = y;
+      updateHomeFinance(y);
+    }
+
+    function updateHomeFinance(y) {
+      ensureFinYear(y);
+      const fin = (D.finance && D.finance[y]) || { collections: [], expenses: [] };
+      const totalCol = (fin.collections || []).reduce((s,e) => s + (+e.amt || 0), 0);
+      const totalExp = (fin.expenses || []).reduce((s,e) => s + (+e.amt || 0), 0);
+      const bal = totalCol - totalExp;
+      document.getElementById("home-fin-col").textContent = fmt(totalCol);
+      document.getElementById("home-fin-exp").textContent = fmt(totalExp);
+      document.getElementById("home-fin-bal").textContent = fmt(Math.abs(bal));
+      const balEl = document.getElementById("home-fin-bal");
+      balEl.style.color = bal >= 0 ? "#1565C0" : "#C62828";
+      document.getElementById("home-fin-year-label").textContent = y;
+    }
+
+    function renderHome() {
+      let mb=0,pb=0,mo=0,po=0;
+      for (let y of allYears) {
+        if (D.murti && D.murti[y] && D.murti[y].name) mb++; else mo++;
+        if (D.prasad && D.prasad[y] && D.prasad[y].name) pb++; else po++;
+      }
+      document.getElementById("smb").textContent = mb;
+      document.getElementById("spb").textContent = pb;
+      document.getElementById("smo").textContent = mo;
+      document.getElementById("spo").textContent = po;
+      const mr = (D.murti && D.murti[CY]) || {}, pr = (D.prasad && D.prasad[CY]) || {};
+      document.getElementById("hmy").textContent = CY;
+      document.getElementById("hmn").textContent = mr.name || "Not assigned";
+      document.getElementById("hmp").textContent = mr.phone ? "📱 " + mr.phone : "";
+      document.getElementById("hm-avatar").innerHTML = mr.photo ? `<img src="${mr.photo}" />` : "🕉️";
+      document.getElementById("hpy").textContent = CY;
+      document.getElementById("hpn").textContent = pr.name || "Not assigned";
+      document.getElementById("hpp").textContent = pr.phone ? "📱 " + pr.phone : "";
+      document.getElementById("hp-avatar").innerHTML = pr.photo ? `<img src="${pr.photo}" />` : "🍛";
+      updateHomeFinance(homeFinYear);
+    }
+
+    function renderList(type, q) {
+      const el = document.getElementById(type + "List");
+      if (!el) return;
+      el.innerHTML = "";
+      for (let y of allYears) {
+        const rec = (D[type] && D[type][y]) || {};
+        const nm = rec.name || "", ph = rec.phone || "", photo = rec.photo || "";
+        if (q && nm && !nm.toLowerCase().includes(q.toLowerCase())) continue;
+        if (q && !nm) continue;
+        const isEmpty = !nm, isCurr = y === CY, isPast = y < CY, isUp = y > CY;
+        let cls = "di" + (isCurr ? " curr" : isPast ? " past" : isUp ? " upcoming" : "") + (isEmpty ? " empty" : "");
+        const avHTML = photo ? `<img src="${photo}" />` : "👤";
+        el.innerHTML += `<div class="${cls}">
+          <div class="di-yr">${y}</div>
+          <div class="di-avatar">${avHTML}</div>
+          <div class="di-info">
+            <div class="di-nm">${nm || (isCurr ? "Not assigned yet" : "Available / उपलब्ध")}</div>
+            ${ph ? `<div class="di-ph">📱 ${ph}</div>` : ""}
+          </div>
+          ${isCurr ? '<div class="di-tag">🎉 This Year</div>' : ""}
+        </div>`;
+      }
+    }
+
+    function filterList(t, v) { renderList(t, v.trim() || undefined); }
+
+    function gotoTab(name) {
+      document.querySelectorAll(".pg").forEach(p => p.classList.remove("on"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("on"));
+      document.getElementById("pg-" + name).classList.add("on");
+      const map = { home:0, murti:1, prasad:2, finance:3, admin:4 };
+      if (map[name] !== undefined) document.querySelectorAll(".nav-btn")[map[name]].classList.add("on");
+      if (name === "finance") {
+        const sel = document.getElementById("finYear");
+        if (sel) sel.value = homeFinYear;
+        renderFinance();
+      }
+      if (name === "admin" && isAdminLoggedIn) { renderAdmTable(); renderFinance(); }
+    }
+
+    function gotoFinanceWithYear() {
+      const sel = document.getElementById("finYear");
+      if (sel) sel.value = homeFinYear;
+      gotoTab("finance");
+    }
+
+    // ─── ADMIN ──────────────────────────────────────────────────────────────────
+    function checkPw() {
+      const entered = document.getElementById("pwInput").value;
+      document.getElementById("pwErr").style.display = "none";
+      if (entered === D.pw) {
+        isAdminLoggedIn = true;
+        document.getElementById("lockWrap").style.display = "none";
+        document.getElementById("admPanel").style.display = "block";
+        buildSelects(CY, CY);
+        autoFill("murti");
+        autoFill("prasad");
+        renderAdmTable();
+        renderFinance();
+      } else {
+        document.getElementById("pwErr").style.display = "block";
+      }
+    }
+
+    function lockAdmin() {
+      isAdminLoggedIn = false;
+      document.getElementById("lockWrap").style.display = "block";
+      document.getElementById("admPanel").style.display = "none";
+      document.getElementById("pwInput").value = "";
+      document.getElementById("pwErr").style.display = "none";
+      renderFinance();
+    }
+
+    function toast(msg, type) {
+      const a = document.getElementById("alertBox");
+      a.className = "alert " + (type || "ok");
+      a.textContent = msg;
+      a.style.display = "block";
+      setTimeout(() => { a.style.display = "none"; }, 3500);
+    }
+
+    function save(type) {
+      const yrEl = document.getElementById(type === "murti" ? "mYr" : "pYr");
+      const yr = +yrEl.value;
+      const nm = document.getElementById(type === "murti" ? "mNm" : "pNm").value.trim();
+      const ph = document.getElementById(type === "murti" ? "mPh" : "pPh").value.trim();
+      if (!nm) { toast("Please enter a name / कृपया नाव भरा", "err"); return; }
+      const existingPhoto = (D[type] && D[type][yr] && D[type][yr].photo) || "";
+      if (!D[type]) D[type] = {};
+      D[type][yr] = { name: nm, phone: ph, photo: pendingPhotos[type] || existingPhoto };
+      pendingPhotos[type] = null;
+      const mKeep = type === "murti" ? yr : +document.getElementById("mYr").value;
+      const pKeep = type === "prasad" ? yr : +document.getElementById("pYr").value;
+      buildSelects(mKeep, pKeep);
+      renderList(type);
+      renderHome();
+      renderAdmTable();
+      cloudSave();
+      toast("✅ Saved & synced! / जतन व सिंक झाले — " + yr + " : " + nm, "ok");
+    }
+
+    function editRecord(type, y) {
+      document.getElementById(type === "murti" ? "mYr" : "pYr").value = y;
+      autoFill(type);
+      document.getElementById(type === "murti" ? "mYr" : "pYr").closest(".adm-sec").scrollIntoView({ behavior:"smooth", block:"start" });
+      toast("✏️ Editing " + y + " — update and save", "ok");
+    }
+
+    function del(type, y) {
+      if (!confirm("Delete this record?\nहे रेकॉर्ड काढायचे का?")) return;
+      if (!D[type]) D[type] = {};
+      D[type][y] = { name: "", phone: "", photo: "" };
+      const mKeep = +document.getElementById("mYr").value || CY;
+      const pKeep = +document.getElementById("pYr").value || CY;
+      buildSelects(mKeep, pKeep);
+      renderAdmTable();
+      renderList(type);
+      renderHome();
+      autoFill(type);
+      cloudSave();
+      toast("🗑️ Record deleted / रेकॉर्ड काढला", "ok");
+    }
+
+    function switchAdmTab(type) {
+      admTab = type;
+      document.getElementById("at-m").classList.toggle("on", type === "murti");
+      document.getElementById("at-p").classList.toggle("on", type === "prasad");
+      renderAdmTable();
+    }
+
+    function renderAdmTable() {
+      const tb = document.getElementById("admTbody");
+      if (!tb) return;
+      tb.innerHTML = "";
+      for (let y of allYears) {
+        const rec = (D[admTab] && D[admTab][y]) || {};
+        const nm = rec.name || "", ph = rec.phone || "", photo = rec.photo || "";
+        const avHTML = photo ? `<img src="${photo}" />` : "👤";
+        tb.innerHTML += `<tr class="${y === CY ? "curr" : ""}">
+          <td><strong>${y}</strong>${y === CY ? ' <span style="font-size:9px;background:#C8390A;color:#fff;padding:2px 6px;border-radius:7px">NOW</span>' : ""}</td>
+          <td><div class="tbl-avatar">${avHTML}</div></td>
+          <td style="color:${nm ? "#1A1A1A" : "#CCC"}">${nm || "—"}</td>
+          <td style="color:#888;font-size:12px">${ph || "—"}</td>
+          <td><div style="display:flex;gap:5px">
+            <button class="btn btn-out btn-sm" onclick="editRecord('${admTab}',${y})">✏️</button>
+            <button class="btn btn-del btn-sm" onclick="del('${admTab}',${y})">🗑️</button>
+          </div></td>
+        </tr>`;
+      }
+    }
+
+    function changePw() {
+      const a = document.getElementById("np1").value, b = document.getElementById("np2").value;
+      if (!a) { toast("Enter a new password", "err"); return; }
+      if (a !== b) { toast("Passwords do not match", "err"); return; }
+      D.pw = a;
+      cloudSave();
+      document.getElementById("np1").value = "";
+      document.getElementById("np2").value = "";
+      toast("🔑 Password updated / संकेतशब्द बदलला", "ok");
+    }
+
+    function findPhotoByName(name) {
+      if (!name || name.length < 3) return null;
+      const key = name.trim().toLowerCase();
+      for (let y of allYears) {
+        for (const type of ["murti","prasad"]) {
+          const rec = D[type] && D[type][y];
+          if (rec && rec.name && rec.name.trim().toLowerCase() === key && rec.photo) return rec.photo;
+        }
+      }
+      return null;
+    }
+
+    function onNameInput(type) {
+      const yr = +document.getElementById(type === "murti" ? "mYr" : "pYr").value;
+      const existingPhoto = (D[type] && D[type][yr] && D[type][yr].photo) || "";
+      if (pendingPhotos[type] || existingPhoto) return;
+      const nm = document.getElementById(type === "murti" ? "mNm" : "pNm").value.trim();
+      const found = findPhotoByName(nm);
+      const prev = document.getElementById(type === "murti" ? "mPhotoPreview" : "pPhotoPreview");
+      if (found) { prev.innerHTML = `<img src="${found}" />`; prev.title = "Auto-filled from previous record"; pendingPhotos[type] = found; }
+      else { prev.innerHTML = "📷"; prev.title = ""; }
+    }
+
+    // ─── FINANCE ──────────────────────────────────────────────────────────────────
+    function ensureFinYear(y) {
+      if (!D.finance) D.finance = {};
+      if (!D.finance[y]) D.finance[y] = { collections: [], expenses: [] };
+    }
+
+    function buildFinYearSelect() {
+      const s = document.getElementById("finYear");
+      if (!s) return;
+      const cur = s.value || CY;
+      s.innerHTML = "";
+      for (let y of allYears) {
+        const o = new Option(y, y);
+        if (+y === +cur) o.selected = true;
+        s.add(o);
+      }
+    }
+
+    function finYear() { return +document.getElementById("finYear").value || CY; }
+
+    function fmt(n) { return "₹" + Number(n).toLocaleString("en-IN"); }
+
+    function toggleForm(type) {
+      cancelEdit(type);
+      const form = document.getElementById("fin-" + type + "-form");
+      const btn = document.getElementById("fin-" + type + "-toggle-btn");
+      const showing = form.style.display === "block";
+      form.style.display = showing ? "none" : "block";
+      if (showing) { btn.style.display = "block"; }
+      else {
+        btn.style.display = "none";
+        const nameId = type === "col" ? "colName" : "expName";
+        const amtId = type === "col" ? "colAmt" : "expAmt";
+        const noteId = type === "col" ? "colNote" : "expNote";
+        document.getElementById(nameId).value = "";
+        document.getElementById(amtId).value = "";
+        document.getElementById(noteId).value = "";
+        const btnSubmit = document.getElementById(type === "col" ? "col-submit-btn" : "exp-submit-btn");
+        btnSubmit.textContent = type === "col" ? "✅ Add Collection / जोडा" : "✅ Add Expense / खर्च जोडा";
+        editingType = null;
+        editingIndex = -1;
+        form.querySelector("input").focus();
+      }
+    }
+
+    function cancelEdit(type) {
+      editingType = null;
+      editingIndex = -1;
+      const form = document.getElementById("fin-" + type + "-form");
+      const btnSubmit = document.getElementById(type === "col" ? "col-submit-btn" : "exp-submit-btn");
+      btnSubmit.textContent = type === "col" ? "✅ Add Collection / जोडा" : "✅ Add Expense / खर्च जोडा";
+      form.style.display = "none";
+      const btnToggle = document.getElementById("fin-" + type + "-toggle-btn");
+      btnToggle.style.display = "block";
+      const nameId = type === "col" ? "colName" : "expName";
+      const amtId = type === "col" ? "colAmt" : "expAmt";
+      const noteId = type === "col" ? "colNote" : "expNote";
+      document.getElementById(nameId).value = "";
+      document.getElementById(amtId).value = "";
+      document.getElementById(noteId).value = "";
+    }
+
+    function startEdit(type, idx) {
+      const y = finYear();
+      ensureFinYear(y);
+      const entry = D.finance[y][type === "col" ? "collections" : "expenses"][idx];
+      if (!entry) return;
+      editingType = type;
+      editingIndex = idx;
+      const form = document.getElementById("fin-" + type + "-form");
+      form.style.display = "block";
+      const btnToggle = document.getElementById("fin-" + type + "-toggle-btn");
+      btnToggle.style.display = "none";
+      const nameId = type === "col" ? "colName" : "expName";
+      const amtId = type === "col" ? "colAmt" : "expAmt";
+      const noteId = type === "col" ? "colNote" : "expNote";
+      document.getElementById(nameId).value = entry.name || "";
+      document.getElementById(amtId).value = entry.amt || "";
+      document.getElementById(noteId).value = entry.note || "";
+      const btnSubmit = document.getElementById(type === "col" ? "col-submit-btn" : "exp-submit-btn");
+      btnSubmit.textContent = type === "col" ? "✅ Update Collection" : "✅ Update Expense";
+    }
+
+    function addEntry(type) {
+      const y = finYear();
+      ensureFinYear(y);
+      const nameEl = document.getElementById(type === "col" ? "colName" : "expName");
+      const amtEl = document.getElementById(type === "col" ? "colAmt" : "expAmt");
+      const noteEl = document.getElementById(type === "col" ? "colNote" : "expNote");
+      const name = nameEl.value.trim();
+      const amt = +amtEl.value;
+      const note = noteEl.value.trim();
+      if (!name) { nameEl.focus(); return; }
+      if (!amt || amt <= 0) { amtEl.focus(); return; }
+      const today = new Date();
+      const dateStr = today.getDate() + "/" + (today.getMonth()+1) + "/" + today.getFullYear();
+
+      if (editingType === type && editingIndex >= 0) {
+        const arr = type === "col" ? D.finance[y].collections : D.finance[y].expenses;
+        if (editingIndex < arr.length) {
+          arr[editingIndex] = { ...arr[editingIndex], name, amt, note };
+        }
+        editingType = null;
+        editingIndex = -1;
+        const btnSubmit = document.getElementById(type === "col" ? "col-submit-btn" : "exp-submit-btn");
+        btnSubmit.textContent = type === "col" ? "✅ Add Collection / जोडा" : "✅ Add Expense / खर्च जोडा";
         const form = document.getElementById("fin-" + type + "-form");
-        const btn = document.getElementById("fin-" + type + "-toggle-btn");
-        const showing = form.style.display === "block";
-        form.style.display = showing ? "none" : "block";
-        if (showing) {
-          btn.style.display = "block";
-        } else {
-          btn.style.display = "none";
-          form.querySelector("input").focus();
-        }
-      }
-
-      function addEntry(type) {
-        const y = finYear();
-        ensureFinYear(y);
-        const nameEl = document.getElementById(
-          type === "col" ? "colName" : "expName"
-        );
-        const amtEl = document.getElementById(
-          type === "col" ? "colAmt" : "expAmt"
-        );
-        const noteEl = document.getElementById(
-          type === "col" ? "colNote" : "expNote"
-        );
-        const name = nameEl.value.trim();
-        const amt = +amtEl.value;
-        const note = noteEl.value.trim();
-        if (!name) {
-          nameEl.focus();
-          return;
-        }
-        if (!amt || amt <= 0) {
-          amtEl.focus();
-          return;
-        }
-        const today = new Date();
-        const dateStr =
-          today.getDate() +
-          "/" +
-          (today.getMonth() + 1) +
-          "/" +
-          today.getFullYear();
+        form.style.display = "none";
+        const btnToggle = document.getElementById("fin-" + type + "-toggle-btn");
+        btnToggle.style.display = "block";
+      } else {
         const entry = { name, amt, note, date: dateStr };
         if (type === "col") D.finance[y].collections.push(entry);
         else D.finance[y].expenses.push(entry);
-        nameEl.value = "";
-        amtEl.value = "";
-        noteEl.value = "";
-        toggleForm(type);
-        cloudSave();
-        renderFinance();
-        // Also update home finance if this year is the one shown
-        if (y === homeFinYear) updateHomeFinance(y);
+      }
+      nameEl.value = "";
+      amtEl.value = "";
+      noteEl.value = "";
+      cloudSave();
+      renderFinance();
+      if (y === homeFinYear) updateHomeFinance(y);
+    }
+
+    function delEntry(type, idx) {
+      if (!confirm("Delete this entry?")) return;
+      const y = finYear();
+      ensureFinYear(y);
+      if (type === "col") D.finance[y].collections.splice(idx, 1);
+      else D.finance[y].expenses.splice(idx, 1);
+      cloudSave();
+      renderFinance();
+      if (y === homeFinYear) updateHomeFinance(y);
+    }
+
+    function uploadBill(type, idx) {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const y = finYear();
+          ensureFinYear(y);
+          const arr = type === "col" ? D.finance[y].collections : D.finance[y].expenses;
+          if (idx < arr.length) {
+            arr[idx].bill = ev.target.result;
+            cloudSave();
+            renderFinance();
+            if (y === homeFinYear) updateHomeFinance(y);
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+
+    function viewBill(type, idx) {
+      const y = finYear();
+      ensureFinYear(y);
+      const arr = type === "col" ? D.finance[y].collections : D.finance[y].expenses;
+      if (idx < arr.length && arr[idx].bill) {
+        window.open(arr[idx].bill, "_blank");
+      } else {
+        alert("No bill uploaded for this entry.");
+      }
+    }
+
+    function renderFinance() {
+      buildFinYearSelect();
+      const y = finYear();
+      ensureFinYear(y);
+      const fin = D.finance[y];
+      const totalCol = (fin.collections || []).reduce((s,e) => s + (+e.amt || 0), 0);
+      const totalExp = (fin.expenses || []).reduce((s,e) => s + (+e.amt || 0), 0);
+      const bal = totalCol - totalExp;
+
+      document.getElementById("fin-total-col").textContent = fmt(totalCol);
+      document.getElementById("fin-total-exp").textContent = fmt(totalExp);
+      document.getElementById("fin-balance").textContent = fmt(Math.abs(bal));
+      document.getElementById("fin-balance-mr").textContent = bal >= 0 ? "शिल्लक आहे ✅" : "तूट आहे ⚠️";
+      document.getElementById("fin-col-badge").textContent = fmt(totalCol);
+      document.getElementById("fin-exp-badge").textContent = fmt(totalExp);
+
+      const pct = totalCol > 0 ? Math.min(Math.round(totalExp/totalCol*100), 100) : 0;
+      const bar = document.getElementById("fin-bar");
+      bar.style.width = pct + "%";
+      bar.className = "fin-bar" + (pct >= 100 ? " over" : "");
+      document.getElementById("fin-pct").textContent = pct + "%";
+      document.getElementById("fin-bar-note").textContent = pct + "% of collected amount spent";
+
+      const bc = document.getElementById("fin-balance").closest(".fin-stat");
+      bc.className = "fin-stat " + (bal >= 0 ? "blue" : "red");
+
+      ["fin-col-toggle-btn","fin-exp-toggle-btn"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = isAdminLoggedIn ? "block" : "none";
+      });
+      if (!isAdminLoggedIn) {
+        document.getElementById("fin-col-form").style.display = "none";
+        document.getElementById("fin-exp-form").style.display = "none";
       }
 
-      function delEntry(type, idx) {
-        if (!confirm("Delete this entry?")) return;
-        const y = finYear();
-        ensureFinYear(y);
-        if (type === "col") D.finance[y].collections.splice(idx, 1);
-        else D.finance[y].expenses.splice(idx, 1);
-        cloudSave();
-        renderFinance();
-        if (y === homeFinYear) updateHomeFinance(y);
+      let badge = document.getElementById("fin-admin-badge");
+      if (!badge) {
+        badge = document.createElement("div");
+        badge.id = "fin-admin-badge";
+        badge.style.cssText = "text-align:center;padding:8px;font-size:12px;margin-bottom:10px;border-radius:8px;font-weight:600";
+        document.getElementById("pg-finance").insertBefore(badge, document.getElementById("pg-finance").firstChild);
+      }
+      if (isAdminLoggedIn) {
+        badge.style.background = "#E8F5E9";
+        badge.style.color = "#2E7D32";
+        badge.style.border = "1px solid #A5D6A7";
+        badge.textContent = "🔓 Admin mode — you can add, edit, upload bills & delete entries";
+      } else {
+        badge.style.background = "#FFF8E1";
+        badge.style.color = "#795548";
+        badge.style.border = "1px solid #FFE082";
+        badge.textContent = "👁️ View only — login as Admin to manage entries";
       }
 
-      function renderFinance() {
-        buildFinYearSelect();
-        const y = finYear();
-        ensureFinYear(y);
-        const fin = D.finance[y];
-        const totalCol = (fin.collections || []).reduce(
-          (s, e) => s + (+e.amt || 0),
-          0
-        );
-        const totalExp = (fin.expenses || []).reduce(
-          (s, e) => s + (+e.amt || 0),
-          0
-        );
-        const bal = totalCol - totalExp;
+      const cl = document.getElementById("fin-col-list");
+      if (!fin.collections || fin.collections.length === 0) {
+        cl.innerHTML = '<div class="fin-empty">No collections yet / अद्याप कोणतीही देणगी नाही</div>';
+      } else {
+        cl.innerHTML = fin.collections.map((e,i) => `
+          <div class="fin-entry">
+            <div style="width:34px;height:34px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💰</div>
+            <div class="fin-entry-name" style="flex:1;">
+              ${e.name}
+              ${e.note ? `<div class="fin-entry-sub">${e.note}</div>` : ""}
+              <div class="fin-entry-sub">${e.date || ""}</div>
+            </div>
+            <div class="fin-entry-amt">${fmt(e.amt)}</div>
+            ${isAdminLoggedIn ? `
+              <button class="fin-entry-edit" onclick="startEdit('col',${i})" title="Edit">✏️</button>
+              <button class="fin-entry-del" onclick="delEntry('col',${i})" title="Delete">✕</button>
+            ` : ""}
+          </div>
+        `).join("");
+      }
 
-        document.getElementById("fin-total-col").textContent = fmt(totalCol);
-        document.getElementById("fin-total-exp").textContent = fmt(totalExp);
-        document.getElementById("fin-balance").textContent = fmt(Math.abs(bal));
-        document.getElementById("fin-balance-mr").textContent =
-          bal >= 0 ? "शिल्लक आहे ✅" : "तूट आहे ⚠️";
-        document.getElementById("fin-col-badge").textContent = fmt(totalCol);
-        document.getElementById("fin-exp-badge").textContent = fmt(totalExp);
-
-        const pct =
-          totalCol > 0
-            ? Math.min(Math.round((totalExp / totalCol) * 100), 100)
-            : 0;
-        const bar = document.getElementById("fin-bar");
-        bar.style.width = pct + "%";
-        bar.className = "fin-bar" + (pct >= 100 ? " over" : "");
-        document.getElementById("fin-pct").textContent = pct + "%";
-        document.getElementById("fin-bar-note").textContent =
-          pct + "% of collected amount spent";
-
-        const bc = document.getElementById("fin-balance").closest(".fin-stat");
-        bc.className = "fin-stat " + (bal >= 0 ? "blue" : "red");
-
-        // Show/hide add buttons
-        ["fin-col-toggle-btn", "fin-exp-toggle-btn"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) el.style.display = isAdminLoggedIn ? "block" : "none";
-        });
-        if (!isAdminLoggedIn) {
-          const cf = document.getElementById("fin-col-form");
-          const ef = document.getElementById("fin-exp-form");
-          if (cf) cf.style.display = "none";
-          if (ef) ef.style.display = "none";
-        }
-
-        // Admin badge
-        let badge = document.getElementById("fin-admin-badge");
-        if (!badge) {
-          badge = document.createElement("div");
-          badge.id = "fin-admin-badge";
-          badge.style.cssText =
-            "text-align:center;padding:8px;font-size:12px;margin-bottom:10px;border-radius:8px;font-weight:600";
-          document
-            .getElementById("pg-finance")
-            .insertBefore(
-              badge,
-              document.getElementById("pg-finance").firstChild
-            );
-        }
-        if (isAdminLoggedIn) {
-          badge.style.background = "#E8F5E9";
-          badge.style.color = "#2E7D32";
-          badge.style.border = "1px solid #A5D6A7";
-          badge.textContent =
-            "🔓 Admin mode — you can add & edit finance entries";
-        } else {
-          badge.style.background = "#FFF8E1";
-          badge.style.color = "#795548";
-          badge.style.border = "1px solid #FFE082";
-          badge.textContent =
-            "👁️ View only — login as Admin to add or edit entries";
-        }
-
-        // Collections list
-        const cl = document.getElementById("fin-col-list");
-        if (!fin.collections || fin.collections.length === 0) {
-          cl.innerHTML =
-            '<div class="fin-empty">No collections yet / अद्याप कोणतीही देणगी नाही</div>';
-        } else {
-          cl.innerHTML = fin.collections
-            .map(
-              (e, i) =>
-                `<div class="fin-entry">
-                <div style="width:34px;height:34px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">💰</div>
-                <div class="fin-entry-name" style="flex:1">
+      const el = document.getElementById("fin-exp-list");
+      if (!fin.expenses || fin.expenses.length === 0) {
+        el.innerHTML = '<div class="fin-empty">No expenses yet / अद्याप कोणताही खर्च नाही</div>';
+      } else {
+        let running = totalCol;
+        let rows = "";
+        fin.expenses.forEach((e, i) => {
+          running -= (+e.amt || 0);
+          const balColor = running >= 0 ? "#2E7D32" : "#C62828";
+          const balLabel = running >= 0 ? "शिल्लक / Balance" : "तूट / Deficit";
+          rows += `
+            <div class="fin-entry" style="flex-direction:column;align-items:stretch;gap:0;padding:0;">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;flex-wrap:wrap;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🧾</div>
+                <div class="fin-entry-name" style="flex:1;min-width:100px;">
                   ${e.name}
                   ${e.note ? `<div class="fin-entry-sub">${e.note}</div>` : ""}
                   <div class="fin-entry-sub">${e.date || ""}</div>
+                  ${e.bill ? `<span style="font-size:11px;color:#2E7D32;">📎 Bill uploaded</span>` : ""}
                 </div>
-                <div class="fin-entry-amt">${fmt(e.amt)}</div>
-                ${
-                  isAdminLoggedIn
-                    ? `<button class="fin-entry-del" onclick="delEntry('col',${i})" title="Delete">✕</button>`
-                    : ""
-                }
-              </div>`
-            )
-            .join("");
-        }
-
-        // Expenses list with running balance
-        const el = document.getElementById("fin-exp-list");
-        if (!fin.expenses || fin.expenses.length === 0) {
-          el.innerHTML =
-            '<div class="fin-empty">No expenses yet / अद्याप कोणताही खर्च नाही</div>';
-        } else {
-          let running = totalCol;
-          let rows = "";
-          fin.expenses.forEach((e, i) => {
-            running -= +e.amt || 0;
-            const balColor = running >= 0 ? "#2E7D32" : "#C62828";
-            const balLabel =
-              running >= 0 ? "शिल्लक / Balance" : "तूट / Deficit";
-            rows += `
-                <div class="fin-entry" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
-                  <div style="display:flex;align-items:center;gap:10px;padding:11px 14px">
-                    <div style="width:34px;height:34px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🧾</div>
-                    <div class="fin-entry-name" style="flex:1">
-                      ${e.name}
-                      ${
-                        e.note
-                          ? `<div class="fin-entry-sub">${e.note}</div>`
-                          : ""
-                      }
-                      <div class="fin-entry-sub">${e.date || ""}</div>
-                    </div>
-                    <div class="fin-entry-amt exp">−${fmt(e.amt)}</div>
-                    ${
-                      isAdminLoggedIn
-                        ? `<button class="fin-entry-del" onclick="delEntry('exp',${i})" title="Delete">✕</button>`
-                        : ""
-                    }
-                  </div>
-                  <div style="margin:0 14px 11px;background:${
-                    running >= 0 ? "#F1F8E9" : "#FFEBEE"
-                  };border-radius:8px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid ${balColor}">
-                    <span style="font-size:11px;color:#888">${balLabel}</span>
-                    <span style="font-size:14px;font-weight:800;color:${balColor}">${fmt(
-              Math.abs(running)
-            )}</span>
-                  </div>
-                </div>`;
-          });
-          el.innerHTML = rows;
-        }
+                <div class="fin-entry-amt exp">−${fmt(e.amt)}</div>
+                ${isAdminLoggedIn ? `
+                  <button class="fin-entry-edit" onclick="startEdit('exp',${i})" title="Edit">✏️</button>
+                  <button class="fin-entry-del" onclick="delEntry('exp',${i})" title="Delete">✕</button>
+                  <button class="fin-entry-bill" onclick="uploadBill('exp',${i})" title="Upload bill">📎</button>
+                  <button class="fin-entry-bill" onclick="viewBill('exp',${i})" title="View bill">👁️</button>
+                ` : ""}
+              </div>
+              <div style="margin:0 14px 11px;background:${running >= 0 ? "#F1F8E9" : "#FFEBEE"};border-radius:8px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid ${balColor};">
+                <span style="font-size:11px;color:#888;">${balLabel}</span>
+                <span style="font-size:14px;font-weight:800;color:${balColor};">${fmt(Math.abs(running))}</span>
+              </div>
+            </div>
+          `;
+        });
+        el.innerHTML = rows;
       }
+    }
 
-      // ─── REFRESH ALL ────────────────────────────────────────────────────────────
-      function refreshAll() {
-        buildSelects(CY, CY);
-        buildChips(); // this calls lookup(CY) which updates home finance
-        renderHome();
-        renderList("murti");
-        renderList("prasad");
-        switchAdmTab("murti");
-        if (isAdminLoggedIn) {
-          renderAdmTable();
-          renderFinance();
-        }
-      }
+    // ─── REFRESH ALL ────────────────────────────────────────────────────────────
+    function refreshAll() {
+      buildSelects(CY, CY);
+      buildChips();
+      renderHome();
+      renderList("murti");
+      renderList("prasad");
+      switchAdmTab("murti");
+      if (isAdminLoggedIn) { renderAdmTable(); renderFinance(); }
+    }
 
-      // ─── BOOT ──────────────────────────────────────────────────────────────────
-      initCalendar();
-      // Initialize D with all empty records
-      const def = defaultData();
-      D.pw = def.pw;
-      D.murti = def.murti;
-      D.prasad = def.prasad;
-      D.finance = def.finance;
+    // ─── BOOT ──────────────────────────────────────────────────────────────────
+    initCalendar();
+    const def = defaultData();
+    D.pw = def.pw;
+    D.murti = def.murti;
+    D.prasad = def.prasad;
+    D.finance = def.finance;
+    homeFinYear = CY;
+    cloudLoad();
 
-      // Set homeFinYear to current year
-      homeFinYear = CY;
-
-      // Load from Firebase (async)
-      cloudLoad();
-
-      // ─── EXPOSE GLOBALLY ──────────────────────────────────────────────────────
-      window.gotoTab = gotoTab;
-      window.filterList = filterList;
-      window.checkPw = checkPw;
-      window.lockAdmin = lockAdmin;
-      window.save = save;
-      window.editRecord = editRecord;
-      window.del = del;
-      window.switchAdmTab = switchAdmTab;
-      window.changePw = changePw;
-      window.autoFill = autoFill;
-      window.previewPhoto = previewPhoto;
-      window.onNameInput = onNameInput;
-      window.toggleForm = toggleForm;
-      window.addEntry = addEntry;
-      window.delEntry = delEntry;
-      window.renderFinance = renderFinance;
-      window.buildFinYearSelect = buildFinYearSelect;
-      window.finYear = finYear;
-      window.fmt = fmt;
-      window.gotoFinanceWithYear = gotoFinanceWithYear;
-    </script>
-  </body>
+    // ─── EXPOSE GLOBALLY ──────────────────────────────────────────────────────
+    window.gotoTab = gotoTab;
+    window.filterList = filterList;
+    window.checkPw = checkPw;
+    window.lockAdmin = lockAdmin;
+    window.save = save;
+    window.editRecord = editRecord;
+    window.del = del;
+    window.switchAdmTab = switchAdmTab;
+    window.changePw = changePw;
+    window.autoFill = autoFill;
+    window.previewPhoto = previewPhoto;
+    window.onNameInput = onNameInput;
+    window.toggleForm = toggleForm;
+    window.addEntry = addEntry;
+    window.delEntry = delEntry;
+    window.renderFinance = renderFinance;
+    window.buildFinYearSelect = buildFinYearSelect;
+    window.finYear = finYear;
+    window.fmt = fmt;
+    window.gotoFinanceWithYear = gotoFinanceWithYear;
+    window.startEdit = startEdit;
+    window.cancelEdit = cancelEdit;
+    window.uploadBill = uploadBill;
+    window.viewBill = viewBill;
+  </script>
+</body>
 </html>
